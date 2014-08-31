@@ -1,0 +1,41 @@
+{% extends "musics/base.html" %}
+
+{% block title%}音调 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table">
+            {% for music_list, extra in zipdata %}
+                <thead>
+                    <tr>
+                        <th>{{ music_list.0.music_key.key_name }}调</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                {% for music in music_list %}
+                    {% if not forloop.first and forloop.counter0|divisibleby:4 %}
+                        </tr><tr><td></td>
+                    {% endif %}
+                    <td><a href="{% url 'musics:music' music.id %}">{{ music.music_index }}.{{ music.music_name }}</a></td>
+                {% endfor %}
+                {% for i in extra %}
+					<td></td>
+                {% endfor %}
+                </tr>
+                </tbody>
+            {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

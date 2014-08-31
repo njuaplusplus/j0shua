@@ -1,0 +1,17 @@
+{% extends "musics/base.html" %}
+
+{% block title%}搜索结果 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+<h4>搜索关键字为: <em>{{ query_string }}</em></h4>
+{% if found_musics %}
+    <ul>
+    {% for music in found_musics %}
+    <li><a href="{% url 'musics:music' music.id %}">{{ music.music_index }} | {{ music.music_name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>没有找到对应的歌曲T_T</p>
+{% endif %}
+{% endblock %}
+

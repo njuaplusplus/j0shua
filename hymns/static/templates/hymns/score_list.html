@@ -1,0 +1,16 @@
+{% extends "musics/base.html" %}
+
+{% block title%}乐谱列表 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1>{{ music.music_index }} | {{ music.music_name }}</h1>
+        <ul>
+        {% for score in music.score_set.all %}
+            <li><a href="{% url 'musics:score' score.id %}">{{ score.score_name }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

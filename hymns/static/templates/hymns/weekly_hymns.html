@@ -1,0 +1,24 @@
+{% extends "musics/base.html" %}
+
+{% block title%}每周诗歌 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-md-12">
+    {% for hymn_list in weekly_hymn_list %}
+        {% for hymn in hymn_list%}
+            {% if forloop.first %}
+            <h2>{{ hymn }}</h2>
+            <ol>
+            {% else %}
+                <li><a href="{% url 'musics:music' hymn.music.id %}">{{ hymn.music.music_index }}.{{ hymn.music.music_name }}</a></li>
+            {% endif %}
+        {% endfor %}
+            </ol>
+    {% empty %}
+        <h1>没有记录^_^</h1>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

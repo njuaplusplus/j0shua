@@ -1,0 +1,22 @@
+{% extends "hymns/base.html" %}
+
+{% block title%}歌谱首页 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+<div class="row">
+    {% if all_hymns_list %}
+    <div class="col-xs-12 col-md-4">
+        <ul>
+        {% for hymn in all_hymns_list %}
+            {% if not forloop.first and forloop.counter0|divisibleby:num_of_rows %}
+                </ul></div><div class="col-xs-12 col-md-4"><ul>
+            {% endif %}
+            <li><a href="#">{{ hymn.hymn_index }} | {{ hymn.hymn_name }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+        <p>No hymns are available.</p>
+    {% endif %}
+</div>
+{% endblock %}
