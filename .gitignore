@@ -48,6 +48,11 @@ coverage.xml
 # Django stuff:
 *.log
 *.pot
+/j0shua/settings.py
+/j0shua/__init__.py
+/j0shua/wsgi.py
+/static/
+/manage.py
 
 # Sphinx documentation
 docs/_build/
