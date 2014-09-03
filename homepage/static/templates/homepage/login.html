@@ -1,0 +1,19 @@
+{% extends "homepage/base.html" %}
+
+{% block title%}登录 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+
+<form class="form-signin" role="form" method="POST" action="{% url 'homepage:login_view' %}">
+    {% csrf_token %}
+    <h2 class="form-signin-heading">请登录</h2>
+    <input type="text" name="username" class="form-control" placeholder="邮箱地址" required autofocus />
+    <input type="password" name="password" class="form-control" placeholder="密码" required />
+    <label class="checkbox">
+        <input type="checkbox" value="remember-me" /> 记住我
+    </label>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+    <input type="hidden" name="next" value="{{ next|escape }}" />
+</form>
+
+{% endblock %}

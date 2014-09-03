@@ -23,8 +23,6 @@ def init_hymnsDB():
             hymn_key = Hymn_Key.objects.get(key_name=origin_key_id[tmpa[3]].strip())
             Hymn.objects.get_or_create(hymn_index=tmpa[1].strip(), hymn_name=tmpa[2].strip(), hymn_key=hymn_key, hymn_uploader=User.objects.get(username='aplusplus'))
 
-
-
 def init_weekly_hymnDB():
     import datetime
     origin_hymn_id = {}
@@ -51,11 +49,27 @@ def add_hymn_score(rootDir=r'/Users/aplusplus/Desktop/MusicScores/'):
             hymn_index = int(hymn_index)
             hymn = Hymn.objects.get(hymn_index=hymn_index, hymn_name=hymn_name)
             for f in os.listdir(path):
-                if not f[0] == '.' and any(f.endswith(ext) for ext in img_extensions):
+                if not f[0] == '.' and any(f.endswith(ext) for ext in img_extensions) and f.startswith(hymn_name):
                     # print hymn.hymn_name, f
                     with open(os.path.join(path, f)) as inFile:
                         hymn.hymn_score.save(f, File(inFile))
                         hymn.hymn_score_uploader_name = 'aplusplus'
+                        hymn.save()
+
+def add_hymn_audio(rootDir=r'/Users/aplusplus/Desktop/MusicScores/'):
+    import os
+    for lists in os.listdir(rootDir):
+        path = os.path.join(rootDir, lists)
+        if os.path.isdir(path):
+            (hymn_index, hymn_name) = lists.split('.')
+            hymn_index = int(hymn_index)
+            hymn = Hymn.objects.get(hymn_index=hymn_index, hymn_name=hymn_name)
+            for f in os.listdir(path):
+                if not f[0] == '.' and f.endswith('txt') and f.startswith(hymn_name):
+                    # print hymn.hymn_name, f
+                    with open(os.path.join(path, f)) as inFile:
+                        hymn.hymn_audio = inFile.readline().strip()
+                        hymn.hymn_audio_uploader_name = 'aplusplus'
                         hymn.save()
 
 def initAll():

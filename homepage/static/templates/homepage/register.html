@@ -1,0 +1,56 @@
+{% extends "homepage/base.html" %}
+
+{% block title%}注册 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        {% for field in form %}
+            {% if field.errors %}
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>{{ field.label }}</strong> {{ field.errors }}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <h2>请注册</h2>
+        <form class="form-horizontal" role="form" method="POST" action="{% url 'homepage:register_view' %}">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="id_{{ field.html_name }}" class="col-sm-2 control-label">{{ field.label }}</label>
+                <div class="col-sm-10">
+                    {% if forloop.first %}
+                    <input type="text" name="{{ field.html_name }}" class="form-control" id="id_{{ field.html_name }}" placeholder="{{ field.name }}" required autofocus />
+                    {% else %}
+                    <input type="password" name="{{ field.html_name }}" class="form-control" id="id_{{ field.html_name }}" placeholder="{{ field.name }}" required />
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> 我同意约书亚团契约定
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">注册</button>
+                </div>
+            </div>
+            <input type="hidden" name="next" value="{{ next|escape }}" />
+        </form>
+
+    </div>
+</div>
+{% endblock %}
+

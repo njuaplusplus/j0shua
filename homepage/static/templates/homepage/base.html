@@ -3,7 +3,7 @@
 <html lang="zh-cn">
     <head>
     <meta charset="UTF-8">
-    <title>{% block title %}约书亚团契歌谱{% endblock %}</title>
+    <title>{% block title %}约书亚团契{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
@@ -33,22 +33,15 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li><a href="{% url 'hymns:index' %}">所有歌曲</a></li>
-                            <li><a href="{% url 'hymns:hymn_by_key' %}">曲调分类</a></li>
-                            <li><a href="{% url 'hymns:weekly_hymns' %}">每周诗歌</a></li>
-                            <li><a href="{% url 'hymns:upload_view' %}">上传歌谱</a></li>
-                            <li><a href="{% url 'hymns:candidates_view' %}">候选歌谱</a></li>
+                            <li><a href="{% url 'hymns:index' %}">诗歌</a></li>
+                            <li><a href="">读经</a></li>
+                            <li><a href="http://blog.j0shua.org">博客</a></li>
+                            <li><a href="">福音</a></li>
                         </ul>
-                        <form class="hidden-sm hidden-xs navbar-form navbar-left" role="search" method="GET" action="{% url 'hymns:search' %}">
-                            <div class="form-group">
-                                <input type="text"  name="queryString" class="form-control" placeholder="搜索歌谱">
-                            </div>
-                            <button type="submit" class="btn btn-default">搜索</button>
-                        </form>
                         {% if not user.is_authenticated %}
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="{% url 'hymns:register_view' %}">注册</a></li>
-                            <li><a href="{% url 'hymns:login_view' %}">登录</a></li>
+                            <li><a href="{% url 'homepage:register_view' %}">注册</a></li>
+                            <li><a href="{% url 'homepage:login_view' %}">登录</a></li>
                         </ul>
                         {% else %}
                         <ul class="nav navbar-nav navbar-right">
@@ -59,7 +52,7 @@
                                 {{ user.username }}
                                 {% endif %}
                             </a></li>
-                            <li><a href="{% url 'hymns:logout_view' %}">注销</a></li>
+                            <li><a href="{% url 'homepage:logout_view' %}">注销</a></li>
                         </ul>
                         {% endif %}
                         <!-- <form class="navbar-form navbar-right" role="form">
@@ -76,17 +69,6 @@
             </div>
 
             <div class="container">
-                <div class="row hidden-md hidden-lg">
-                    <div class="col-md-12">
-                        <form class="form-inline" role="form" method="GET" action="{% url 'hymns:search' %}">
-                            <div class="form-group">
-                                <label class="sr-only" for="query-string">歌曲名称</label>
-                                <input type="text"  id="query-string" name="queryString" class="form-control" placeholder="搜索歌谱">
-                            </div>
-                            <button type="submit" class="btn btn-default">搜索</button>
-                        </form>
-                    </div>
-                </div>
             {% block mainContent %}<h1>Hello, world!</h1>{% endblock  %}
             </div>
         </div>
