@@ -1,0 +1,42 @@
+{% extends "hymns/base.html" %}
+
+{% block title%}音调 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table class="table">
+            {% for hymn_list, extra in zipdata %}
+                <thead>
+                    <tr>
+                        <th>{{ hymn_list.0.hymn_key.key_name }}调</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                {% for hymn in hymn_list %}
+                    {% if not forloop.first and forloop.counter0|divisibleby:4 %}
+                        </tr><tr><td></td>
+                    {% endif %}
+                    <td><a href="{% url 'hymns:hymn' hymn.id %}">{{ hymn.hymn_index }}.{{ hymn.hymn_name }}</a></td>
+                {% endfor %}
+                {# Add the extra blank td to fill the table #}
+                {% for i in extra %}
+                    <td></td>
+                {% endfor %}
+                </tr>
+                </tbody>
+            {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
