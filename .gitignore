@@ -48,10 +48,7 @@ coverage.xml
 # Django stuff:
 *.log
 *.pot
-/j0shua/settings.py
-/j0shua/__init__.py
-/j0shua/wsgi.py
-/j0shua/urls.py
+/j0shua/
 /static/
 /manage.py
 /media/
