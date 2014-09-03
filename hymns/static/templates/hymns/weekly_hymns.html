@@ -1,4 +1,4 @@
-{% extends "musics/base.html" %}
+{% extends "hymns/base.html" %}
 
 {% block title%}每周诗歌 | 约书亚团契{% endblock %}
 
@@ -11,7 +11,7 @@
             <h2>{{ hymn }}</h2>
             <ol>
             {% else %}
-                <li><a href="{% url 'musics:music' hymn.music.id %}">{{ hymn.music.music_index }}.{{ hymn.music.music_name }}</a></li>
+                <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
             {% endif %}
         {% endfor %}
             </ol>

@@ -20,53 +20,34 @@ def index(request):
     return render(request, 'hymns/index.html', context)
 
 def hymn_by_key(request):
-    return HttpResponse("Hello, world. You're at the poll index.")
-
-# def music_by_key(request):
-#     key_list = Music_Key.objects.all()
-#     music_by_key_list = [x.music_set.all().order_by('music_index') for x in key_list]
-#     extra_list = []
-#     for music_list in music_by_key_list:
-#         extra = len(music_list) % 4
-#         if extra != 0:
-#             extra = 4 - extra;
-#         extra_list.append(range(0,extra))
-#     zipdata = zip(music_by_key_list, extra_list)
-#     return render(request, 'musics/music_by_key.html', {'zipdata': zipdata})
+    key_list = Hymn_Key.objects.all()
+    hymn_by_key_list = [x.hymn_set.all().order_by('hymn_index') for x in key_list]
+    extra_list = []
+    for hymn_list in hymn_by_key_list:
+        extra = len(hymn_list) % 4
+        if extra != 0:
+            extra = 4 - extra;
+        extra_list.append(range(0,extra))
+    zipdata = zip(hymn_by_key_list, extra_list)
+    return render(request, 'hymns/hymn_by_key.html', {'zipdata': zipdata})
 
 def hymn(request, hymn_id):
-    return HttpResponse("Hello, world. You're at the poll index.")
+    hymn = get_object_or_404(Hymn, pk=hymn_id)
+    return render(request, 'hymns/hymn_detail.html', {'hymn': hymn})
 
-# def music(request, music_id):
-#     music = get_object_or_404(Music, pk=music_id)
-#     return render(request, 'musics/score_list.html', {'music': music})
-# 
-# def score(request, score_id):
-#     score = get_object_or_404(Score, pk=score_id)
-#     if score.score_name.endswith('png') or score.score_name.endswith('jpg') or score.score_name.endswith('gif') or score.score_name.endswith('jpeg'):
-#         isIMG = True
-#     else:
-#         isIMG = False
-#     score.score_url = getScoreUrl(score_id)
-#     if score.music.audio_set.count() > 0:
-#         audio = score.music.audio_set.all()[0]
-#     else:
-#         audio = None
-#     return render(request, 'musics/score_detail.html', {'score': score, 'isIMG': isIMG, 'audio': audio, })
-# 
 # def weekly_hymns_json(request):
 #     ''' Return the latest Weekly_Hymn
 # 
 #     '''
-#     hymns = Weekly_Hymn.objects.all().order_by('-hymn_time', 'hymn_order')
+#     hymns = Weekly_Hymn.objects.all().order_by('-hymn_date', 'hymn_order')
 #     response_json = {}
 #     if hymns:
 #         import datetime
-#         tmp_date = hymns[0].hymn_time.strftime('%Y年%m月%d')
+#         tmp_date = hymns[0].hymn_date.strftime('%Y年%m月%d')
 #         response_json['date'] = tmp_date
 #         tmp_hymn_list = []
 #         for hymn in hymns:
-#             if tmp_date == hymn.hymn_time.strftime('%Y年%m月%d'):
+#             if tmp_date == hymn.hymn_date.strftime('%Y年%m月%d'):
 #                 tmp_hymn_list.append("%s. %s" % (hymn.music.music_index, hymn.music.music_name))
 #             else:
 #                 response_json['hymn_list'] = tmp_hymn_list
@@ -87,26 +68,23 @@ def hymn(request, hymn_id):
 # 
 
 def weekly_hymns(request):
-    return HttpResponse("Hello, world. You're at the poll index.")
-
-# def weekly_hymns(request):
-#     hymns = Weekly_Hymn.objects.all().order_by('-hymn_time', 'hymn_order')
-#     weekly_hymn_list = []
-#     if hymns:
-#         import datetime
-#         tmp_date = hymns[0].hymn_time.strftime('%Y年%m月%d')
-#         tmp_hymn_list = [tmp_date]
-#         for hymn in hymns:
-#             if tmp_date == hymn.hymn_time.strftime('%Y年%m月%d'):
-#                 tmp_hymn_list.append(hymn)
-#             else:
-#                 weekly_hymn_list.append(tmp_hymn_list)
-#                 print 'weekly_hymn_list appended', weekly_hymn_list
-#                 tmp_date = hymn.hymn_time.strftime('%Y年%m月%d')
-#                 tmp_hymn_list = [tmp_date, hymn]
-#         if tmp_hymn_list:
-#             weekly_hymn_list.append(tmp_hymn_list)
-#     return render(request, 'musics/weekly_hymns.html', {'weekly_hymn_list': weekly_hymn_list})
+    hymns = Weekly_Hymn.objects.all().order_by('-hymn_date', 'hymn_order')
+    weekly_hymn_list = []
+    if hymns:
+        import datetime
+        tmp_date = hymns[0].hymn_date.strftime('%Y年%m月%d')
+        tmp_hymn_list = [tmp_date]
+        for hymn in hymns:
+            if tmp_date == hymn.hymn_date.strftime('%Y年%m月%d'):
+                tmp_hymn_list.append(hymn)
+            else:
+                weekly_hymn_list.append(tmp_hymn_list)
+                print 'weekly_hymn_list appended', weekly_hymn_list
+                tmp_date = hymn.hymn_date.strftime('%Y年%m月%d')
+                tmp_hymn_list = [tmp_date, hymn]
+        if tmp_hymn_list:
+            weekly_hymn_list.append(tmp_hymn_list)
+    return render(request, 'hymns/weekly_hymns.html', {'weekly_hymn_list': weekly_hymn_list})
 
 def login_view(request):
     if request.user is not None and request.user.is_active:

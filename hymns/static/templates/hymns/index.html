@@ -11,7 +11,7 @@
             {% if not forloop.first and forloop.counter0|divisibleby:num_of_rows %}
                 </ul></div><div class="col-xs-12 col-md-4"><ul>
             {% endif %}
-            <li><a href="#">{{ hymn.hymn_index }} | {{ hymn.hymn_name }}</a></li>
+            <li><a href="{% url 'hymns:hymn' hymn.id %}">{{ hymn.hymn_index }} | {{ hymn.hymn_name }}</a></li>
         {% endfor %}
         </ul>
     </div>
