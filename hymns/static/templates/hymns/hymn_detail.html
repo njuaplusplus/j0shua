@@ -71,6 +71,19 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3 col-xs-12 col-xs-offset-0">
+        <form role="form" method="POST" action="{% url 'hymns:saveAudioFile' hymn.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="audioUrlInput">歌曲链接(来自<a href="http://www.zanmeishi.com/" target="_blank">赞美诗网</a>)</label>
+                <input type="text" class="form-control" name="audioUrlInput" id="audioUrlInput" placeholder="如 http://www.zanmeishi.com/song/8445.html">
+            </div>
+            <button type="submit" class="btn btn-primary">上传</button>
+        </form>
+    </div>
+</div>
 {% endif %}
 {% endblock %}
 

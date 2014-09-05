@@ -1,0 +1,24 @@
+{% extends "hymns/base.html" %}
+
+{% block title%}上传歌谱 | 约书亚团契{% endblock %}
+
+{% block mainContent %}
+
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3 col-xs-12 col-xs-offset-0">
+        <form class="form-signin" role="form" method="POST" ENCTYPE="multipart/form-data" action="{% url 'hymns:upload_hymn_view' %}">
+            {% csrf_token %}
+            {% for field in hymn_form %}
+                <div class="form-group">
+                    <label for="id_{{ field.html_name }}">{{ field.label }}</label>
+                    {{ field }}
+                    <span class="help-block">{{ field.help_text }}</span>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">上传</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -36,7 +36,7 @@
                             <li><a href="{% url 'hymns:index' %}">所有歌曲</a></li>
                             <li><a href="{% url 'hymns:hymn_by_key' %}">曲调分类</a></li>
                             <li><a href="{% url 'hymns:weekly_hymns' %}">每周诗歌</a></li>
-                            <li><a href="{% url 'hymns:upload_view' %}">上传歌谱</a></li>
+                            <li><a href="{% url 'hymns:upload_hymn_view' %}">上传歌谱</a></li>
                             <li><a href="{% url 'hymns:candidates_view' %}">候选歌谱</a></li>
                         </ul>
                         <form class="hidden-sm hidden-xs navbar-form navbar-left" role="search" method="GET" action="{% url 'hymns:search' %}">

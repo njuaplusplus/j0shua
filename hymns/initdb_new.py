@@ -21,7 +21,7 @@ def init_hymnsDB():
         for line in inFile:
             tmpa = line.strip().split(',')
             hymn_key = Hymn_Key.objects.get(key_name=origin_key_id[tmpa[3]].strip())
-            Hymn.objects.get_or_create(hymn_index=tmpa[1].strip(), hymn_name=tmpa[2].strip(), hymn_key=hymn_key, hymn_uploader=User.objects.get(username='aplusplus'))
+            Hymn.objects.get_or_create(hymn_index=tmpa[1].strip(), hymn_name=tmpa[2].strip(), hymn_key=hymn_key, hymn_uploader=User.objects.get(username='aplusplus'), hymn_isCandidate=False)
 
 def init_weekly_hymnDB():
     import datetime
@@ -75,4 +75,5 @@ def add_hymn_audio(rootDir=r'/Users/aplusplus/Desktop/MusicScores/'):
 def initAll():
     init_hymn_keyDB()
     init_hymnsDB()
+    init_weekly_hymnDB()
     print 'initAll Done!'

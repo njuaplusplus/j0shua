@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 # coding=utf-8
 # Create your views here.
 from django.http import HttpResponseRedirect, HttpResponse
@@ -8,12 +8,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 
-from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Candidate_Hymn
+from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form
 
 import json
 
 def index(request):
-    all_hymns_list = Hymn.objects.all().order_by('hymn_index')
+    all_hymns_list = Hymn.objects.filter(hymn_isCandidate=False).order_by('hymn_index')
     import math
     num_of_rows = int(math.ceil(len(all_hymns_list) / 3.0))
     context = {'all_hymns_list': all_hymns_list, 'num_of_rows': num_of_rows, }
@@ -123,8 +123,56 @@ def register_view(request):
     return render(request, 'hymns/register.html', { 'form': form, })
 # 
 @login_required(login_url='/hymns/accounts/login/')
-def upload_view(request):
-    return HttpResponse("Hello, world. You're at the poll index.")
+def save_audio_url(request, hymn_id):
+    if request.method == 'POST':
+        if not request.user.groups.filter(name='uploaders'):
+            return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+        else:
+            hymn = get_object_or_404(Hymn, pk=hymn_id)
+            audio_url = request.POST.get('audioUrlInput', '')
+            import re
+            tmp = re.findall('zanmeishi.com/song/(\d+)\.html', audio_url)
+            if len(tmp) == 1:
+                audio_id = tmp[0]
+                audio_url = "http://api.zanmeishi.com/song/p/" + audio_id
+                #print audio_url, request.user.username
+                hymn.hymn_audio = audio_url
+                hymn.hymn_audio_uploader_name = request.user.username
+                hymn.save()
+                return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
+            else:
+                return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
+    else:
+        return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn_id,)))
+
+@login_required(login_url='/hymns/accounts/login/')
+def upload_hymn_view(request):
+    ''' Upload the hymn
+
+    '''
+    if not request.user.groups.filter(name='uploaders'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    if request.method == 'POST':
+        form = Hymn_Form(request.POST, request.FILES)
+        if form.is_valid():
+            hymn = form.save(commit=False)
+            if hymn.hymn_audio:
+                tmp = re.findall('zanmeishi.com/song/(\d+)\.html',hymn.hymn_audio)
+                if len(tmp) == 1:
+                    audio_id = tmp[0]
+                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/" + audio_id
+                else:
+                    return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
+            hymn.hymn_isCandidate = True
+            hymn.hymn_uploader = request.user
+            hymn.save()
+            form.save_m2m()
+            print 'Hymn saved! %s' % hymn.id
+            return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
+    else:
+        return render(request, 'hymns/upload_hymn.html', {'hymn_form': Hymn_Form(), })
+
+
 #     #if not request.user.has_perm('musics.add_candidate_score'):
 #     if not request.user.groups.filter(name='uploaders'):
 #         return render(request, 'musics/test_result.html', {'result': '权限不够', })
@@ -179,13 +227,12 @@ def upload_view(request):
 #         return HttpResponseRedirect(reverse('musics:upload_view'))
 # 
 def candidates_view(request):
-    return HttpResponse("Hello, world. You're at the poll index.")
-#     candidate_music_list = Candidate_Music.objects.all()
-#     candidate_score_no_music_list = Candidate_Score_No_Music.objects.all()
-#     candidate_score_list = Candidate_Score.objects.all()
-#     context = {'candidate_music_list': candidate_music_list, 'candidate_score_no_music_list': candidate_score_no_music_list, 'candidate_score_list': candidate_score_list, }
-#     return render(request, 'musics/candidates.html', context)
-# 
+    candidate_hymn_list = Hymn.objects.filter(hymn_isCandidate=True)
+    import math
+    num_of_rows = int(math.ceil(len(candidate_hymn_list) / 3.0))
+    context = {'candidate_hymn_list': candidate_hymn_list,  'num_of_rows': num_of_rows, }
+    return render(request, 'hymns/candidates.html', context)
+
 # def tmpScore(request, score_id, score_type):
 #     context = {}
 #     if score_type == 'candidate_score':

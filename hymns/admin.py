@@ -2,10 +2,10 @@
 # coding=utf-8
 
 from django.contrib import admin
-from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Candidate_Hymn
+from hymns.models import Hymn_Key, Hymn, Weekly_Hymn
 
 class HymnAdmin(admin.ModelAdmin):
-    list_display = ('hymn_index', 'hymn_name', 'hymn_key')
+    list_display = ('hymn_index', 'hymn_name', 'hymn_key', 'hymn_isCandidate')
     search_fields = ['hymn_name']
 
 class Weekly_HymnAdmin(admin.ModelAdmin):

@@ -1,37 +1,23 @@
-{% extends "musics/base.html" %}
+{% extends "hymns/base.html" %}
 
 {% block title%}候选乐谱 | 约书亚团契{% endblock %}
 
 {% block mainContent %}
-{% if candidate_music_list %}
-    <ul>
-    {% for music in candidate_music_list %}
-    <li><a href="{% url 'musics:tmpMusic' music.id %}">{{ music.music_name }} <small>{{ music.uploader.username }} 上传</small></a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No candidate musics are available.</p>
-{% endif %}
-
-{% if candidate_score_no_music_list %}
-    <ul>
-    {% for score in candidate_score_no_music_list %}
-    <li><a href="{% url 'musics:tmpScore' score_type='candidate_score_no_music' score_id=score.id%}">{{ score.score_name }} | {{ score.candidate_music.music_name }} <small>{{ score.uploader.username }} 上传</small></a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No candidate musics without musics are available.</p>
-{% endif %}
-
-{% if candidate_score_list %}
-    <ul>
-    {% for score in candidate_score_list %}
-    <li><a href="{% url 'musics:tmpScore' score_type='candidate_score' score_id=score.id %}">{{ score.score_name }} | {{ score.music.music_index }}.{{ score.music.music_name }} <small>{{ score.uploader.username }} 上传</small></a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No candidate scores with musics are available.</p>
-{% endif %}
-
+<div class="row">
+    {% if candidate_hymn_list %}
+    <div class="col-xs-12 col-md-4">
+        <ul>
+        {% for hymn in candidate_hymn_list %}
+            {% if not forloop.first and forloop.counter0|divisibleby:num_of_rows %}
+                </ul></div><div class="col-xs-12 col-md-4"><ul>
+            {% endif %}
+            <li><a href="{% url 'hymns:hymn' hymn.id %}">{{ hymn.hymn_name }} <small>{{ hymn.hymn_uploader.username }} 上传</small></a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+        <p>没有候选歌曲</p>
+    {% endif %}
+</div>
 {% endblock %}
 
