@@ -2,7 +2,7 @@
 
 {% block title%}登录 | 约书亚团契{% endblock %}
 
-{% block mainContent %}
+{% block hymnsMainContent %}
 
 <form class="form-signin" role="form" method="POST" action="{% url 'hymns:login_view' %}">
     {% csrf_token %}

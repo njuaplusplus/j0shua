@@ -1,114 +1,50 @@
+{% extends "homepage/base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html lang="zh-cn">
-    <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}约书亚团契歌谱{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'hymns/css/gepu.css' %}">
-    {% block headBlock %}
-    {% endblock %}
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
-        <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-    </head>
-    <body>
-        <div id="wrap">
-            <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="{% url 'homepage:index' %}">歌谱</a>
-                    </div>
-                    <div class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            <li><a href="{% url 'hymns:index' %}">所有歌曲</a></li>
-                            <li><a href="{% url 'hymns:hymn_by_key' %}">曲调分类</a></li>
-                            <li><a href="{% url 'hymns:weekly_hymns' %}">每周诗歌</a></li>
-                            <li><a href="{% url 'hymns:upload_hymn_view' %}">上传歌谱</a></li>
-                            <li><a href="{% url 'hymns:candidates_view' %}">候选歌谱</a></li>
-                        </ul>
-                        <form class="hidden-sm hidden-xs navbar-form navbar-left" role="search" method="GET" action="{% url 'hymns:search' %}">
-                            <div class="form-group">
-                                <input type="text"  name="queryString" class="form-control" placeholder="搜索歌谱">
-                            </div>
-                            <button type="submit" class="btn btn-default">搜索</button>
-                        </form>
-                        {% if not user.is_authenticated %}
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="{% url 'hymns:register_view' %}">注册</a></li>
-                            <li><a href="{% url 'hymns:login_view' %}">登录</a></li>
-                        </ul>
-                        {% else %}
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#">
-                                {% if user.first_name or user.last_name %}
-                                {{ user.first_name }} {{ user.last_name }}
-                                {% else %}
-                                {{ user.username }}
-                                {% endif %}
-                            </a></li>
-                            <li><a href="{% url 'hymns:logout_view' %}">注销</a></li>
-                        </ul>
-                        {% endif %}
-                        <!-- <form class="navbar-form navbar-right" role="form">
-                            <div class="form-group">
-                                <input type="text" placeholder="Email" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" placeholder="Password" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-success">Sign in</button>
-                        </form> -->
-                    </div><!--/.navbar-collapse -->
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="row hidden-md hidden-lg">
-                    <div class="col-md-12">
-                        <form class="form-inline" role="form" method="GET" action="{% url 'hymns:search' %}">
-                            <div class="form-group">
-                                <label class="sr-only" for="query-string">歌曲名称</label>
-                                <input type="text"  id="query-string" name="queryString" class="form-control" placeholder="搜索歌谱">
-                            </div>
-                            <button type="submit" class="btn btn-default">搜索</button>
-                        </form>
-                    </div>
-                </div>
-            {% block mainContent %}<h1>Hello, world!</h1>{% endblock  %}
-            </div>
+{% block title %}约书亚团契歌谱{% endblock %}
+{% block navbarBlock %}
+    <ul class="nav navbar-nav">
+        <li><a href="{% url 'hymns:index' %}">所有歌曲</a></li>
+        <li><a href="{% url 'hymns:hymn_by_key' %}">曲调分类</a></li>
+        <li><a href="{% url 'hymns:weekly_hymns' %}">每周诗歌</a></li>
+        <li><a href="{% url 'hymns:upload_hymn_view' %}">上传歌谱</a></li>
+        <li><a href="{% url 'hymns:candidates_view' %}">候选歌谱</a></li>
+    </ul>
+    <form class="hidden-sm hidden-xs navbar-form navbar-left" role="search" method="GET" action="{% url 'hymns:search' %}">
+        <div class="form-group">
+            <input type="text"  name="queryString" class="form-control" placeholder="搜索歌谱">
         </div>
+        <button type="submit" class="btn btn-default">搜索</button>
+    </form>
+    {% if not user.is_authenticated %}
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'hymns:register_view' %}">注册</a></li>
+        <li><a href="{% url 'hymns:login_view' %}">登录</a></li>
+    </ul>
+    {% else %}
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">
+            {% if user.first_name or user.last_name %}
+            {{ user.first_name }} {{ user.last_name }}
+            {% else %}
+            {{ user.username }}
+            {% endif %}
+        </a></li>
+        <li><a href="{% url 'hymns:logout_view' %}">注销</a></li>
+    </ul>
+    {% endif %}
+{% endblock navbarBlock %}
 
-        <div id="footer">
-            <div class="container">
-                <p class="text-muted">© Joshua 2014 | aplusplus 
-                <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253212657'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253212657%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
-                </p>
-            </div>
+{% block mainContent %}
+    <div class="row hidden-md hidden-lg">
+        <div class="col-md-12">
+            <form class="form-inline" role="form" method="GET" action="{% url 'hymns:search' %}">
+                <div class="form-group">
+                    <label class="sr-only" for="query-string">歌曲名称</label>
+                    <input type="text"  id="query-string" name="queryString" class="form-control" placeholder="搜索歌谱">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
         </div>
-
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        {% block extScriptFile %}{% endblock %}
-        <script type="text/javascript">
-        $(document).ready(function(){
-                $("[href='{{request.path}}']").parent().addClass("active");
-                {% block extScript %}{% endblock %}
-        });
-        </script>
-    </body>
-</html>
+    </div>
+{% block hymnsMainContent %}<h1>Hello, world!</h1>{% endblock hymnsMainContent %}
+{% endblock mainContent %}
