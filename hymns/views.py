@@ -358,3 +358,8 @@ def search(request):
 #     result = log_out.getvalue()
 #     sys.stdout = saveout
 #     return HttpResponse(result.replace("\n","<br/>"))
+
+def playlist_view(request):
+    all_hymns_list = Hymn.objects.order_by('?')
+    context = {'all_hymns_list': all_hymns_list}
+    return render(request, 'hymns/hymn_playlist.html', context)
