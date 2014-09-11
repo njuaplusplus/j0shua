@@ -8,30 +8,32 @@
         <div class="table-responsive">
             <table class="table">
             {% for hymn_list, extra in zipdata %}
-                <thead>
+                {% if hymn_list %}
+                    <thead>
+                        <tr>
+                            <th>{{ hymn_list.0.hymn_key.key_name }}调</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
-                        <th>{{ hymn_list.0.hymn_key.key_name }}调</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <td></td>
+                    {% for hymn in hymn_list %}
+                        {% if not forloop.first and forloop.counter0|divisibleby:4 %}
+                            </tr><tr><td></td>
+                        {% endif %}
+                        <td><a href="{% url 'hymns:hymn' hymn.id %}">{{ hymn.hymn_index }}.{{ hymn.hymn_name }}</a></td>
+                    {% endfor %}
+                    {# Add the extra blank td to fill the table #}
+                    {% for i in extra %}
+                        <td></td>
+                    {% endfor %}
                     </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td></td>
-                {% for hymn in hymn_list %}
-                    {% if not forloop.first and forloop.counter0|divisibleby:4 %}
-                        </tr><tr><td></td>
-                    {% endif %}
-                    <td><a href="{% url 'hymns:hymn' hymn.id %}">{{ hymn.hymn_index }}.{{ hymn.hymn_name }}</a></td>
-                {% endfor %}
-                {# Add the extra blank td to fill the table #}
-                {% for i in extra %}
-                    <td></td>
-                {% endfor %}
-                </tr>
-                </tbody>
+                    </tbody>
+                {% endif %}
             {% endfor %}
             </table>
         </div>
