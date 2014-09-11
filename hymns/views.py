@@ -134,8 +134,8 @@ def save_audio_url(request, hymn_id):
             tmp = re.findall('zanmeishi.com/song/(\d+)\.html', audio_url)
             if len(tmp) == 1:
                 audio_id = tmp[0]
-                audio_url = "http://api.zanmeishi.com/song/p/" + audio_id
-                #print audio_url, request.user.username
+                audio_url = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
+                print audio_url, request.user.username
                 hymn.hymn_audio = audio_url
                 hymn.hymn_audio_uploader_name = request.user.username
                 hymn.save()
@@ -160,7 +160,7 @@ def upload_hymn_view(request):
                 tmp = re.findall('zanmeishi.com/song/(\d+)\.html',hymn.hymn_audio)
                 if len(tmp) == 1:
                     audio_id = tmp[0]
-                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/" + audio_id
+                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
                 else:
                     return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
             hymn.hymn_isCandidate = True
