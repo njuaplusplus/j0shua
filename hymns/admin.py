@@ -14,7 +14,7 @@ class Weekly_HymnAdmin(admin.ModelAdmin):
     date_hierarchy = 'hymn_date'
 
 class Worship_LocationAdmin(admin.ModelAdmin):
-    list_display = ('location_name')
+    list_display = ('location_name', )
 
 # class Candidate_MusicAdmin(admin.ModelAdmin):
 #     inlines = [Candidate_Score_No_MusicInline]
