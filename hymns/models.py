@@ -30,9 +30,15 @@ class Hymn(models.Model):
     def __unicode__(self):
         return self.hymn_name
 
+class Worship_Location(models.Model):
+    location_name = models.CharField(u'地点', max_length=1000)
+    def __unicode__(self):
+        return self.location_name
+
 class Weekly_Hymn(models.Model):
     hymn_date = models.DateField(u'敬拜日期')
     hymn_order = models.IntegerField(u'敬拜顺序')
+    hymn_place = models.ForeignKey(Worship_Location, verbose_name=u'地点')
     hymn = models.ForeignKey(Hymn, verbose_name=u'诗歌')
     def __unicode__(self):
         return "%s_%s" % (self.hymn_date, self.hymn.hymn_name)

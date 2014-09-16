@@ -35,7 +35,7 @@ def init_weekly_hymnDB():
             tmpa = line.strip().split(',')
             hymn_name = origin_hymn_id[tmpa[-1].strip()]
             hymn = Hymn.objects.get(hymn_name=hymn_name)
-            Weekly_Hymn.objects.get_or_create(hymn_date=datetime.date(int(tmpa[1]),int(tmpa[2]),int(tmpa[3])), hymn_order=tmpa[4], hymn=hymn)
+            Weekly_Hymn.objects.get_or_create(hymn_date=datetime.date(int(tmpa[1]),int(tmpa[2]),int(tmpa[3])), hymn_order=tmpa[4], hymn_place=Worship_Location.objects.get(pk=1), hymn=hymn)
     print 'init_weekly_hymnDB Done!'
 
 def add_hymn_score(rootDir=r'/Users/aplusplus/Desktop/MusicScores/'):

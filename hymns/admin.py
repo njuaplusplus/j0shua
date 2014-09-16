@@ -9,7 +9,7 @@ class HymnAdmin(admin.ModelAdmin):
     search_fields = ['hymn_name']
 
 class Weekly_HymnAdmin(admin.ModelAdmin):
-    list_display = ('hymn_date', 'hymn_order', 'hymn')
+    list_display = ('hymn_date', 'hymn_place', 'hymn_order', 'hymn')
     list_filter = ['hymn_date']
     date_hierarchy = 'hymn_date'
 

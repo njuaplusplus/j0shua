@@ -9,12 +9,42 @@
         {% for hymn in hymn_list%}
             {% if forloop.first %}
             <h2>{{ hymn }}</h2>
-            <ol>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>仙林</th>
+                            <th>市区</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             {% else %}
-                <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
+                {% if forloop.counter0|divisibleby:2 %}
+                    {% if hymn %}
+                            <td>
+                                <a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn_place.location_name }}: {{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                            <td>无记录</td>
+                        </tr>
+                    {% endif %}
+                {% else %}
+                        <tr><td></td>
+                    {% if hymn %}
+                            <td>
+                                <a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn_place.location_name }}: {{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a>
+                            </td>
+                    {% else %}
+                            <td>无记录</td>
+                    {% endif %}
+                {% endif %}
             {% endif %}
         {% endfor %}
-            </ol>
+                    </tbody>
+                </table>
+            </div>
     {% empty %}
         <h1>没有记录^_^</h1>
     {% endfor %}
