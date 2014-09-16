@@ -2,7 +2,7 @@
 # coding=utf-8
 
 from django.contrib import admin
-from hymns.models import Hymn_Key, Hymn, Weekly_Hymn
+from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Worship_Location
 
 class HymnAdmin(admin.ModelAdmin):
     list_display = ('hymn_index', 'hymn_name', 'hymn_key', 'hymn_isCandidate')
@@ -12,6 +12,9 @@ class Weekly_HymnAdmin(admin.ModelAdmin):
     list_display = ('hymn_date', 'hymn_place', 'hymn_order', 'hymn')
     list_filter = ['hymn_date']
     date_hierarchy = 'hymn_date'
+
+class Worship_LocationAdmin(admin.ModelAdmin):
+    list_display = ('location_name')
 
 # class Candidate_MusicAdmin(admin.ModelAdmin):
 #     inlines = [Candidate_Score_No_MusicInline]
@@ -25,3 +28,4 @@ admin.site.register(Hymn, HymnAdmin)
 # admin.site.register(Candidate_Music, Candidate_MusicAdmin)
 admin.site.register(Weekly_Hymn, Weekly_HymnAdmin)
 # admin.site.register(Audio, AudioAdmin)
+admin.site.register(Worship_Location, Worship_LocationAdmin)
