@@ -38,6 +38,34 @@ def init_weekly_hymnDB():
             Weekly_Hymn.objects.get_or_create(hymn_date=datetime.date(int(tmpa[1]),int(tmpa[2]),int(tmpa[3])), hymn_order=tmpa[4], hymn_place=Worship_Location.objects.get(pk=1), hymn=hymn)
     print 'init_weekly_hymnDB Done!'
 
+def restore_weekly_hymnDB():
+    import datetime
+    data = ["2014,04,04,1,99",
+            "2014,04,04,2,42",
+            "2014,04,04,3,28",
+            "2014,04,12,1,59",
+            "2014,04,12,2,89",
+            "2014,04,12,3,18",
+            "2014,04,19,1,69",
+            "2014,04,19,2,90",
+            "2014,04,19,3,11",
+            "2014,05,10,1,23",
+            "2014,05,10,2,65",
+            "2014,05,10,3,31",
+            "2014,05,31,1,50",
+            "2014,05,31,2,2",
+            "2014,05,31,3,55",
+            "2014,09,07,1,109",
+            "2014,09,07,2,27",
+            "2014,09,07,3,110",
+            "2014,09,14,1,31",
+            "2014,09,14,2,112",
+            "2014,09,14,3,42"]
+    for l in data:
+        tmpa = l.strip().split(',')
+        Weekly_Hymn.objects.get_or_create(hymn_date=datetime.date(int(tmpa[0]),int(tmpa[1]), int(tmpa[2])), hymn_order=tmpa[3],  hymn_place=Worship_Location.objects.get(pk=1), hymn=Hymn.objects.get(pk=tmpa[4]))
+    print "restore_weekly_hymnDB Done!"
+
 def add_hymn_score(rootDir=r'/Users/aplusplus/Desktop/MusicScores/'):
     img_extensions = {".jpg", ".png", ".gif"}
     import os
