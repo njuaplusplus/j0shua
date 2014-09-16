@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 
-from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form
+from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form, Worship_Location
 
 import json
 
@@ -73,42 +73,17 @@ def weekly_hymns(request):
     # Sep 21 2014 shiqu 1
     # Sep 21 2014 xianlin 2
     # Sep 21 2014 shiqu 2
-    hymns = Weekly_Hymn.objects.all().order_by('-hymn_date', 'hymn_order', 'hymn_place')
+    tmp_dates = Weekly_Hymn.objects.dates('hymn_date', 'day', order='DESC')
+    tmp_places = Worship_Location.objects.all()
     weekly_hymn_list = []
-    if hymns:
-        import datetime
-        tmp_date = hymns[0].hymn_date.strftime('%Y年%m月%d')
-        tmp_place = hymns[0].hymn_place.location_name
-        # this value indicate whether the tmp_place should differ from the hymns[index]'s place
-        # e.g. place_flip = 0: xianlin, then flip=1, and indicates that we need another place,
-        # if the next place is still xianlin and flip==1, then we must add a None value to fill the empty place
-        # if the next place is different or flip=0, then we just add the hymn to the tmp_hymn_list
-        place_flip = 0
-        tmp_hymn_list = [tmp_date]
-        for hymn in hymns:
-            if tmp_date == hymn.hymn_date.strftime('%Y年%m月%d'):
-                if place_flip == 0: # Do not care the place
-                    tmp_hymn_list.append(hymn)
-                    place_flip = 1
-                    tmp_place = hymn.hymn_place.location_name
-                else: # place_flip == 1
-                    if tmp_place == hymn.hymn_place.location_name:
-                        tmp_hymn_list.append(None)
-                        tmp_hymn_list.append(hymn)
-                        place_flip = 1
-                        tmp_place = hymn.hymn_place.location_name
-                    else:
-                        tmp_hymn_list.append(hymn)
-                        place_flip = 0
-            else:
-                weekly_hymn_list.append(tmp_hymn_list)
-                print 'weekly_hymn_list appended', weekly_hymn_list
-                tmp_date = hymn.hymn_date.strftime('%Y年%m月%d')
-                tmp_hymn_list = [tmp_date, hymn]
-                place_flip = 1
-                tmp_place = hymn.hymn_place.location_name
-        if tmp_hymn_list:
-            weekly_hymn_list.append(tmp_hymn_list)
+    if tmp_dates and tmp_places:
+        for tmp_date in tmp_dates:
+            hymn_by_place_list = []
+            hymn_by_place_list.append(tmp_date.strftime('%Y年%m月%d'))
+            for tmp_place in tmp_places:
+                hymn_by_place_list.append(tmp_place.weekly_hymn_set.filter(hymn_date=tmp_date).order_by('hymn_order'))
+                weekly_hymn_list.append(hymn_by_place_list)
+    print weekly_hymn_list
     return render(request, 'hymns/weekly_hymns.html', {'weekly_hymn_list': weekly_hymn_list})
 
 def login_view(request):

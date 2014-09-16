@@ -5,46 +5,23 @@
 {% block hymnsMainContent %}
 <div class="row">
     <div class="col-md-12">
-    {% for hymn_list in weekly_hymn_list %}
-        {% for hymn in hymn_list%}
+    {% for hymn_by_place_lists in weekly_hymn_list %}
+        {% for hymn_list in hymn_by_place_lists %}
             {% if forloop.first %}
-            <h2>{{ hymn }}</h2>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>序号</th>
-                            <th>仙林</th>
-                            <th>市区</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <h2>{{ hymn_list }}</h2>
             {% else %}
-                {% if forloop.counter0|divisibleby:2 %}
-                    {% if hymn %}
-                            <td>
-                                <a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn_place.location_name }}: {{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a>
-                            </td>
-                        </tr>
+                {% for hymn in hymn_list %}
+                    {% if forloop.first %}
+                    <h3>{{ hymn.hymn_place.location_name }}</h3>
+                    <ol>
+                        <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
                     {% else %}
-                            <td>无记录</td>
-                        </tr>
+                        <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
                     {% endif %}
-                {% else %}
-                        <tr><td></td>
-                    {% if hymn %}
-                            <td>
-                                <a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn_place.location_name }}: {{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a>
-                            </td>
-                    {% else %}
-                            <td>无记录</td>
-                    {% endif %}
-                {% endif %}
+                {% endfor %}
+                    </ol>
             {% endif %}
         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
     {% empty %}
         <h1>没有记录^_^</h1>
     {% endfor %}
