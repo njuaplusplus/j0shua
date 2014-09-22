@@ -15,12 +15,16 @@
         {% if hymn %}
             <h1>{{ hymn.hymn_index }} | {{ hymn.hymn_name }}</h1>
         {% endif %}
-        <div class="btn-group btn-group-justified">
+        <div class="btn-group">
             {% if hymn.hymn_ppt %}
-            <a class="btn btn-default" href="{{ hymn.hymn_ppt.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PPT </a>
+            <a class="btn btn-success" href="{{ hymn.hymn_ppt.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PPT </a>
+            {% else %}
+            <a class="btn btn-primary" href="{% url 'hymns:edit_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-open"></span> 上传 PPT </a>
             {% endif %}
             {% if hymn.hymn_pdf %}
-            <a class="btn btn-default" href="{{ hymn.hymn_pdf.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PDF </a>
+            <a class="btn btn-success" href="{{ hymn.hymn_pdf.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PDF </a>
+            {% else %}
+            <a class="btn btn-primary" href="{% url 'hymns:edit_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-open"></span> 上传 PDF </a>
             {% endif %}
         </div>
     </div>

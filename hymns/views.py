@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 
-from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form, Worship_Location
+from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form, Worship_Location, Weekly_Hymn_Form
 
 import json
 
@@ -125,7 +125,7 @@ def register_view(request):
 @login_required(login_url='/hymns/accounts/login/')
 def save_audio_url(request, hymn_id):
     if request.method == 'POST':
-        if not request.user.groups.filter(name='uploaders'):
+        if not request.user.groups.filter(name='uploaders') and not request.user.has_perm(u'hymns.change_hymn'):
             return render(request, 'hymns/test_result.html', {'result': '权限不够', })
         else:
             hymn = get_object_or_404(Hymn, pk=hymn_id)
@@ -150,7 +150,7 @@ def upload_hymn_view(request):
     ''' Upload the hymn
 
     '''
-    if not request.user.groups.filter(name='uploaders'):
+    if not request.user.groups.filter(name='uploaders') and not request.user.has_perm(u'hymns.add_hymn'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     if request.method == 'POST':
         form = Hymn_Form(request.POST, request.FILES)
@@ -170,62 +170,45 @@ def upload_hymn_view(request):
             print 'Hymn saved! %s' % hymn.id
             return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
     else:
-        return render(request, 'hymns/upload_hymn.html', {'hymn_form': Hymn_Form(), })
+        form = Hymn_Form()
+    return render(request, 'hymns/upload_hymn.html', {'hymn_form': form, })
 
+@login_required(login_url='/hymns/accounts/login/')
+def edit_hymn_view(request, hymn_id):
+    '''Edit the hymn
 
-#     #if not request.user.has_perm('musics.add_candidate_score'):
-#     if not request.user.groups.filter(name='uploaders'):
-#         return render(request, 'musics/test_result.html', {'result': '权限不够', })
-#     music_list = Music.objects.all().order_by('music_index')
-#     music_key_list = Music_Key.objects.all()
-#     return render(request, 'musics/upload.html', {'music_list': music_list, 'music_key_list': music_key_list,})
-# 
-# @login_required
-# def saveScoreFile(request, upload_type):
-#     if request.method == 'POST':
-#         #if not request.user.has_perm('musics.add_candidate_score'):
-#         if not request.user.groups.filter(name='uploaders'):
-#             return render(request, 'musics/test_result.html', {'result': '权限不够', })
-# 
-#         #upload_type = request.POST.get('optionsRadios', '')
-# 
-#         content = request.FILES['scoreInputFile']
-# 
-#         if upload_type == 'candidate_score':
-#             music_id = request.POST.get('music_id', '')
-#             music = get_object_or_404(Music, pk=music_id)
-#             file_name = u'Tmp/%d.%s/%s' % (music.music_index, music.music_name, content.name)
-#         elif upload_type == 'candidate_score_no_music':
-#             music_index = int(request.POST.get('candidateMusicIndexInput', ''))
-#             music_name = request.POST.get('candidateMusicNameInput', '')
-#             music_key_id = request.POST.get('music_key_id', '')
-#             music_key = get_object_or_404(Music_Key, pk=music_key_id)
-#             candidate_music = Candidate_Music.objects.get_or_create(music_index=music_index, music_name=music_name, music_key=music_key, uploader=request.user)[0]
-#             file_name = u'Tmp/%d.%s/%s' % (candidate_music.music_index, candidate_music.music_name, content.name)
-#         else:
-#             return render(request, 'musics/test_result.html', {'result': u'需要选择一种上传方式%s' % upload_type, })
-# 
-#         from os import environ
-#         online = environ.get('APP_NAME', '')
-# 
-#         if online:
-#             if upload_type == 'candidate_score':
-#                 music.candidate_score_set.create(score_name=content.name, score_url=content.name, uploader=request.user)
-#             elif upload_type == 'candidate_score_no_music':
-#                 candidate_music.candidate_score_no_music_set.create(score_name=content.name, score_url=content.name, uploader=request.user)
-#             from sae.storage import Bucket, Connection
-#             connection = Connection()
-#             bucket = connection.get_bucket('score')
-#             bucket.put_object(file_name, content)
-#             result = bucket.generate_url(file_name)
-#             return HttpResponseRedirect(reverse('musics:candidates_view'))
-#         else:
-#             result = 'test haha file_name: %s' % file_name
-# 
-#         return render(request, 'musics/test_result.html', {'result': result, })
-#     else:
-#         return HttpResponseRedirect(reverse('musics:upload_view'))
-# 
+    '''
+    if not request.user.has_perm(u'hymns.change_hymn'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+
+    hymn = get_object_or_404(Hymn, pk=hymn_id)
+    if request.method == 'POST':
+        form = Hymn_Form(request.POST, request.FILES, instance=hymn)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
+    else:
+        form = Hymn_Form(instance=hymn)
+    return render(request, 'hymns/upload_hymn.html', {'hymn_form': form, })
+
+@login_required(login_url='/hymns/accounts/login/')
+def edit_weekly_hymn_view(request, weekly_hymn_id):
+    '''Edit the weekly hymn for ppt and pdf
+
+    '''
+    if not request.user.has_perm(u'hymns.change_weekly_hymn'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+
+    weekly_hymn = get_object_or_404(Weekly_Hymn, pk=weekly_hymn_id)
+    if request.method == 'POST':
+        form = Weekly_Hymn_Form(request.POST, request.FILES, instance=weekly_hymn)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('hymns:weekly_hymns'))
+    else:
+        form = Weekly_Hymn_Form(instance=weekly_hymn)
+    return render(request, 'hymns/upload_hymn.html', {'hymn_form': form, })
+
 def candidates_view(request):
     candidate_hymn_list = Hymn.objects.filter(hymn_isCandidate=True)
     import math

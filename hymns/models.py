@@ -51,3 +51,8 @@ class Hymn_Form(ModelForm):
     class Meta:
         model = Hymn
         fields = [ 'hymn_index', 'hymn_name', 'hymn_key', 'hymn_score', 'hymn_score_uploader_name', 'hymn_audio', 'hymn_audio_uploader_name', 'hymn_pdf', 'hymn_pdf_uploader_name', 'hymn_ppt', 'hymn_ppt_uploader_name' ]
+
+class Weekly_Hymn_Form(ModelForm):
+    class Meta:
+        model = Weekly_Hymn
+        fields = [ 'hymn_pdf', 'hymn_pdf_uploader_name', 'hymn_ppt', 'hymn_ppt_uploader_name' ]
