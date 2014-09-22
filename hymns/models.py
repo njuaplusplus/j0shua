@@ -40,6 +40,10 @@ class Weekly_Hymn(models.Model):
     hymn_order = models.IntegerField(u'敬拜顺序')
     hymn_place = models.ForeignKey(Worship_Location, verbose_name=u'地点')
     hymn = models.ForeignKey(Hymn, verbose_name=u'诗歌')
+    hymn_pdf = models.FileField(u'PDF 文件', upload_to='pdfs/%Y/%m/%d', null=True, blank=True, help_text=u'可不填写')
+    hymn_ppt = models.FileField(u'PPT 文件', upload_to='ppts/%Y/%m/%d', null=True, blank=True, help_text=u'可不填写')
+    hymn_pdf_uploader_name = models.CharField(u'PDF 上传者', max_length=100, null=True, blank=True, help_text=u'若修改了 PDF 文件, 请填写你的名字')
+    hymn_ppt_uploader_name = models.CharField(u'PPT 上传者', max_length=100, null=True, blank=True, help_text=u'若修改了 PPT 文件, 请填写你的名字')
     def __unicode__(self):
         return "%s_%s" % (self.hymn_date, self.hymn.hymn_name)
 

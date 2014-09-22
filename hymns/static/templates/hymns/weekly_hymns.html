@@ -13,6 +13,14 @@
                 {% for hymn in hymn_list %}
                     {% if forloop.first %}
                     <h3>{{ hymn.hymn_place.location_name }}</h3>
+                    <div class="btn-group">
+                        {% if hymn.hymn_ppt %}
+                        <a class="btn btn-default" href="{{ hymn.hymn_ppt.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PPT </a>
+                        {% endif %}
+                        {% if hymn.hymn_pdf %}
+                        <a class="btn btn-default" href="{{ hymn.hymn_pdf.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PDF </a>
+                        {% endif %}
+                    </div>
                     <ol>
                         <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
                     {% else %}
