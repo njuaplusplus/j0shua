@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-md-6 col-md-offset-3 col-xs-12 col-xs-offset-0">
-        <form class="form-signin" role="form" method="POST" ENCTYPE="multipart/form-data" action="{% url 'hymns:upload_hymn_view' %}">
+        <form class="form-signin" role="form" method="POST" ENCTYPE="multipart/form-data" action="{{ request.path }}">
             {% csrf_token %}
             {% for field in hymn_form %}
                 <div class="form-group">
