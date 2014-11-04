@@ -343,6 +343,6 @@ def search(request):
 #     return HttpResponse(result.replace("\n","<br/>"))
 
 def playlist_view(request):
-    all_hymns_list = Hymn.objects.exclude(hymn_audio__isnull=True).order_by('?')
+    all_hymns_list = Hymn.objects.exclude(hymn_audio__isnull=True).exclude(hymn_audio__exact='').order_by('?')
     context = {'all_hymns_list': all_hymns_list}
     return render(request, 'hymns/hymn_playlist.html', context)
