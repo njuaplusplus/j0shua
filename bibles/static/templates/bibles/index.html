@@ -10,4 +10,31 @@
         <h1>点击上方圣经进行阅读.</h1>
     </div>
 </div>
+{% if verses %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>今日经文
+                <small>
+                    {% with verses|first as firstv %}
+                        {{ firstv.book.book_name_zh }}
+                        {{ firstv.chapternum }} :
+                        {{ firstv.versenum }}
+                    {% endwith %}
+                    {% if not verses|length_is:'1' %}
+                        {% with verses|last as lastv %}
+                            - {{ lastv.versenum }}
+                        {% endwith %}
+                    {% endif %}
+                </small>
+            </h1>
+        </div>
+    </div>
+    {% for verse in verses %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <small>{{ verse.versenum }}</small> {{ verse.verse }}
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
 {% endblock biblesMainContent %}

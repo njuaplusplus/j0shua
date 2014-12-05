@@ -83,7 +83,7 @@ def weekly_hymns(request):
             for tmp_place in tmp_places:
                 hymn_by_place_list.append(tmp_place.weekly_hymn_set.filter(hymn_date=tmp_date).order_by('hymn_order'))
             weekly_hymn_list.append(hymn_by_place_list)
-    print weekly_hymn_list
+    # print weekly_hymn_list
     return render(request, 'hymns/weekly_hymns.html', {'weekly_hymn_list': weekly_hymn_list})
 
 def login_view(request):
