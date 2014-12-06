@@ -4,18 +4,18 @@
 
 
 {% block biblesMainContent %}
-{% if verses %}
+{% if daily_verses %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <h1>今日经文
                 <small>
-                    {% with verses|first as firstv %}
+                    {% with daily_verses|first as firstv %}
                         {{ firstv.book.book_name_zh }}
                         {{ firstv.chapternum }} :
                         {{ firstv.versenum }}
                     {% endwith %}
-                    {% if not verses|length_is:'1' %}
-                        {% with verses|last as lastv %}
+                    {% if not daily_verses|length_is:'1' %}
+                        {% with daily_verses|last as lastv %}
                             - {{ lastv.versenum }}
                         {% endwith %}
                     {% endif %}
@@ -23,7 +23,34 @@
             </h1>
         </div>
     </div>
-    {% for verse in verses %}
+    {% for verse in daily_verses %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <small>{{ verse.versenum }}</small> {{ verse.verse }}
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+{% if weekly_verses %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>本周经文
+                <small>
+                    {% with weekly_verses|first as firstv %}
+                        {{ firstv.book.book_name_zh }}
+                        {{ firstv.chapternum }} :
+                        {{ firstv.versenum }}
+                    {% endwith %}
+                    {% if not weekly_verses|length_is:'1' %}
+                        {% with weekly_verses|last as lastv %}
+                            - {{ lastv.versenum }}
+                        {% endwith %}
+                    {% endif %}
+                </small>
+            </h1>
+        </div>
+    </div>
+    {% for verse in weekly_verses %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <small>{{ verse.versenum }}</small> {{ verse.verse }}

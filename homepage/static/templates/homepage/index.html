@@ -8,31 +8,64 @@
     <p>欢迎回到约书亚团契! 上帝祝福你!</p>
     <p><a class="btn btn-primary btn-lg" href="#" role="button">了解更多</a></p>
 </div>
-{% if verses %}
+{% if daily_verses %}
 <div class="row">
     <div class="col-md-12">
         <div class="thumbnail">
             <div class="caption">
                 <h2>今日经文
                     <small>
-                        {% with verses|first as firstv %}
+                        {% with daily_verses|first as firstv %}
                             {{ firstv.book.book_name_zh }}
                             {{ firstv.chapternum }} :
                             {{ firstv.versenum }}
                         {% endwith %}
-                        {% if not verses|length_is:'1' %}
-                            {% with verses|last as lastv %}
+                        {% if not daily_verses|length_is:'1' %}
+                            {% with daily_verses|last as lastv %}
                                 - {{ lastv.versenum }}
                             {% endwith %}
                         {% endif %}
                     </small>
                 </h2>
                 <p>
-                {% for verse in verses %}
+                {% for verse in daily_verses %}
                     <small>{{ verse.versenum }}</small> {{ verse.verse }}
                 {% endfor %}
                 </p>
-                {% with verses|first as firstv %}
+                {% with daily_verses|first as firstv %}
+                <p><a href="{% url 'bibles:bible' %}?bookid={{ firstv.book.id }}&chapternum={{ firstv.chapternum }}" class="btn btn-primary" role="button">查看</a>
+                {% endwith %}
+                <a href="{% url 'bibles:index' %}" class="btn btn-default" role="button">读经首页</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if weekly_verses %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="thumbnail">
+            <div class="caption">
+                <h2>本周经文
+                    <small>
+                        {% with weekly_verses|first as firstv %}
+                            {{ firstv.book.book_name_zh }}
+                            {{ firstv.chapternum }} :
+                            {{ firstv.versenum }}
+                        {% endwith %}
+                        {% if not weekly_verses|length_is:'1' %}
+                            {% with weekly_verses|last as lastv %}
+                                - {{ lastv.versenum }}
+                            {% endwith %}
+                        {% endif %}
+                    </small>
+                </h2>
+                <p>
+                {% for verse in weekly_verses %}
+                    <small>{{ verse.versenum }}</small> {{ verse.verse }}
+                {% endfor %}
+                </p>
+                {% with weekly_verses|first as firstv %}
                 <p><a href="{% url 'bibles:bible' %}?bookid={{ firstv.book.id }}&chapternum={{ firstv.chapternum }}" class="btn btn-primary" role="button">查看</a>
                 {% endwith %}
                 <a href="{% url 'bibles:index' %}" class="btn btn-default" role="button">读经首页</a></p>

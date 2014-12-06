@@ -9,17 +9,22 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 
-from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse
+from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse, Weekly_Verse
 
 import json
 
 def index(request):
     daily_verse = Daily_Verse.objects.order_by('-verse_date').first()
-    verses = None
+    weekly_verse = Weekly_Verse.objects.order_by('-verse_date').first()
+    daily_verses = None
+    weekly_verses = None
     if daily_verse:
         # Get the daily verses
-        verses = Bible_CHN.objects.filter(pk__range=(daily_verse.start_verse.id, daily_verse.end_verse.id)).order_by('pk')
-    context = {'verses' : list(verses)}
+        daily_verses = Bible_CHN.objects.filter(pk__range=(daily_verse.start_verse.id, daily_verse.end_verse.id)).order_by('pk')
+    if weekly_verse:
+        # Get the weekly verses
+        weekly_verses = Bible_CHN.objects.filter(pk__range=(weekly_verse.start_verse.id, weekly_verse.end_verse.id)).order_by('pk')
+    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses)}
     return render(request, 'bibles/index.html', context)
 
 def bible(request):

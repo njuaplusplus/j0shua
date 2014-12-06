@@ -34,3 +34,10 @@ class Daily_Verse(models.Model):
     end_verse = models.ForeignKey(Bible_CHN, verbose_name=u'结束经文', related_name='daily_end_verse_set')
     def __unicode__(self):
         return u"%s:%s-%s" % (self.verse_date, self.start_verse, self.end_verse)
+
+class Weekly_Verse(models.Model):
+    verse_date = models.DateField(u'日期')
+    start_verse = models.ForeignKey(Bible_CHN, verbose_name=u'起始经文', related_name='weekly_start_verse_set')
+    end_verse = models.ForeignKey(Bible_CHN, verbose_name=u'结束经文', related_name='weekly_end_verse_set')
+    def __unicode__(self):
+        return u"%s:%s-%s" % (self.verse_date, self.start_verse, self.end_verse)
