@@ -26,11 +26,13 @@
                     <div class="input-group-addon">章</div>
                     <label class="sr-only" for="id_chapternum">章</label>
                     <select class="form-control" id="id_chapternum" name="chapternum">
-                        <script>
-                        for (i=1;i<={{ chapternums }};i++) {
-                            document.write("<option value=\"" + i + "\">" + i + "</option>");
-                        }
-                        </script>
+                        {% for c in chapternums %}
+                        <option value="{{ c }}" 
+                            {% if c == cur_chapternum %}
+                                selected="selected"
+                            {% endif %}
+                        >{{ c }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>

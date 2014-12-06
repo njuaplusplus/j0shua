@@ -8,5 +8,66 @@
     <p>欢迎回到约书亚团契! 上帝祝福你!</p>
     <p><a class="btn btn-primary btn-lg" href="#" role="button">了解更多</a></p>
 </div>
+{% if verses %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="thumbnail">
+            <div class="caption">
+                <h2>今日经文
+                    <small>
+                        {% with verses|first as firstv %}
+                            {{ firstv.book.book_name_zh }}
+                            {{ firstv.chapternum }} :
+                            {{ firstv.versenum }}
+                        {% endwith %}
+                        {% if not verses|length_is:'1' %}
+                            {% with verses|last as lastv %}
+                                - {{ lastv.versenum }}
+                            {% endwith %}
+                        {% endif %}
+                    </small>
+                </h2>
+                <p>
+                {% for verse in verses %}
+                    <small>{{ verse.versenum }}</small> {{ verse.verse }}
+                {% endfor %}
+                </p>
+                {% with verses|first as firstv %}
+                <p><a href="{% url 'bibles:bible' %}?bookid={{ firstv.book.id }}&chapternum={{ firstv.chapternum }}" class="btn btn-primary" role="button">查看</a>
+                {% endwith %}
+                <a href="{% url 'bibles:index' %}" class="btn btn-default" role="button">读经首页</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% for weekly_hymns_by_place in weekly_hymns %}
+{% if forloop.counter0|divisibleby:2 %}
+<div class="row">
+{% endif %}
+    {% for hymn in weekly_hymns_by_place %}
+        {% if forloop.first %}
+        <div class="col-md-6">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h2>每周诗歌
+                        <small>
+                            {{ hymn.hymn_place.location_name }} {{ hymn.hymn_date}}
+                        </small>
+                    </h2>
+                    <p><ol>
+        {% endif %}
+                    <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
+        {% if forloop.last %}
+                    </ol></p>
+                    <p><a href="{% url 'hymns:weekly_hymns' %}" class="btn btn-primary" role="button">查看</a> <a href="{% url 'hymns:index' %}" class="btn btn-default" role="button">诗歌首页</a></p>
+            </div>
+        </div>
+    </div>
+        {% endif %}
+    {% endfor %}
+{% if forloop.counter|divisibleby:2 or forloop.last %}
+</div>
+{% endif %}
+{% endfor %}
 {% endblock mainContent %}
-

@@ -8,9 +8,34 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
+from django.utils import timezone
+import datetime
+
+from bibles.models import Bible_CHN, Daily_Verse
+from hymns.models import Weekly_Hymn, Worship_Location
 
 def index(request):
-    return render(request, 'homepage/index.html')
+    today = timezone.now().date()
+    # For Daily verse
+    daily_verse = Daily_Verse.objects.order_by('-verse_date').first()
+    verses = None
+    if daily_verse:
+        # Get the daily verses
+        verses = Bible_CHN.objects.filter(pk__range=(daily_verse.start_verse.id, daily_verse.end_verse.id)).order_by('pk')
+    # For Weekly Hymns
+    weekly_hymns = []
+    coming_sunday = today + datetime.timedelta(days=6-today.weekday())
+    db_weekly_hymns = Weekly_Hymn.objects.filter(hymn_date=coming_sunday)
+    if db_weekly_hymns:
+        places = Worship_Location.objects.all()
+        for place in places:
+            weekly_hymns_by_place = []
+            tmp_hymns = db_weekly_hymns.filter(hymn_place=place).order_by('hymn_order')
+            for h in tmp_hymns:
+                weekly_hymns_by_place.append(h)
+            weekly_hymns.append(weekly_hymns_by_place)
+    context = {'verses' : list(verses), 'weekly_hymns': weekly_hymns}
+    return render(request, 'homepage/index.html', context)
 
 def login_view(request):
     if request.user is not None and request.user.is_active:

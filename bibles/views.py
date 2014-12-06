@@ -19,19 +19,25 @@ def index(request):
     if daily_verse:
         # Get the daily verses
         verses = Bible_CHN.objects.filter(pk__range=(daily_verse.start_verse.id, daily_verse.end_verse.id)).order_by('pk')
-    context = {'verses' : verses}
+    context = {'verses' : list(verses)}
     return render(request, 'bibles/index.html', context)
 
 def bible(request):
-    # Need to optimize, because we consult the bible_book_name table twice
-    # book = get_object_or_404(Bible_Book_Name, book_name_en=book_name)
     books = Bible_Book_Name.objects.all()
     # cur_book is used to record the book that the user read last time
     # chapternum is used to record the chapter that the user read last time
     cur_book = books[0]
-    chapternum = 1
-    verses = cur_book.bible_chn_set.filter(chapternum=chapternum).order_by('versenum')
-    context = {'verses': verses, 'books': books, 'cur_book_id': cur_book.id, 'chapternums': cur_book.chapternums}
+    cur_chapternum = 1
+    # First, try to get from the get params
+    try:
+        cur_book_id = int(request.GET.get('bookid', ''))
+        cur_chapternum = int(request.GET.get('chapternum', ''))
+    except ValueError:
+        cur_chapternum = 1
+    else:
+        cur_book = books.get(pk=cur_book_id)
+    verses = cur_book.bible_chn_set.filter(chapternum=cur_chapternum).order_by('versenum')
+    context = {'verses': verses, 'books': books, 'cur_book_id': cur_book.id, 'cur_chapternum': cur_chapternum, 'chapternums': xrange(cur_book.chapternums)}
     return render(request, 'bibles/bible.html', context)
 
 def json_bible(request, book_id, chapternum):
@@ -39,7 +45,7 @@ def json_bible(request, book_id, chapternum):
     book = None
     try:
         book = Bible_Book_Name.objects.get(pk=book_id)
-    except (KeyError, Bible_Book_Name.DoesNotExist):
+    except Bible_Book_Name.DoesNotExist:
         return HttpResponse(json.dumps([]), content_type="application/json")
     else:
         verses = book.bible_chn_set.filter(chapternum=chapternum).order_by('versenum')
