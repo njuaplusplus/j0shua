@@ -43,16 +43,13 @@
         <div class="thumbnail">
             <div class="caption">
                 <h2>本周经文
+                {% with firstv=daily_verses|first lastv=daily_verses|last %}
                     <small>
-                        {% with weekly_verses|first as firstv %}
                             {{ firstv.book.book_name_zh }}
                             {{ firstv.chapternum }} :
                             {{ firstv.versenum }}
-                        {% endwith %}
                         {% if not weekly_verses|length_is:'1' %}
-                            {% with weekly_verses|last as lastv %}
                                 - {{ lastv.versenum }}
-                            {% endwith %}
                         {% endif %}
                     </small>
                 </h2>
@@ -61,8 +58,7 @@
                     <small>{{ verse.versenum }}</small> {{ verse.verse }}
                 {% endfor %}
                 </p>
-                {% with weekly_verses|first as firstv %}
-                <p><a href="{% url 'bibles:bible' %}?bookid={{ firstv.book.id }}&chapternum={{ firstv.chapternum }}" class="btn btn-primary" role="button">查看</a>
+                <p><a href="{% url 'bibles:bible' %}?bookid={{ firstv.book.id }}&chapternum={{ firstv.chapternum }}&verses={{ firstv.id }}-{{ lastv.id }}" class="btn btn-primary" role="button">查看</a>
                 {% endwith %}
                 <a href="{% url 'bibles:index' %}" class="btn btn-default" role="button">读经首页</a></p>
             </div>
