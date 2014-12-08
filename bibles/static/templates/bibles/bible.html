@@ -44,7 +44,11 @@
     {% for verse in verses %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <small>{{ verse.versenum }}</small> {{ verse.verse }}
+            {% if verse.id in highlight_verses %}
+                <mark><small>{{ verse.versenum }}</small> {{ verse.verse }}</mark>
+            {% else %}
+                <small>{{ verse.versenum }}</small> {{ verse.verse }}
+            {% endif %}
         </div>
     </div>
     {% endfor %}

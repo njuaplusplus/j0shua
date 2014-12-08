@@ -37,16 +37,24 @@ def bible(request):
     # chapternum is used to record the chapter that the user read last time
     cur_book = books[0]
     cur_chapternum = 1
+    highlight_verses = []
+    cur_start_verse_id = 0
+    cur_end_verse_id = 0
     # First, try to get from the get params
     try:
         cur_book_id = int(request.GET.get('bookid', ''))
         cur_chapternum = int(request.GET.get('chapternum', ''))
+        cur_start_verse_id, cur_end_verse_id = [int(x) for x in request.GET.get('verses','-').split('-')]
     except ValueError:
         cur_chapternum = 1
     else:
         cur_book = books.get(pk=cur_book_id)
+        if cur_start_verse_id and cur_end_verse_id:
+            print cur_start_verse_id, cur_end_verse_id
+            highlight_verses.extend(xrange(cur_start_verse_id, cur_end_verse_id+1))
     verses = cur_book.bible_chn_set.filter(chapternum=cur_chapternum).order_by('versenum')
-    context = {'verses': verses, 'books': books, 'cur_book_id': cur_book.id, 'cur_chapternum': cur_chapternum, 'chapternums': xrange(cur_book.chapternums)}
+    print highlight_verses
+    context = {'verses': verses, 'books': books, 'cur_book_id': cur_book.id, 'cur_chapternum': cur_chapternum, 'chapternums': xrange(cur_book.chapternums), 'highlight_verses': highlight_verses}
     return render(request, 'bibles/bible.html', context)
 
 def json_bible(request, book_id, chapternum):
