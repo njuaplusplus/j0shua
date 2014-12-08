@@ -30,6 +30,15 @@
         </div>
     </div>
     {% endfor %}
+{% else %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>今日经文
+                <small> 暂未更新
+                </small>
+            </h1>
+        </div>
+    </div>
 {% endif %}
 {% if weekly_verses %}
     <div class="row">
@@ -57,5 +66,14 @@
         </div>
     </div>
     {% endfor %}
+{% else %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>本周经文
+                <small> 暂未更新
+                </small>
+            </h1>
+        </div>
+    </div>
 {% endif %}
 {% endblock biblesMainContent %}

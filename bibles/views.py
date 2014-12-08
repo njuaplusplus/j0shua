@@ -8,16 +8,20 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
+from django.utils import timezone
+import datetime
 
 from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse, Weekly_Verse
 
 import json
 
 def index(request):
-    daily_verse = Daily_Verse.objects.order_by('-verse_date').first()
-    weekly_verse = Weekly_Verse.objects.order_by('-verse_date').first()
-    daily_verses = None
-    weekly_verses = None
+    today = timezone.now().date()
+    coming_sunday = today + datetime.timedelta(days=6-today.weekday())
+    daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
+    weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
+    daily_verses = []
+    weekly_verses = []
     if daily_verse:
         # Get the daily verses
         daily_verses = Bible_CHN.objects.filter(pk__range=(daily_verse.start_verse.id, daily_verse.end_verse.id)).order_by('pk')
