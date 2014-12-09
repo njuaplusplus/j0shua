@@ -41,8 +41,8 @@ def index(request):
     context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses), 'weekly_hymns': weekly_hymns}
     return render(request, 'homepage/index.html', context)
 
-def copyright_view(request):
-    return render(request, 'homepage/copyright.html')
+def about_view(request):
+    return render(request, 'homepage/about.html')
 
 def login_view(request):
     if request.user is not None and request.user.is_active:

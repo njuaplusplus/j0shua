@@ -1,14 +1,24 @@
 {% extends "homepage/base.html" %}
+{% load duoshuo_tags %}
 
 {% block title%}版权声明 | 约书亚团契{% endblock %}
 
 {% block mainContent %}
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
+        <h1>关于我们
+        </h1>
+        <P>
+        本网站仅为弟兄姊妹提供方便, 没有任何营利目的.
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
         <h1>版权声明
         </h1>
         <p>
-        本网站仅为弟兄姊妹提供方便, 没有任何营利目的. 本网站中诗歌歌谱图片, 诗歌音频等站外资源均来自网络.
+        本网站中诗歌歌谱图片, 诗歌音频等站外资源均来自网络.
         </p>
         <p>
         一些不完整的歌谱图片由本站裁剪整理后上传. 如果当中冒犯您的利益, 请和我们联系, 我们会第一时间移除.
@@ -17,8 +27,14 @@
         其中诗歌音频主要来自<a href="http://www.zanmeishi.com/">赞美诗网</a>. 本站已与<a href="http://www.zanmeishi.com/">赞美诗网</a> 交通过, 本站可以使用其音频资源.
         </p>
         <p>
-        在此, 非常感谢<a href="http://www.zanmeishi.com/">赞美诗网</a> 以及其他提供资源的弟兄姊妹! 上帝祝福你们!
+        在此, 非常感谢<a href="http://www.zanmeishi.com/">赞美诗网,</a> 以及其他提供资源的弟兄姊妹! 上帝祝福你们!
         </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <h1>反馈请留言</h1>
+        {% my_duoshuo_comments 'about-us' '关于网站' request.build_absolute_uri %}
     </div>
 </div>
 {% endblock mainContent %}
