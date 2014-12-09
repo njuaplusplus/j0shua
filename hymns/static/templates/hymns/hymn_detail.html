@@ -1,5 +1,6 @@
 {% extends "hymns/base.html" %}
 {% load staticfiles %}
+{% load duoshuo_tags %}
 
 {% block title%}乐谱 | 约书亚团契{% endblock %}
 
@@ -65,7 +66,12 @@
     </div>
 </div>
 {% endif %}
-{% endblock %}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+{% my_duoshuo_comments 'hymn-'|addstr:hymn.id '诗歌-'|addstr:hymn.hymn_name request.build_absolute_uri %}
+    </div>
+</div>
+{% endblock hymnsMainContent %}
 
 {% block extScriptFile %}
 {% if hymn.hymn_audio %}
