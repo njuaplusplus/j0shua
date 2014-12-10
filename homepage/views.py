@@ -8,14 +8,15 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
-from django.utils import timezone
+# from django.utils import timezone
 import datetime
 
 from bibles.models import Bible_CHN, Daily_Verse, Weekly_Verse
 from hymns.models import Weekly_Hymn, Worship_Location
 
 def index(request):
-    today = timezone.now().date()
+    # today = timezone.now().date() # 8 hours earlier
+    today = datetime.date.today()
     coming_sunday = today + datetime.timedelta(days=6-today.weekday())
     daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
     weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
