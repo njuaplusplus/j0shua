@@ -44,14 +44,19 @@
     {% for verse in verses %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            <span class="bible-verse" id='verse-{{ verse.id }}'>
             {% if verse.id in highlight_verses %}
                 <mark><small>{{ verse.versenum }}</small> {{ verse.verse }}</mark>
             {% else %}
                 <small>{{ verse.versenum }}</small> {{ verse.verse }}
             {% endif %}
+            </span>
         </div>
     </div>
     {% endfor %}
+</div>
+<div class="verses-handler text-center" id="verses-handler">
+    <button type="button" class="btn btn-primary" id="do-highlight">高亮</button>
 </div>
 {% endblock biblesMainContent %}
 
@@ -97,5 +102,25 @@ $("#getverse").click(function(){
         }
     });
 });
+
+$(".bible-verse").click(function(){
+    id = $(this).attr("id").split("-")[1];
+    // alert("Click verse " + id);
+    $(this).toggleClass("selected");
+    if ($(".bible-verse.selected").length > 0) {
+        $(".verses-handler").fadeIn();
+    } else {
+        $(".verses-handler").fadeOut();
+    }
+});
+
+$("#do-highlight").click(function(){
+    $(".bible-verse.selected").each(function(){
+        $(this).toggleClass("highlight");
+    });
+});
+$(".verses-handler").css('bottom', $('#footer').outerHeight(true));
+
+$("#main-container").css("padding-bottom", $(".verses-handler").outerHeight(true));
 
 {% endblock extScript%}

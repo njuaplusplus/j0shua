@@ -88,43 +88,44 @@ def weekly_hymns(request):
     # print weekly_hymn_list
     return render(request, 'hymns/weekly_hymns.html', {'weekly_hymn_list': weekly_hymn_list})
 
-def login_view(request):
-    if request.user is not None and request.user.is_active:
-        return HttpResponseRedirect(reverse('hymns:index'))
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
-    user = auth.authenticate(username=username, password=password)
-    next_url = request.POST.get('next', '')
-    if len(next_url) ==  0:
-        next_url = request.GET.get('next', '')
-        if len(next_url) == 0:
-            next_url = reverse('hymns:index')
-    if next_url == reverse('hymns:login_view'):
-        next_url = reverse('hymns:index')
-    if user is not None and user.is_active:
-        # Correct password, and the user is marked 'active'
-        auth.login(request, user)
-        # Redirect to a success page.
-        return HttpResponseRedirect(next_url)
-    else:
-        # Show an error page
-        return render(request, 'hymns/login.html', {'next': next_url})
-
-def logout_view(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('hymns:login_view'));
-
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            return HttpResponseRedirect(reverse('hymns:logout_view'))
-    else:
-        form = UserCreationForm()
-    return render(request, 'hymns/register.html', { 'form': form, })
+# Use homepage login and register
+# def login_view(request):
+#     if request.user is not None and request.user.is_active:
+#         return HttpResponseRedirect(reverse('hymns:index'))
+#     username = request.POST.get('username', '')
+#     password = request.POST.get('password', '')
+#     user = auth.authenticate(username=username, password=password)
+#     next_url = request.POST.get('next', '')
+#     if len(next_url) ==  0:
+#         next_url = request.GET.get('next', '')
+#         if len(next_url) == 0:
+#             next_url = reverse('hymns:index')
+#     if next_url == reverse('hymns:login_view'):
+#         next_url = reverse('hymns:index')
+#     if user is not None and user.is_active:
+#         # Correct password, and the user is marked 'active'
+#         auth.login(request, user)
+#         # Redirect to a success page.
+#         return HttpResponseRedirect(next_url)
+#     else:
+#         # Show an error page
+#         return render(request, 'hymns/login.html', {'next': next_url})
 # 
-@login_required(login_url='/hymns/accounts/login/')
+# def logout_view(request):
+#     auth.logout(request)
+#     return HttpResponseRedirect(reverse('hymns:login_view'));
+# 
+# def register_view(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             new_user = form.save()
+#             return HttpResponseRedirect(reverse('hymns:logout_view'))
+#     else:
+#         form = UserCreationForm()
+#     return render(request, 'hymns/register.html', { 'form': form, })
+
+@login_required
 def save_audio_url(request, hymn_id):
     if request.method == 'POST':
         if not request.user.groups.filter(name='uploaders') and not request.user.has_perm(u'hymns.change_hymn'):
@@ -147,7 +148,7 @@ def save_audio_url(request, hymn_id):
     else:
         return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn_id,)))
 
-@login_required(login_url='/hymns/accounts/login/')
+@login_required
 def upload_hymn_view(request):
     ''' Upload the hymn
 
@@ -175,7 +176,7 @@ def upload_hymn_view(request):
         form = Hymn_Form()
     return render(request, 'hymns/upload_hymn.html', {'hymn_form': form, })
 
-@login_required(login_url='/hymns/accounts/login/')
+@login_required
 def edit_hymn_view(request, hymn_id):
     '''Edit the hymn
 
@@ -193,7 +194,7 @@ def edit_hymn_view(request, hymn_id):
         form = Hymn_Form(instance=hymn)
     return render(request, 'hymns/upload_hymn.html', {'hymn_form': form, })
 
-@login_required(login_url='/hymns/accounts/login/')
+@login_required
 def edit_weekly_hymn_view(request, weekly_hymn_id):
     '''Edit the weekly hymn for ppt and pdf
 

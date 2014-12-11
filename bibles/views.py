@@ -69,38 +69,39 @@ def json_bible(request, book_id, chapternum):
         response_json = [(v.versenum, v.verse) for v in verses]
         return HttpResponse(json.dumps(response_json), content_type="application/json")
 
-def login_view(request):
-    if request.user is not None and request.user.is_active:
-        return HttpResponseRedirect(reverse('bibles:index'))
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
-    user = auth.authenticate(username=username, password=password)
-    next_url = request.POST.get('next', '')
-    if len(next_url) ==  0:
-        next_url = request.GET.get('next', '')
-        if len(next_url) == 0:
-            next_url = reverse('bibles:index')
-    if next_url == reverse('bibles:login_view'):
-        next_url = reverse('bibles:index')
-    if user is not None and user.is_active:
-        # Correct password, and the user is marked 'active'
-        auth.login(request, user)
-        # Redirect to a success page.
-        return HttpResponseRedirect(next_url)
-    else:
-        # Show an error page
-        return render(request, 'bibles/login.html', {'next': next_url})
-
-def logout_view(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('bibles:login_view'));
-
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            return HttpResponseRedirect(reverse('bibles:logout_view'))
-    else:
-        form = UserCreationForm()
-    return render(request, 'bibles/register.html', { 'form': form, })
+# Use homepage login
+# def login_view(request):
+#     if request.user is not None and request.user.is_active:
+#         return HttpResponseRedirect(reverse('bibles:index'))
+#     username = request.POST.get('username', '')
+#     password = request.POST.get('password', '')
+#     user = auth.authenticate(username=username, password=password)
+#     next_url = request.POST.get('next', '')
+#     if len(next_url) ==  0:
+#         next_url = request.GET.get('next', '')
+#         if len(next_url) == 0:
+#             next_url = reverse('bibles:index')
+#     if next_url == reverse('bibles:login_view'):
+#         next_url = reverse('bibles:index')
+#     if user is not None and user.is_active:
+#         # Correct password, and the user is marked 'active'
+#         auth.login(request, user)
+#         # Redirect to a success page.
+#         return HttpResponseRedirect(next_url)
+#     else:
+#         # Show an error page
+#         return render(request, 'bibles/login.html', {'next': next_url})
+# 
+# def logout_view(request):
+#     auth.logout(request)
+#     return HttpResponseRedirect(reverse('bibles:login_view'));
+# 
+# def register_view(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             new_user = form.save()
+#             return HttpResponseRedirect(reverse('bibles:logout_view'))
+#     else:
+#         form = UserCreationForm()
+#     return render(request, 'bibles/register.html', { 'form': form, })

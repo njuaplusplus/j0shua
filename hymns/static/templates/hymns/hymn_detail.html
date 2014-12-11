@@ -67,7 +67,7 @@
 {% endif %}
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        {% my_duoshuo_comments 'hymn-'|addstr:hymn.id '诗歌-'|addstr:hymn.hymn_name request.build_absolute_uri %}
+        {% my_sso_duoshuo_comments 'hymn-'|addstr:hymn.id '诗歌-'|addstr:hymn.hymn_name request.build_absolute_uri %}
     </div>
 </div>
 {% endblock hymnsMainContent %}

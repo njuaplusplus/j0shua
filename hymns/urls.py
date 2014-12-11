@@ -24,10 +24,11 @@ urlpatterns = patterns('',
     url(r'^candidates/$', views.candidates_view, name='candidates_view'),
     url(r'^playlist/$', views.playlist_view, name='playlist_view'),
     url(r'^search/$', views.search, name='search'),
-    url(r'^accounts/login/$', views.login_view, name='login_view'),
-    url(r'^accounts/logout/$', views.logout_view, name='logout_view'),
-    url(r'^accounts/register/$', views.register_view, name='register_view'),
     url(r'^(?P<hymn_id>\d+)/saveAudioFile/$', views.save_audio_url, name='saveAudioFile'),
+
+    # url(r'^accounts/login/$', views.login_view, name='login_view'),
+    # url(r'^accounts/logout/$', views.logout_view, name='logout_view'),
+    # url(r'^accounts/register/$', views.register_view, name='register_view'),
 #    # for form action to save score file
 #    url(r'^saveScoreFile/(?P<upload_type>\w+)/$', views.saveScoreFile, name='saveScoreFile'),
 #    url(r'^syncdb/', views.syncdb),#增加URL路径
