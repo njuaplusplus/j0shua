@@ -43,7 +43,7 @@
         <div class="thumbnail">
             <div class="caption">
                 <h2>本周经文
-                {% with firstv=daily_verses|first lastv=daily_verses|last %}
+                {% with firstv=weekly_verses|first lastv=weekly_verses|last %}
                     <small>
                             {{ firstv.book.book_name_zh }}
                             {{ firstv.chapternum }} :
