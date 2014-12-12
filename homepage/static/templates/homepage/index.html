@@ -1,12 +1,53 @@
 {% extends "homepage/base.html" %}
+{% load staticfiles %}
 
 {% block title%}首页 | 约书亚团契{% endblock %}
 
+{% block temporary_iframe %}
+<iframe id="preview-frame" src="{% static 'homepage/html/gbtags_clouds.html' %}" name="preview-frame" frameborder="0"></iframe>
+{% endblock temporary_iframe %}
 {% block mainContent %}
-<div class="jumbotron">
-    <h1>以马内利!</h1>
-    <p>欢迎回到约书亚团契! 上帝祝福你!</p>
-    <p><a class="btn btn-primary btn-lg" href="{% url 'homepage:about_view' %}" role="button">了解更多</a></p>
+<!-- <div class="gbtags-body">
+<div class="gbtags-cloud1"></div>
+<div class="gbtags-cloud2"></div>
+<div class="gbtags-cloud3"></div>
+<div class="gbtags-cloud4"></div>
+<div class="gbtags-cloud5"></div>
+<div class="gbtags-cloud6"></div>
+<div class="gbtags-cloud7"></div>
+<div class="gbtags-cloud8"></div>
+<div class="gbtags-cloud9"></div>
+<div class="gbtags-cloud10"></div>
+<div class="gbtags-cloud11"></div>
+<div class="gbtags-theman">
+  <div class="gbtags-hairleft"></div>
+  <div class="gbtags-hairright"></div>
+  <div class="gbtags-head">
+    <div class="gbtags-hairline"></div>
+    <div class="gbtags-bangsright"></div>
+    <div class="gbtags-bangsleft"></div>
+    <div class="gbtags-forehead1"></div>
+    <div class="gbtags-forehead2"></div>
+    <div class="gbtags-eyes"></div>
+    <div class="gbtags-mouth"></div>
+    <div class="gbtags-cheeks"></div>
+    <div class="gbtags-beard"></div>
+  </div>
+  <div class="gbtags-torso">
+    <div class="gbtags-egg"></div>
+    <div class="gbtags-hand"></div>
+    <div class="gbtags-arm1"></div>
+    <div class="gbtags-arm2"></div>
+  </div>
+  <div class="gbtags-foot1"></div>
+  <div class="gbtags-foot2"></div>
+  <div class="gbtags-halo"></div>
+</div>
+</div> -->
+<div class="jumbotron" style="background: transparent;">
+        <h1>以马内利!</h1>
+        <p>欢迎回到约书亚团契! 上帝祝福你!</p>
+        <p><a class="btn btn-primary btn-lg" href="{% url 'homepage:about_view' %}" role="button">了解更多</a></p>
 </div>
 {% if daily_verses %}
 <div class="row">
@@ -96,3 +137,7 @@
 {% endif %}
 {% endfor %}
 {% endblock mainContent %}
+{% block extScript %}
+$("body").css({ "min-height": "1000px", "background": "lightblue"});
+$("#preview-frame").css({"height": "800px", "width": "100%", "position": "absolute", "z-index": "-10"});
+{% endblock %}

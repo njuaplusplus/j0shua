@@ -1,93 +1,17 @@
-/* Sticky footer styles
- * -------------------------------------------------- */
-
-html,
-body {
-    height: 100%;
-    /* The html and body elements cannot have any padding or margin. */
-}
-
-/* Wrapper for page content to push down footer */
-#wrap {
-    min-height: 100%;
-    height: auto;
-    /* Negative indent footer by its height */
-    margin: 0 auto -60px;
-    /* Pad bottom by footer height */
-    padding: 70px 0 60px;
-}
-
-/* Set the fixed height of the footer here */
-#footer {
-    height: 60px;
-    background-color: #f5f5f5;
-    padding-top: 10px;
-    border-top: 1px solid #e5e5e5;
-}
-
-.form-signin {
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
-}
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-    margin-bottom: 10px;
-}
-.form-signin .checkbox {
-    font-weight: normal;
-}
-.form-signin .form-control {
-    position: relative;
-    font-size: 16px;
-    height: auto;
-    padding: 10px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-.form-signin .form-control:focus {
-    z-index: 2;
-}
-.form-signin input[type="text"] {
-    margin-bottom: -1px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-.form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
-
-/* For bibles app */
-.bible-verse.selected {
-    border-bottom: 2px dotted #ba0000;
-}
-
-.bible-verse.highlight {
-    color: #000;
-    background: #ff0;
-}
-
-.verses-handler {
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    height: auto;
-    width: 100%;
-    background: rgba(124, 116, 116, 0.521569);
-    z-index: 999;
-    display: None;
-}
-
-.gbtags-body {
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title> gbtags.com </title>
+		<style>
+			
+			body {
   width: 100%;
   height: 100%;
   background: LightBlue;
   overflow: hidden;
 }
-.gbtags-theman {
+.theman {
   z-index: 9;
   position: fixed;
   top: 10%;
@@ -100,7 +24,7 @@ body {
   animation: float 5s infinite;
   -webkit-animation: float 5s infinite;
 }
-.gbtags-head {
+.head {
   z-index: 1;
   position: absolute;
   top: 55px;
@@ -115,14 +39,14 @@ body {
   -moz-box-shadow: -5px 3px 3px rgba(55,55,55,0.3);
   box-shadow: -5px 3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-beard {
+.beard {
   position: absolute;
   top: 60px;
   width: 100px;
   height: 90px;
 }
-.gbtags-beard:before,
-.gbtags-beard:after {
+.beard:before,
+.beard:after {
   position: absolute;
   top: 0;
   left: 50px;
@@ -155,7 +79,7 @@ body {
   -moz-box-shadow: 1px 3px 3px rgba(55,55,55,0.3);
   box-shadow: 1px 3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-beard:after {
+.beard:after {
   left: 0;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -176,7 +100,7 @@ body {
   -ms-transform-origin: 100% 100%;
   transform-origin: 100% 100%;
 }
-.gbtags-mouth {
+.mouth {
   z-index: 1;
   position: absolute;
   top: 75px;
@@ -188,7 +112,7 @@ body {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-.gbtags-mouth:after {
+.mouth:after {
   position: absolute;
   left: 5px;
   content: '';
@@ -202,8 +126,8 @@ body {
   -moz-box-shadow: 0px 3px 3px rgba(55,55,55,0.3);
   box-shadow: 0px 3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-cheeks:before,
-.gbtags-cheeks:after {
+.cheeks:before,
+.cheeks:after {
   z-index: 1;
   position: absolute;
   top: 58px;
@@ -216,11 +140,11 @@ body {
   border-radius: 50%;
   background: PeachPuff;
 }
-.gbtags-cheeks:after {
+.cheeks:after {
   left: 52px;
 }
-.gbtags-eyes:before,
-.gbtags-eyes:after {
+.eyes:before,
+.eyes:after {
   z-index: 1;
   position: absolute;
   top: 46px;
@@ -234,11 +158,11 @@ body {
   border-radius: 50%;
   border-top: #000 2px solid;
 }
-.gbtags-eyes:after {
+.eyes:after {
   left: 62px;
 }
-.gbtags-hairleft,
-.gbtags-hairright {
+.hairleft,
+.hairright {
   position: absolute;
   top: 65px;
   left: 45px;
@@ -249,11 +173,11 @@ body {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-.gbtags-hairright {
+.hairright {
   left: 107px;
 }
-.gbtags-bangsleft,
-.gbtags-bangsright {
+.bangsleft,
+.bangsright {
   position: absolute;
   left: 2px;
   width: 25px;
@@ -272,7 +196,7 @@ body {
   -ms-transform: rotate(39deg);
   transform: rotate(39deg);
 }
-.gbtags-bangsright {
+.bangsright {
   left: 70px;
   -webkit-transform: rotate(140deg);
   -moz-transform: rotate(140deg);
@@ -284,8 +208,8 @@ body {
   -ms-transform: rotate(140deg);
   transform: rotate(140deg);
 }
-.gbtags-bangsright:before,
-.gbtags-bangsleft:before {
+.bangsright:before,
+.bangsleft:before {
   position: absolute;
   top: 35px;
   right: -19px;
@@ -306,7 +230,7 @@ body {
   -ms-transform: rotate(52deg);
   transform: rotate(52deg);
 }
-.gbtags-bangsleft:before {
+.bangsleft:before {
   left: -9px;
   top: -6px;
   -webkit-transform: rotate(124deg);
@@ -319,8 +243,8 @@ body {
   -ms-transform: rotate(124deg);
   transform: rotate(124deg);
 }
-.gbtags-forehead1,
-.gbtags-forehead2 {
+.forehead1,
+.forehead2 {
   position: absolute;
   top: 32px;
   left: -4px;
@@ -340,7 +264,7 @@ body {
   -ms-transform: rotate(-36deg);
   transform: rotate(-36deg);
 }
-.gbtags-forehead2 {
+.forehead2 {
   left: 50px;
   width: 53px;
   height: 12px;
@@ -354,7 +278,7 @@ body {
   -ms-transform: rotate(36deg);
   transform: rotate(36deg);
 }
-.gbtags-hairline {
+.hairline {
   position: absolute;
   top: 0;
   left: 28px;
@@ -365,7 +289,7 @@ body {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-.gbtags-torso {
+.torso {
   position: absolute;
   top: 170px;
   left: 48px;
@@ -378,7 +302,7 @@ body {
   border: 1px solid rgba(55,55,55,0.4);
   border-bottom: none;
 }
-.gbtags-torso:after {
+.torso:after {
   position: absolute;
   top: 200px;
   left: -1px;
@@ -395,7 +319,7 @@ body {
   -moz-box-shadow: 0px 3px 3px rgba(55,55,55,0.3);
   box-shadow: 0px 3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-egg {
+.egg {
   z-index: 1;
   position: absolute;
   top: -20px;
@@ -419,7 +343,7 @@ body {
   -moz-box-shadow: -3px 3px 3px rgba(55,55,55,0.3);
   box-shadow: -3px 3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-egg:before {
+.egg:before {
   z-index: 5;
   position: absolute;
   top: 4px;
@@ -433,7 +357,7 @@ body {
   border-radius: 80%;
   border-bottom: 3px dotted LemonChiffon;
 }
-.gbtags-egg:after {
+.egg:after {
   position: absolute;
   top: 10px;
   left: 16px;
@@ -446,7 +370,7 @@ body {
   border-radius: 80%;
   border-bottom: 3px dotted White;
 }
-.gbtags-arm1 {
+.arm1 {
   z-index: 5;
   position: absolute;
   top: 35px;
@@ -462,7 +386,7 @@ body {
   -moz-box-shadow: 1px 3px 3px rgba(55,55,55,0.3);
   box-shadow: 1px 3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-arm1:before {
+.arm1:before {
   z-index: 3;
   position: absolute;
   top: -8px;
@@ -475,7 +399,7 @@ body {
   -moz-border-radius: 10% 50% 50% 50%;
   border-radius: 10% 50% 50% 50%;
 }
-.gbtags-arm1:after {
+.arm1:after {
   z-index: 2;
   position: absolute;
   top: -5px;
@@ -488,7 +412,7 @@ body {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-.gbtags-hand {
+.hand {
   z-index: 5;
   position: absolute;
   top: 31px;
@@ -510,7 +434,7 @@ body {
   -ms-transform: rotate(-30deg);
   transform: rotate(-30deg);
 }
-.gbtags-arm2 {
+.arm2 {
   z-index: 4;
   position: absolute;
   top: 36px;
@@ -536,7 +460,7 @@ body {
   -moz-box-shadow: 0px -3px 3px rgba(55,55,55,0.3);
   box-shadow: 0px -3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-arm2:before {
+.arm2:before {
   z-index: 5;
   position: absolute;
   top: 44px;
@@ -558,7 +482,7 @@ body {
   -ms-transform: rotate(-29deg);
   transform: rotate(-29deg);
 }
-.gbtags-foot1 {
+.foot1 {
   z-index: -1;
   position: absolute;
   top: 354px;
@@ -571,7 +495,7 @@ body {
   border-radius: 100%;
   border: 5px solid SaddleBrown;
 }
-.gbtags-foot1:before {
+.foot1:before {
   position: absolute;
   top: 35px;
   left: 13px;
@@ -583,7 +507,7 @@ body {
   border-right: none;
   border-bottom: none;
 }
-.gbtags-foot1:after {
+.foot1:after {
   position: absolute;
   top: 35px;
   left: 1px;
@@ -595,7 +519,7 @@ body {
   border-left: none;
   border-bottom: none;
 }
-.gbtags-foot2 {
+.foot2 {
   z-index: -1;
   position: absolute;
   top: 354px;
@@ -608,7 +532,7 @@ body {
   border-radius: 100%;
   border: 5px solid SaddleBrown;
 }
-.gbtags-foot2:before {
+.foot2:before {
   position: absolute;
   top: 35px;
   left: 10px;
@@ -620,7 +544,7 @@ body {
   border-right: none;
   border-bottom: none;
 }
-.gbtags-foot2:after {
+.foot2:after {
   position: absolute;
   top: 35px;
   left: 1px;
@@ -650,19 +574,18 @@ div.halo {
   animation: glow 5s infinite;
   -webkit-animation: glow 5s infinite;
 }
-.gbtags-cloud1,
-.gbtags-cloud2,
-.gbtags-cloud3,
-.gbtags-cloud4,
-.gbtags-cloud5,
-.gbtags-cloud6,
-.gbtags-cloud7,
-.gbtags-cloud8,
-.gbtags-cloud9,
-.gbtags-cloud10,
-.gbtags-cloud11 {
+.cloud1,
+.cloud2,
+.cloud3,
+.cloud4,
+.cloud5,
+.cloud6,
+.cloud7,
+.cloud8,
+.cloud9,
+.cloud10,
+.cloud11 {
   position: absolute;
-  z-index: -10;
   width: 220px;
   height: 80px;
   background: #fff;
@@ -673,7 +596,7 @@ div.halo {
   -moz-box-shadow: 3px 3px 3px rgba(55,55,55,0.3);
   box-shadow: 3px 3px 3px rgba(55,55,55,0.3);
 }
-.gbtags-cloud1 {
+.cloud1 {
   left: 800px;
   top: 600px;
   -webkit-animation: glide 190s infinite;
@@ -683,7 +606,7 @@ div.halo {
   animation: glide 190s infinite;
   -webkit-animation: glide 190s infinite;
 }
-.gbtags-cloud2 {
+.cloud2 {
   left: 100px;
   top: 100px;
   -webkit-animation: glide 290s infinite;
@@ -693,7 +616,7 @@ div.halo {
   animation: glide 290s infinite;
   -webkit-animation: glide 290s infinite;
 }
-.gbtags-cloud3 {
+.cloud3 {
   left: 250px;
   top: 700px;
   -webkit-animation: glide 90s infinite;
@@ -703,7 +626,7 @@ div.halo {
   animation: glide 90s infinite;
   -webkit-animation: glide 90s infinite;
 }
-.gbtags-cloud4 {
+.cloud4 {
   left: 600px;
   top: 200px;
   -webkit-animation: glide 90s infinite;
@@ -713,7 +636,7 @@ div.halo {
   animation: glide 90s infinite;
   -webkit-animation: glide 90s infinite;
 }
-.gbtags-cloud5 {
+.cloud5 {
   left: 300px;
   top: 400px;
   -webkit-animation: glide 90s infinite;
@@ -723,7 +646,7 @@ div.halo {
   animation: glide 90s infinite;
   -webkit-animation: glide 90s infinite;
 }
-.gbtags-cloud6 {
+.cloud6 {
   left: 1300px;
   top: 500px;
   -webkit-animation: glide 120s infinite;
@@ -733,7 +656,7 @@ div.halo {
   animation: glide 120s infinite;
   -webkit-animation: glide 120s infinite;
 }
-.gbtags-cloud7 {
+.cloud7 {
   left: 1000px;
   top: 170px;
   -webkit-animation: glide 100s infinite;
@@ -743,7 +666,7 @@ div.halo {
   animation: glide 100s infinite;
   -webkit-animation: glide 100s infinite;
 }
-.gbtags-cloud8 {
+.cloud8 {
   left: 1000px;
   top: 440px;
   -webkit-animation: glide 80s infinite;
@@ -753,7 +676,7 @@ div.halo {
   animation: glide 80s infinite;
   -webkit-animation: glide 80s infinite;
 }
-.gbtags-cloud9 {
+.cloud9 {
   left: 1200px;
   top: 620px;
   -webkit-animation: glide 280s infinite;
@@ -763,7 +686,7 @@ div.halo {
   animation: glide 280s infinite;
   -webkit-animation: glide 280s infinite;
 }
-.gbtags-cloud10 {
+.cloud10 {
   left: 1300px;
   top: 140px;
   -webkit-animation: glide 250s infinite;
@@ -773,7 +696,7 @@ div.halo {
   animation: glide 250s infinite;
   -webkit-animation: glide 250s infinite;
 }
-.gbtags-cloud11 {
+.cloud11 {
   left: 1400px;
   top: 380px;
   -webkit-animation: glide 190s infinite;
@@ -783,17 +706,17 @@ div.halo {
   animation: glide 190s infinite;
   -webkit-animation: glide 190s infinite;
 }
-.gbtags-cloud1::before,
-.gbtags-cloud2::before,
-.gbtags-cloud3::before,
-.gbtags-cloud4::before,
-.gbtags-cloud5::before,
-.gbtags-cloud6::before,
-.gbtags-cloud7::before,
-.gbtags-cloud8::before,
-.gbtags-cloud9::before,
-.gbtags-cloud10::before,
-.gbtags-cloud11::before {
+.cloud1::before,
+.cloud2::before,
+.cloud3::before,
+.cloud4::before,
+.cloud5::before,
+.cloud6::before,
+.cloud7::before,
+.cloud8::before,
+.cloud9::before,
+.cloud10::before,
+.cloud11::before {
   position: absolute;
   top: -40px;
   right: 100px;
@@ -805,17 +728,17 @@ div.halo {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
-.gbtags-cloud1::after,
-.gbtags-cloud2::after,
-.gbtags-cloud3::after,
-.gbtags-cloud4::after,
-.gbtags-cloud5::after,
-.gbtags-cloud6::after,
-.gbtags-cloud7::after,
-.gbtags-cloud8::after,
-.gbtags-cloud9::after,
-.gbtags-cloud10::after,
-.gbtags-cloud11::after {
+.cloud1::after,
+.cloud2::after,
+.cloud3::after,
+.cloud4::after,
+.cloud5::after,
+.cloud6::after,
+.cloud7::after,
+.cloud8::after,
+.cloud9::after,
+.cloud10::after,
+.cloud11::after {
   position: absolute;
   top: -50px;
   right: 40px;
@@ -1152,3 +1075,50 @@ div.halo {
     left: -300px;
   }
 }
+
+		
+		</style>
+	</head>
+	<body>
+			
+<div class="cloud1"></div>
+<div class="cloud2"></div>
+<div class="cloud3"></div>
+<div class="cloud4"></div>
+<div class="cloud5"></div>
+<div class="cloud6"></div>
+<div class="cloud7"></div>
+<div class="cloud8"></div>
+<div class="cloud9"></div>
+<div class="cloud10"></div>
+<div class="cloud11"></div>
+<div class="theman">
+  <div class="hairleft"></div>
+  <div class="hairright"></div>
+  <div class="head">
+    <div class="hairline"></div>
+    <div class="bangsright"></div>
+    <div class="bangsleft"></div>
+    <div class="forehead1"></div>
+    <div class="forehead2"></div>
+    <div class="eyes"></div>
+    <div class="mouth"></div>
+    <div class="cheeks"></div>
+    <div class="beard"></div>
+  </div>
+  <div class="torso">
+    <div class="egg"></div>
+    <div class="hand"></div>
+    <div class="arm1"></div>
+    <div class="arm2"></div>
+  </div>
+  <div class="foot1"></div>
+  <div class="foot2"></div>
+  <div class="halo"></div>
+</div>
+	
+
+		
+	</body>
+</html>
+
