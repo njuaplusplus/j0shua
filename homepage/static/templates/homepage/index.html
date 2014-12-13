@@ -3,9 +3,6 @@
 
 {% block title%}首页 | 约书亚团契{% endblock %}
 
-{% block temporary_iframe %}
-<iframe id="preview-frame" src="{% static 'homepage/html/gbtags_clouds.html' %}" name="preview-frame" frameborder="0"></iframe>
-{% endblock temporary_iframe %}
 {% block mainContent %}
 <!-- <div class="gbtags-body">
 <div class="gbtags-cloud1"></div>
@@ -44,7 +41,7 @@
   <div class="gbtags-halo"></div>
 </div>
 </div> -->
-<div class="jumbotron" style="background: transparent;">
+<div class="jumbotron" style="background: rgba(255, 255, 255, 0.52);">
         <h1>以马内利!</h1>
         <p>欢迎回到约书亚团契! 上帝祝福你!</p>
         <p><a class="btn btn-primary btn-lg" href="{% url 'homepage:about_view' %}" role="button">了解更多</a></p>
@@ -139,5 +136,8 @@
 {% endblock mainContent %}
 {% block extScript %}
 $("body").css({ "min-height": "1000px", "background": "lightblue"});
-$("#preview-frame").css({"height": "800px", "width": "100%", "position": "absolute", "z-index": "-10"});
+// load the iframe
+$("div#wrap").prepend(
+"<iframe id=\"preview-frame\" src=\"{% static 'homepage/html/gbtags_clouds.html' %}\" frameborder=\"0\" style=\"height: 800px; width: 100%; position: absolute; z-index: -10;\"></iframe>"
+);
 {% endblock %}
