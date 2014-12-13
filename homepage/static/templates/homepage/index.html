@@ -41,7 +41,7 @@
   <div class="gbtags-halo"></div>
 </div>
 </div> -->
-<div class="jumbotron" style="background: rgba(255, 255, 255, 0.52);">
+<div class="jumbotron">
         <h1>以马内利!</h1>
         <p>欢迎回到约书亚团契! 上帝祝福你!</p>
         <p><a class="btn btn-primary btn-lg" href="{% url 'homepage:about_view' %}" role="button">了解更多</a></p>
@@ -49,7 +49,7 @@
 {% if daily_verses %}
 <div class="row">
     <div class="col-md-12">
-        <div class="thumbnail" style="background: rgba(255, 255, 255, 0.52);">
+        <div class="thumbnail">
             <div class="caption">
                 <h2>今日经文
                 {% with firstv=daily_verses|first lastv=daily_verses|last %}
@@ -78,7 +78,7 @@
 {% if weekly_verses %}
 <div class="row">
     <div class="col-md-12">
-        <div class="thumbnail" style="background: rgba(255, 255, 255, 0.52);">
+        <div class="thumbnail">
             <div class="caption">
                 <h2>本周经文
                 {% with firstv=weekly_verses|first lastv=weekly_verses|last %}
@@ -111,7 +111,7 @@
     {% for hymn in weekly_hymns_by_place %}
         {% if forloop.first %}
         <div class="col-md-6">
-            <div class="thumbnail" style="background: rgba(255, 255, 255, 0.52);">
+            <div class="thumbnail">
                 <div class="caption">
                     <h2>每周诗歌
                         <small>
@@ -135,9 +135,9 @@
 {% endfor %}
 {% endblock mainContent %}
 {% block extScript %}
-$("body").css({ "min-height": "1000px", "background": "lightblue"});
+// $("body").css({ "min-height": "1000px", "background": "lightblue"});
 // load the iframe
-$("div#wrap").prepend(
-"<iframe id=\"preview-frame\" src=\"{% static 'homepage/html/gbtags_clouds.html' %}\" frameborder=\"0\" style=\"height: 800px; width: 100%; position: absolute; z-index: -10;\"></iframe>"
-);
+// $("div#wrap").prepend(
+// "<iframe id=\"preview-frame\" src=\"{% static 'homepage/html/gbtags_clouds.html' %}\" frameborder=\"0\" style=\"height: 800px; width: 100%; position: absolute; z-index: -10;\"></iframe>"
+// );
 {% endblock %}
