@@ -91,11 +91,22 @@ $("#getverse").click(function(){
             if (data.length < 1) {
                 alert("请输入正确的卷和章!");
             } else {
+                $(".verses-handler").fadeOut();
                 output = [];
                 $.each(data, function(i,v){
-                    output.push("<div class=\"row\"><div class=\"col-md-8 col-md-offset-2\"><small>" + v[0] + "</small> " + v[1] + "</div></div>")
+                    output.push("<div class=\"row\"><div class=\"col-md-8 col-md-offset-2\"><span class=\"bible-verse\" id=\"verse-" + v[0] + "\"><small>" + v[0] + "</small> " + v[1] + "</span></div></div>")
                 });
                 $("#id_verses").html(output.join(""));
+                $(".bible-verse").click(function(){
+                    id = $(this).attr("id").split("-")[1];
+                    // alert("Click verse " + id);
+                    $(this).toggleClass("selected");
+                    if ($(".bible-verse.selected").length > 0) {
+                        $(".verses-handler").fadeIn();
+                    } else {
+                        $(".verses-handler").fadeOut();
+                    }
+                });
             }
         } else {
             alert("数据获取失败!");
