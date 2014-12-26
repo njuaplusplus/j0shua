@@ -1,0 +1,174 @@
+{% extends "myadmin/base.html" %}
+
+{% load staticfiles %}
+{% block title %} 每周诗歌管理 | 约书亚管理 {% endblock %}
+{% block headBlock %}
+<!-- DataTables CSS -->
+<link href="{% static 'myadmin/css/plugins/dataTables.bootstrap.css' %}" rel="stylesheet">
+<!-- Datepicker CSS -->
+<link href="{% static 'datepicker/css/datepicker3.css' %}" rel="stylesheet">
+<!-- select 2 -->
+<link href="{% static 'select2/css/select2.css' %}" rel="stylesheet">
+<link href="{% static 'select2/css/select2-bootstrap.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">每周诗歌</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                所有每周诗歌
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                        <thead>
+                            <tr>
+                                <th>日 期</th>
+                                <th>地 点</th>
+                                <th>顺 序</th>
+                                <th>歌 曲</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hymn in weekly_hymns %}
+                            <tr>
+                                <td>{{ hymn.hymn_date }}</td>
+                                <td>{{ hymn.hymn_place.location_name }}</td>
+                                <td>{{ hymn.hymn_order }}</td>
+                                <td><a href="{% url 'hymns:hymn' hymn.hymn.id %}" target="_blank">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <form id="add-weekly-hymns-form" role="form" method="POST" action="">
+            {% csrf_token %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    添加诗歌
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="input-group date" id="weekly-hymn-datepicker">
+                        <input type="text" class="form-control" required /><span class="input-group-addon"><i class="glyphicon glyphicon-th">日期</i></span>
+                    </div>
+                    <input type="hidden" name="hymn-date" value="" />
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>地 点</th>
+                                    <th>顺 序</th>
+                                    <th>歌 曲</th>
+                                    <th>操 作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="4" style="text-align: center;" id="add-weekly-hymn"> 点击我添加一首诗歌 </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+                <!-- /.panel-footer -->
+            </div>
+            <!-- /.panel -->
+        </form>
+    </div>
+</div>
+<!-- /.row -->
+{% endblock mainContent %}
+
+{% block extScriptFile %}
+<!-- DataTables JavaScript -->
+<script src="{% static 'myadmin/js/plugins/dataTables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'myadmin/js/plugins/dataTables/dataTables.bootstrap.js' %}"></script>
+<!-- Datepicker JavaScript -->
+<script src="{% static 'datepicker/js/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'datepicker/js/locales/bootstrap-datepicker.zh-CN.js' %}"></script>
+<script src="{% static 'select2/js/select2.js' %}"></script>
+<script src="{% static 'select2/js/select2_locale_zh-CN.js' %}"></script>
+{% endblock extScriptFile %}
+
+{% block extScript %}
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+$('#dataTables-example').dataTable({
+    "order": []
+});
+$('#weekly-hymn-datepicker').datepicker({
+    todayBtn: "linked",
+    clearBtn: true,
+    language: "zh-CN",
+    autoclose: true
+});
+$("#add-weekly-hymn").click(function(){
+    r = "<tr> <td> <select name=\"hymn-place\"> <option value=\"\" selected=\"selected\">------</option> <option value=\"1\">仙林</option> <option value=\"2\">市区</option> </select> </td> <td><input type=\"number\" min=\"1\" max=\"5\" name=\"hymn-order\" required /></td> <td><select name=\"weekly-hymn\"><option></option>";
+    {% for hymn in all_hymns %}
+    r = r + "<option value=\"{{ hymn.id }}\">{{ hymn.hymn_name }}</option>";
+    {% endfor %}
+    r = r + "</select></td> <td> <span class=\"glyphicon glyphicon-remove delete-hymn\" aria-hidden=\"true\"></span> </td> </tr>";
+    $(r).insertBefore($(this).parent());
+    $(".delete-hymn").click(function(){$(this).parent().parent().remove();});
+    // $("select.select-hymns:not(.select2-container):visible").select2({placeholder: "选择诗歌", allowClear: true, dropdownAutoWidth: true});
+    $("select[name='weekly-hymn']:visible").select2({placeholder: "选择诗歌", allowClear: true, dropdownAutoWidth: true});
+});
+$("#add-weekly-hymns-form").submit(function(event){
+    hymn_date = $('#weekly-hymn-datepicker').datepicker('getUTCDate')
+    if (hymn_date  == "Invalid Date") {
+        alert("请选择日期!");
+        event.preventDefault();
+    } else {
+        datestr = hymn_date.getFullYear() + "-" + (hymn_date.getMonth()+1) + "-" + hymn_date.getDate();
+        $("[name='hymn-date']").val(datestr);
+    }
+    $("select[name='hymn-place']").each(function(index, element){
+        x = $(element).val();
+        if (x == null || x == "") {
+            alert("请选择第" + (index + 1) + "个地点!");
+            event.preventDefault();
+        }
+    });
+    $("input[name='hymn-order']").each(function(index, element){
+        x = $(element).val();
+        if (x == null || x == "") {
+            alert("请填写第" + (index + 1) + "个敬拜顺序!");
+            event.preventDefault();
+        }
+    });
+    $("select[name='weekly-hymn']").each(function(index, element){
+        x = $(element).val();
+        if (x == null || x == "") {
+            alert("请选择第" + (index + 1) + "个诗歌!");
+            event.preventDefault();
+        }
+    });
+});
+
+{% endblock extScript %}

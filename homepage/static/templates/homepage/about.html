@@ -37,7 +37,7 @@
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <h1>反馈请留言</h1>
-        {% my_sso_duoshuo_comments 'about-us' '关于网站' request.build_absolute_uri %}
+        {% my_sso_duoshuo_comments 'about-us' '关于网站' request.build_absolute_uri request.path|escape %}
     </div>
 </div>
 {% endblock mainContent %}
