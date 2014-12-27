@@ -114,10 +114,12 @@
     $("#backward-play").click(function(){
         currentTime = $("#jquery_jplayer_1").data('jPlayer').status.currentTime;
         $("#jquery_jplayer_1").jPlayer("play", currentTime-5);
+        $(this).blur();
     });
     $("#forward-play").click(function(){
         currentTime = $("#jquery_jplayer_1").data('jPlayer').status.currentTime;
         $("#jquery_jplayer_1").jPlayer("play", currentTime+5);
+        $(this).blur();
     });
 {% endif %}
 {% endblock %}
