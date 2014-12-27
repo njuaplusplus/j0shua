@@ -42,8 +42,18 @@
             <button class="btn btn-info" id="repeatOff" type="button"><span class="glyphicon glyphicon-repeat"></span> 关闭循环</button>
             <button class="btn btn-default" type="button" style="display: none;">hehe</button>
         </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-center">
+        <div class="btn-group">
+            <button class="btn btn-default" type="button" style="display: none;">hehe</button>
+            <button class="btn btn-default" id="backward-play" type="button"><span class="glyphicon glyphicon-backward"></span> - 5 秒</button>
+            <button class="btn btn-default" id="forward-play" type="button"><span class="glyphicon glyphicon-forward"></span> + 5 秒</button>
+            <button class="btn btn-default" type="button" style="display: none;">hehe</button>
         </div>
-        <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+    </div>
+    <div id="jquery_jplayer_1" class="jp-jplayer"></div>
 </div>
 <div class="row">
     <div class="col-md-12 text-center">
@@ -100,6 +110,14 @@
             repeat: "#repeat",
             repeatOff: "#repeatOff"
         },
+    });
+    $("#backward-play").click(function(){
+        currentTime = $("#jquery_jplayer_1").data('jPlayer').status.currentTime;
+        $("#jquery_jplayer_1").jPlayer("play", currentTime-5);
+    });
+    $("#forward-play").click(function(){
+        currentTime = $("#jquery_jplayer_1").data('jPlayer').status.currentTime;
+        $("#jquery_jplayer_1").jPlayer("play", currentTime+5);
     });
 {% endif %}
 {% endblock %}
