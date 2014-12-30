@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from uuslug import uuslug
 from django import forms
 from pagedown.widgets import PagedownWidget
-from bootstrap3_datetime.widgets import DateTimePicker
+# from bootstrap3_datetime.widgets import DateTimePicker
 from datetimewidget.widgets import DateTimeWidget
 
 class Category(models.Model) :
