@@ -6,6 +6,10 @@ from django.utils.translation import ugettext as _
 from markdown import markdown
 from django.contrib.auth.models import User
 from uuslug import uuslug
+from django import forms
+from pagedown.widgets import PagedownWidget
+from bootstrap3_datetime.widgets import DateTimePicker
+from datetimewidget.widgets import DateTimeWidget
 
 class Category(models.Model) :
     """Category Model"""
@@ -28,7 +32,9 @@ class Category(models.Model) :
         ordering = ['title',]
 
     def save(self, *args, **kwargs):
-        self.slug = uuslug(self.title, instance=self, max_length=32, word_boundary=True)
+        if not self.slug.strip():
+            # slug is null or empty
+            self.slug = uuslug(self.title, instance=self, max_length=32, word_boundary=True)
         super(Category, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -42,8 +48,8 @@ class Article(models.Model) :
         max_length = 255
     )
     slug = models.SlugField(
-        verbose_name = _(u'Slug'),
-        help_text = _(u'Uri identifier.'),
+        verbose_name = _(u'固定链接'),
+        help_text = _(u'本文章的短网址(Uri identifier).'),
         max_length = 255,
         unique = True
     )
@@ -81,6 +87,7 @@ class Article(models.Model) :
         verbose_name = _(u'发布日期'),
         help_text = _(u' ')
     )
+    is_approved = models.BooleanField(verbose_name = _(u'通过审核'))
 
     class Meta:
         app_label = _(u'blog')
@@ -89,9 +96,29 @@ class Article(models.Model) :
         ordering = ['-date_publish']
 
     def save(self, *args, **kwargs):
-        self.slug = uuslug(self.title, instance=self, max_length=32, word_boundary=True)
+        if not self.slug.strip():
+            # slug is null or empty
+            self.slug = uuslug(self.title, instance=self, max_length=32, word_boundary=True)
         self.content_markup = markdown(self.content_markdown, ['codehilite', 'attr_list'])
         super(Article, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return "%s" % (self.title,)
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        dateTimeOptions = {
+            'todayBtn' : 'true',
+        }
+        widgets = {
+            'content_markdown' : PagedownWidget(),
+            # 'date_publish' : DateTimePicker(options={"format": "YYYY-MM-DD HH:mm", "pickSeconds": False, "language": 'zh-cn', }),
+            'date_publish' : DateTimeWidget(usel10n=True, bootstrap_version=3, options = dateTimeOptions),
+            'title' : forms.TextInput(attrs={'class':'form-control'}),
+            'slug' : forms.TextInput(attrs={'class':'form-control'}),
+            'excerpt' : forms.Textarea(attrs={'class':'form-control'}),
+            'categories' : forms.SelectMultiple(attrs={'class':'form-control'}),
+        }
+        exclude = ['content_markup', 'author', 'is_approved', ]
+

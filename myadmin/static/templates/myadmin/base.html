@@ -2,27 +2,33 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
     <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{% block title %}后台管理 | 约书亚团契{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <!-- MetisMenu CSS -->
-    <link href="{% static 'myadmin/css/plugins/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
-    {% block headBlock %}
-    {% endblock %}
-    <!-- Custom CSS -->
-    <link href="{% static 'myadmin/css/sb-admin-2.css' %}" rel="stylesheet">
-    <!-- Custom Fonts -->
-    <link href="{% static 'myadmin/css/font-awesome-4.1.0/css/font-awesome.min.css' %}" rel="stylesheet">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{% block title %}后台管理 | 约书亚团契{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <!-- MetisMenu CSS -->
+        <link href="{% static 'myadmin/css/plugins/metisMenu/metisMenu.min.css' %}" rel="stylesheet">
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="{% static 'myadmin/js/plugins/metisMenu/metisMenu.min.js' %}"></script>
+        {% block headBlock %}
+        {% endblock %}
+        <!-- Custom CSS -->
+        <link href="{% static 'myadmin/css/sb-admin-2.css' %}" rel="stylesheet">
+        <!-- Custom Fonts -->
+        <link href="{% static 'myadmin/css/font-awesome-4.1.0/css/font-awesome.min.css' %}" rel="stylesheet">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
     </head>
     <body>
@@ -295,6 +301,9 @@
                                 <a href="{% url 'myadmin:users_view' %}"><i class="fa fa-table fa-fw"></i> 用户管理</a>
                             </li>
                             <li>
+                                <a href="{% url 'myadmin:write_post_view' %}"><i class="fa fa-edit fa-fw"></i> 撰写博客</a>
+                            </li>
+                            <li>
                                 <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>
                             </li>
                             <li>
@@ -374,12 +383,6 @@
         </div>
         <!-- /#wrapper -->
 
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-        <!-- Metis Menu Plugin JavaScript -->
-        <script src="{% static 'myadmin/js/plugins/metisMenu/metisMenu.min.js' %}"></script>
         {% block extScriptFile %}{% endblock %}
         <!-- Custom Theme JavaScript -->
         <script src="{% static 'myadmin/js/sb-admin-2.js' %}"></script>

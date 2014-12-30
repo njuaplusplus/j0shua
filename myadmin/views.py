@@ -7,6 +7,7 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from hymns.models import Weekly_Hymn, Hymn, Worship_Location
+from blog.models import ArticleForm
 
 import datetime
 # Create your views here.
@@ -47,6 +48,25 @@ def weekly_hymns_view(request):
         all_hymns = Hymn.objects.all()
         context = {'weekly_hymns': weekly_hymns, 'all_hymns': all_hymns}
         return render(request, 'myadmin/weekly_hymns.html', context)
+
+@login_required(login_url='/myadmin/accounts/login/')
+def write_post_view(request):
+    from django.utils import translation
+    print 'language: ', translation.get_language()
+    if not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    if request.method == 'POST':
+        article_form = ArticleForm(request.POST, request.FILES)
+        if article_form.is_valid():
+            article = article_form.save(commit=False)
+            article.author = request.user
+            article.save()
+            article_form.save_m2m()
+            return HttpResponseRedirect(reverse('blog:single_post', args=(article.slug,)))
+    else:
+        article_form = ArticleForm()
+    return render(request, 'myadmin/write_post.html', {'article_form': article_form, })
+
 
 def login_view(request):
     if request.user is not None and request.user.is_active:

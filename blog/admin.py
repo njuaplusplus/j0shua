@@ -2,9 +2,9 @@
 # coding=utf-8
 
 from django.contrib import admin
+from blog.models import Category, Article
 from django import forms
 from pagedown.widgets import AdminPagedownWidget
-from blog.models import Category, Article
 
 class CategoryAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug': ('title',)}
@@ -14,12 +14,12 @@ class CategoryAdmin(admin.ModelAdmin):
         (
             None, 
             {
-                'fields': ('title', )
+                'fields': ('title', 'slug')
             }
         ),
     )
 
-class ArticleForm(forms.ModelForm):
+class ArticleAdminForm(forms.ModelForm):
     class Meta:
         model = Article
         widgets = {
@@ -28,16 +28,16 @@ class ArticleForm(forms.ModelForm):
         exclude = ['content_markup',]
 
 class ArticleAdmin(admin.ModelAdmin):
-    form = ArticleForm
+    form = ArticleAdminForm
     # prepopulated_fields = {'slug': ('title',)}
-    list_display = ('title', 'date_publish')
+    list_display = ('title', 'date_publish', 'is_approved')
     search_fields = ('title', 'content_markdown',)
     list_filter = ('categories',)
     fieldsets = (
         (
             None, 
             {
-                'fields': ('title', 'cover', 'author', 'excerpt', 'content_markdown', 'categories', 'date_publish',)
+                'fields': ('title', 'slug', 'cover', 'author', 'excerpt', 'content_markdown', 'categories', 'date_publish', 'is_approved', )
             }
         ),
     )
