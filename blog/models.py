@@ -99,6 +99,8 @@ class Article(models.Model) :
         if not self.slug.strip():
             # slug is null or empty
             self.slug = uuslug(self.title, instance=self, max_length=32, word_boundary=True)
+        if self.is_approved is None:
+            self.is_approved = False
         self.content_markup = markdown(self.content_markdown, ['codehilite', 'attr_list'])
         super(Article, self).save(*args, **kwargs)
 
