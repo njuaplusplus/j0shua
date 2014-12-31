@@ -1,0 +1,96 @@
+{% extends 'docs/base.html' %}
+{% load staticfiles %}
+
+{% block title %}如何写博客 | 使用说明 | 约书亚团契 {% endblock %}
+
+{% block pageHeader %}
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url({% static 'docs/img/about-bg.jpg' %})">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>如何撰写博客</h1>
+                        <h2 class="subheading">在约书亚博客上面发布你的博客</h2>
+                        <span class="meta">由 <a href="#">aplusplus</a> 发表于 今天</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock pageHeader %}
+
+    <!-- Post Content -->
+{% block mainContent %}
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p>分类: 
+                    <span class="label label-default">文档说明</span>
+                    <span class="label label-default">哈哈</span>
+                    </p>
+                    <h2 class="section-heading">作者权限</h2>
+                    <p>本网站的用户, 可以联系我, 确认身份后, 我将会给你作者权限</p>
+                    <h2 class="section-heading">如何写作</h2>
+                    <p>博客内容主要采用<a href="http://wowubuntu.com/markdown/basic.html" target="_blank"> Markdown语法</a>. 这个语法非常简洁, 感兴趣的可以点上述链接, 查看快速入门.</p>
+                    <p><a href="{% url 'myadmin:write_post_view'%}">写博客地址点此</a>, 撰写博客主界面如下图所示:</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/main-ui.png'%}" alt="撰写博客主界面" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客主界面</span>
+                    <p>下面结合例子<a href="http://j0shua.org/blog/post/how-to-make-it/">主日分享: "成功的秘诀"</a>来讲解各个输入部分. 下图所示是博客生成后所示效果.</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/post-elements.jpg'%}" alt="博客中元素示例" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">博客中元素示例</span>
+                    <h3>1. 标题</h3>
+                    <p>标题输入框如下图所示:</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/title-input.png'%}" alt="撰写博客中输入标题" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中输入标题</span>
+                    <h3>2. 固定链接</h3>
+                    <p>固定链接输入框如下图所示:</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/slug-input.png'%}" alt="撰写博客中输入固定链接" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中输入固定链接</span>
+                    <p>固定链接的意思就是, 你访问本文章的网址标记. 例如这里面的 how-to-make-it 就是该文章的网址标记 可以通过 http://j0shua.org/blog/post/how-to-make-it/ 来访问这个文章. 其中的 http://j0shua.org/blog/post/ 对所有文章都一样, 固定链接所指定的就是后面链接的 how-to-make-it.  这样可以使得文章的网址更加美观, 也便于搜索引擎搜素. 一般固定链接就是标题的英文翻译, 每个单词中间用 - 来分隔.</p>
+                    <h3>3. 封面</h3>
+                    <p>封面选择如下图所示:</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/cover-input.png'%}" alt="撰写博客中选择封面" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中选择封面</span>
+                    <p>不选择封面, 则使用默认封面. 如下图所示:</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/default-cover.png'%}" alt="默认封面" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">默认封面</span>
+                    <h3>4. 摘要</h3>
+                    <p>摘要输入框如下图所示:</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/excerpt-input.png'%}" alt="撰写博客中输入摘要" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中输入摘要</span>
+                    <p>摘要, 就是文章的梗概. 显示在博客首页和文章顶部.</p>
+                    <h3>5. 内容</h3>
+                    <p>博客内容主要采用<a href="http://wowubuntu.com/markdown/basic.html" target="_blank"> Markdown语法</a>. 这个语法非常简洁, 感兴趣的可以点上述链接, 查看快速入门.</p>
+                    <p>内容输入框如下图所示:</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/content-input.png'%}" alt="撰写博客中输入内容" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中输入内容</span>
+                    <p>上面灰色部分是我们输入的内容, 主要采用 <a href="http://wowubuntu.com/markdown/basic.html" target="_blank"> Markdown语法</a>. 下面蓝色的部分是内容预览效果.</p>
+                    <p>注意不要被这个 Markdown 吓坏了.  其实我们使用的很简单, 主要记住两个, 其他的可以查看Markdown语法: 
+                        <ol>
+                            <li>内容小标题为 ## 成功的秘诀</li>
+                            <li>内容中每个段落中间空两行.</li>
+                        </ol>
+                    </p>
+                    <h3>6. 分类</h3>
+                    <p>点击输入框, 会弹出已有的分类. (暂时不支持普通用户添加新分类)</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/category-input.png'%}" alt="撰写博客中选择分类" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中选择分类</span>
+                    <p>选择一个分类, 例如 主日分享</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/select-category.png'%}" alt="选择主日分享" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">选择主日分享</span>
+                    <h3>7. 发布日期</h3>
+                    <p>输入日期选择框如下</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/datetime-input.png'%}" alt="撰写博客中选择发布日期" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中选择发布日期</span>
+                    <h3>8. 保存</h3>
+                    <p>点击保存按钮, 保存本博客.</p>
+                    <img class="img-responsive" src="{% static 'docs/img/how-to-write-post/save-post.png'%}" alt="撰写博客中保存" style="margin-left: auto; margin-right: auto;">
+                    <span class="caption text-muted">撰写博客中保存</span>
+                </div>
+            </div>
+        </div>
+    </article>
+{% endblock mainContent %}
