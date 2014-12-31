@@ -7,12 +7,12 @@ from blog.models import Category, Article
 import calendar, datetime
 
 def index(request):
-    return index_page(request,1)
+    return index_page(request, 1)
 
 def index_page(request, page_num):
     """The news index"""
-    archive_dates = Article.objects.datetimes('date_publish','month', order='DESC')
-    categories = Category.objects.all()
+    # archive_dates = Article.objects.datetimes('date_publish','month', order='DESC')
+    # categories = Category.objects.all()
 
     article_queryset = Article.objects.all()
     paginator = Paginator(article_queryset, 5)
@@ -31,23 +31,23 @@ def index_page(request, page_num):
         "blog/index.html",
         {
             "articles" : articles,
-            "archive_dates" : archive_dates,
-            "categories" : categories
+            # "archive_dates" : archive_dates,
+            # "categories" : categories
         }
     )
 
 def single(request, slug) :
     """A single article"""
     article = get_object_or_404(Article, slug=slug)
-    archive_dates = Article.objects.datetimes('date_publish','month', order='DESC')
-    categories = Category.objects.all()
+    # archive_dates = Article.objects.datetimes('date_publish','month', order='DESC')
+    # categories = Category.objects.all()
     return render(
         request,
         "blog/post.html",
         {
             "article" : article,
-            "archive_dates" : archive_dates,
-            "categories" : categories
+            # "archive_dates" : archive_dates,
+            # "categories" : categories
         }
     )
 
@@ -89,17 +89,19 @@ def date_archive(request, year, month) :
     )
 
 def category_archive(request, slug):
-    archive_dates = Article.objects.datetimes('date_publish','month', order='DESC')
-    categories = Category.objects.all()
+    return category_archive_page(request, slug, 1)
+
+def category_archive_page(request, slug, page_num):
+    # archive_dates = Article.objects.datetimes('date_publish','month', order='DESC')
+    # categories = Category.objects.all()
     category = get_object_or_404(Category, slug=slug)
 
     # Pagination
-    page = request.GET.get('page')
     article_queryset = Article.objects.filter(categories=category)
     paginator = Paginator(article_queryset, 5)
 
     try:
-        articles = paginator.page(page)
+        articles = paginator.page(page_num)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         articles = paginator.page(1)
@@ -108,11 +110,11 @@ def category_archive(request, slug):
         articles = paginator.page(paginator.num_pages)
     return render(
         request,
-        "blog/article/category_archive.html",
+        "blog/category_archive.html",
         {
             "articles" : articles,
-            "archive_dates" : archive_dates,
-            "categories" : categories,
+            # "archive_dates" : archive_dates,
+            # "categories" : categories,
             "category" : category
         }
     )
