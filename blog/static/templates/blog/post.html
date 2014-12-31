@@ -1,5 +1,6 @@
 {% extends 'blog/base1.html' %}
 {% load staticfiles %}
+{% load duoshuo_tags %}
 
 {% block title %}{{ article.title }}  | 博客 | 约书亚团契 {% endblock %}
 
@@ -48,6 +49,13 @@
             </div>
         </div>
     </article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                {% my_sso_duoshuo_comments 'blog-'|addstr:article.id '博客-'|addstr:article.title request.build_absolute_uri request.path|escape %}
+            </div>
+        </div>
+    </div>
 {% endblock mainContent %}
 
 {% block extScript %}
