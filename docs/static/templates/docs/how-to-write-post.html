@@ -1,5 +1,6 @@
 {% extends 'docs/base.html' %}
 {% load staticfiles %}
+{% load duoshuo_tags %}
 
 {% block title %}如何写博客 | 使用说明 | 约书亚团契 {% endblock %}
 
@@ -89,4 +90,11 @@
             </div>
         </div>
     </article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                {% my_sso_duoshuo_comments 'docs-how-to-write-post' '帮助文档: 如何写博客' request.build_absolute_uri request.path|escape %}
+            </div>
+        </div>
+    </div>
 {% endblock mainContent %}
