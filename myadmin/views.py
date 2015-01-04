@@ -68,7 +68,7 @@ def write_post_view(request):
 @login_required(login_url='/myadmin/accounts/login/')
 def edit_post_view(request, post_id):
     article = get_object_or_404(Article, pk=post_id)
-    if not request.user.groups.filter(name='admins') or request.user != article.author:
+    if not request.user.groups.filter(name='admins') and request.user != article.author:
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     if request.method == 'POST':
         article_form = ArticleForm(request.POST, request.FILES, instance=article)
