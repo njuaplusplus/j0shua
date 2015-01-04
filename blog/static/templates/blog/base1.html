@@ -77,6 +77,18 @@
                         <li>
                             <a href="{% url 'blog:index' %}" style="font-size: 20px;">首页</a>
                         </li>
+                        {% if not user.is_authenticated %}
+                            <li><a href="{% url 'homepage:login_view' %}?next={{ request.path }}" style="font-size: 20px;">登录</a></li>
+                        {% else %}
+                            <li><a href="#" style="font-size: 20px;">
+                                {% if user.first_name or user.last_name %}
+                                {{ user.last_name|addstr:user.first_name|truncatechars:9  }}
+                                {% else %}
+                                {{ user.username|truncatechars:9 }}
+                                {% endif %}
+                            </a></li>
+                            <li><a href="{% url 'homepage:logout_view' %}" style="font-size: 20px;">注销</a></li>
+                        {% endif %}
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->
