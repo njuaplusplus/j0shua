@@ -54,7 +54,7 @@ def bible(request):
             highlight_verses.extend(xrange(cur_start_verse_id, cur_end_verse_id+1))
     verses = cur_book.bible_chn_set.filter(chapternum=cur_chapternum).order_by('versenum')
     print highlight_verses
-    context = {'verses': verses, 'books': books, 'cur_book_id': cur_book.id, 'cur_chapternum': cur_chapternum, 'chapternums': xrange(cur_book.chapternums), 'highlight_verses': highlight_verses}
+    context = {'verses': verses, 'books': books, 'cur_book_id': cur_book.id, 'cur_chapternum': cur_chapternum, 'chapternums': xrange(1, cur_book.chapternums+1), 'highlight_verses': highlight_verses}
     return render(request, 'bibles/bible.html', context)
 
 def json_bible(request, book_id, chapternum):
