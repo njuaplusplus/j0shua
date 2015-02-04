@@ -1,0 +1,178 @@
+{% extends "myadmin/base.html" %}
+
+{% load staticfiles %}
+{% block title %} 每周读经管理 | 约书亚管理 {% endblock %}
+{% block headBlock %}
+<!-- DataTables CSS -->
+<link href="{% static 'myadmin/css/plugins/dataTables.bootstrap.css' %}" rel="stylesheet">
+<!-- Datepicker CSS -->
+<link href="{% static 'datepicker/css/datepicker3.css' %}" rel="stylesheet">
+<!-- select 2 -->
+<link href="{% static 'select2/css/select2.css' %}" rel="stylesheet">
+<link href="{% static 'select2/css/select2-bootstrap.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">每周读经</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                所有每周读经
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                        <thead>
+                            <tr>
+                                <th>日 期</th>
+                                <th>经 文</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dv in weekly_readings %}
+                            <tr>
+                                <td>{{ dv.verse_date }}</td>
+                                <td><a href="{% url 'bibles:bible' %}?bookid={{ dv.start_verse.book.id }}&chapternum={{ dv.start_verse.chapternum }}&verses={{ dv.start_verse.id }}-{{ dv.end_verse.id }}" target="_blank">{{ dv.start_verse }}-{{ dv.end_verse }}</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <form id="add-weekly-verse-form" role="form" method="POST" action="{{ request.path }}">
+            {% csrf_token %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    添加本周读经
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="input-group date" id="verse-datepicker">
+                        <input type="text" class="form-control" required /><span class="input-group-addon"><i class="glyphicon glyphicon-th">日期</i></span>
+                    </div>
+                    <input type="hidden" name="verse-date" value="" />
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>名 称</th>
+                                    <th>卷 名</th>
+                                    <th>章</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>起始经文</td>
+                                    <td>
+                                        <select name="start-verse-book">
+                                            <option></option>
+                                            {% for book in books %}
+                                            <option value="{{ book.id }}">
+                                                {{ book.book_name_zh }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="start-verse-chapternum" required />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>结束经文</td>
+                                    <td>
+                                        <select name="end-verse-book">
+                                            <option></option>
+                                            {% for book in books %}
+                                            <option value="{{ book.id }}">
+                                                {{ book.book_name_zh }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="end-verse-chapternum" required />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+                <!-- /.panel-footer -->
+            </div>
+            <!-- /.panel -->
+        </form>
+    </div>
+</div>
+<!-- /.row -->
+{% endblock mainContent %}
+
+{% block extScriptFile %}
+<!-- DataTables JavaScript -->
+<script src="{% static 'myadmin/js/plugins/dataTables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'myadmin/js/plugins/dataTables/dataTables.bootstrap.js' %}"></script>
+<!-- Datepicker JavaScript -->
+<script src="{% static 'datepicker/js/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'datepicker/js/locales/bootstrap-datepicker.zh-CN.js' %}"></script>
+<script src="{% static 'select2/js/select2.js' %}"></script>
+<script src="{% static 'select2/js/select2_locale_zh-CN.js' %}"></script>
+{% endblock extScriptFile %}
+
+{% block extScript %}
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+$('#dataTables-example').dataTable({
+    "order": []
+});
+$('#verse-datepicker').datepicker({
+    todayBtn: "linked",
+    clearBtn: true,
+    language: "zh-CN",
+    autoclose: true
+});
+$("select[name='start-verse-book']:visible").select2({placeholder: "选择卷名", allowClear: true, dropdownAutoWidth: true});
+$("select[name='end-verse-book']:visible").select2({placeholder: "选择卷名", allowClear: true, dropdownAutoWidth: true});
+$("#add-weekly-verse-form").submit(function(event){
+    verse_date = $('#verse-datepicker').datepicker('getUTCDate')
+    if (verse_date  == "Invalid Date") {
+        alert("请选择日期!");
+        event.preventDefault();
+    } else {
+        datestr = verse_date.getFullYear() + "-" + (verse_date.getMonth()+1) + "-" + verse_date.getDate();
+        $("[name='verse-date']").val(datestr);
+    }
+    x =  $("select[name='start-verse-book']").val();
+    if (x == null || x == "") {
+        alert("请选择起始经文的卷名");
+        event.preventDefault();
+    }
+    x =  $("select[name='end-verse-book']").val();
+    if (x == null || x == "") {
+        alert("请选择结束经文的卷名");
+        event.preventDefault();
+    }
+});
+
+{% endblock extScript %}

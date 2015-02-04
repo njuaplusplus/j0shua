@@ -11,24 +11,30 @@ from django.core.urlresolvers import reverse
 # from django.utils import timezone
 import datetime
 
-from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse, Weekly_Verse
+from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse, Weekly_Verse, Weekly_Reading, Weekly_Recitation
 
 import json
 
 def index(request):
     today = datetime.date.today()
     coming_sunday = today + datetime.timedelta(days=6-today.weekday())
+    past_monday = today - datetime.timedelta(days=today.weekday())
     daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
     weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
+    weekly_readings = Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('pk')
+    weekly_recitation = Weekly_Recitation.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('pk').first()
     daily_verses = []
     weekly_verses = []
+    weekly_recitation_verses = []
     if daily_verse:
         # Get the daily verses
         daily_verses = Bible_CHN.objects.filter(pk__range=(daily_verse.start_verse.id, daily_verse.end_verse.id)).order_by('pk')
     if weekly_verse:
         # Get the weekly verses
         weekly_verses = Bible_CHN.objects.filter(pk__range=(weekly_verse.start_verse.id, weekly_verse.end_verse.id)).order_by('pk')
-    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses)}
+    if weekly_recitation:
+        weekly_recitation_verses = Bible_CHN.objects.filter(pk__range=(weekly_recitation.start_verse.id,weekly_recitation.end_verse.id)).order_by('pk')
+    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses), 'weekly_readings': weekly_readings, 'weekly_recitation': weekly_recitation, 'weekly_recitation_verses': weekly_recitation_verses,}
     return render(request, 'bibles/index.html', context)
 
 def bible(request):

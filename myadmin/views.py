@@ -7,7 +7,7 @@ from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from hymns.models import Weekly_Hymn, Hymn, Worship_Location
-from bibles.models import Daily_Verse, Weekly_Verse, Bible_Book_Name
+from bibles.models import Daily_Verse, Weekly_Verse, Bible_Book_Name, Weekly_Reading, Weekly_Recitation
 from blog.models import Article, ArticleForm
 
 import datetime
@@ -111,6 +111,64 @@ def weekly_verses_view(request):
         weekly_verse_exists = weekly_verses and weekly_verses.first().verse_date == coming_sunday
         context = {'books': books, 'weekly_verses': weekly_verses, 'weekly_verse_exists': weekly_verse_exists,}
         return render(request, 'myadmin/weekly_verses.html', context)
+
+@login_required(login_url='/myadmin/accounts/login/')
+def weekly_readings_view(request):
+    if not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    if request.method == 'POST':
+        datestr = request.POST.get('verse-date', '').split('-')
+        try:
+            start_verse_book_id = int(request.POST.get('start-verse-book', ''))
+            start_verse_chapternum = int(request.POST.get('start-verse-chapternum', ''))
+            end_verse_book_id = int(request.POST.get('end-verse-book', ''))
+            end_verse_chapternum = int(request.POST.get('end-verse-chapternum', ''))
+        except ValueError:
+            return render(request, 'hymns/test_result.html', {'result': '格式错误', })
+        else:
+            start_verse_versenum = 1
+            end_verse_versenum = 1
+            verse_date = datetime.date(int(datestr[0]), int(datestr[1]), int(datestr[2]))
+            start_verse_book = Bible_Book_Name.objects.get(pk=start_verse_book_id)
+            start_verse = start_verse_book.bible_chn_set.get(chapternum=start_verse_chapternum, versenum=start_verse_versenum)
+            end_verse_book = Bible_Book_Name.objects.get(pk=end_verse_book_id)
+            end_verse = end_verse_book.bible_chn_set.get(chapternum=end_verse_chapternum, versenum=end_verse_versenum)
+            Weekly_Reading(verse_date=verse_date,start_verse=start_verse,end_verse=end_verse).save()
+        return HttpResponseRedirect(reverse('myadmin:weekly_readings_view'))
+    else:
+        weekly_readings = Weekly_Reading.objects.order_by('-verse_date')
+        books = Bible_Book_Name.objects.all()
+        context = {'books': books, 'weekly_readings': weekly_readings,}
+        return render(request, 'myadmin/weekly_readings.html', context)
+
+@login_required(login_url='/myadmin/accounts/login/')
+def weekly_recitations_view(request):
+    if not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    if request.method == 'POST':
+        datestr = request.POST.get('verse-date', '').split('-')
+        try:
+            start_verse_book_id = int(request.POST.get('start-verse-book', ''))
+            start_verse_chapternum = int(request.POST.get('start-verse-chapternum', ''))
+            start_verse_versenum = int(request.POST.get('start-verse-versenum', ''))
+            end_verse_book_id = int(request.POST.get('end-verse-book', ''))
+            end_verse_chapternum = int(request.POST.get('end-verse-chapternum', ''))
+            end_verse_versenum = int(request.POST.get('end-verse-versenum', ''))
+        except ValueError:
+            return render(request, 'hymns/test_result.html', {'result': '格式错误', })
+        else:
+            verse_date = datetime.date(int(datestr[0]), int(datestr[1]), int(datestr[2]))
+            start_verse_book = Bible_Book_Name.objects.get(pk=start_verse_book_id)
+            start_verse = start_verse_book.bible_chn_set.get(chapternum=start_verse_chapternum, versenum=start_verse_versenum)
+            end_verse_book = Bible_Book_Name.objects.get(pk=end_verse_book_id)
+            end_verse = end_verse_book.bible_chn_set.get(chapternum=end_verse_chapternum, versenum=end_verse_versenum)
+            Weekly_Recitation(verse_date=verse_date,start_verse=start_verse,end_verse=end_verse).save()
+        return HttpResponseRedirect(reverse('myadmin:weekly_recitations_view'))
+    else:
+        weekly_recitations = Weekly_Recitation.objects.order_by('-verse_date')
+        books = Bible_Book_Name.objects.all()
+        context = {'books': books, 'weekly_recitations': weekly_recitations,}
+        return render(request, 'myadmin/weekly_recitations.html', context)
 
 @login_required(login_url='/myadmin/accounts/login/')
 def write_post_view(request):

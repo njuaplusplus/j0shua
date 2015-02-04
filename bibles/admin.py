@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
 from django.contrib import admin
-from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse
+from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse, Weekly_Verse, Weekly_Reading, Weekly_Recitation
 
 # Register your models here.
 # class Bible_NIVAdmin(admin.ModelAdmin):
@@ -20,3 +20,6 @@ class Daily_VerseAdmin(admin.ModelAdmin):
 admin.site.register(Bible_CHN, Bible_CHNAdmin)
 admin.site.register(Bible_Book_Name, Bible_Book_NameAdmin)
 admin.site.register(Daily_Verse, Daily_VerseAdmin)
+admin.site.register(Weekly_Verse)
+admin.site.register(Weekly_Reading)
+admin.site.register(Weekly_Recitation)

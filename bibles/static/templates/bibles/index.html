@@ -76,4 +76,61 @@
         </div>
     </div>
 {% endif %}
+{% for wr in weekly_readings %}
+    {% if forloop.first %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>本周读经
+                <small> 更新于 {{ wr.verse_date }}
+                </small>
+            </h1>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h4>{{ wr.start_verse.book }} {{wr.start_verse.chapternum }} <small>到</small> {{ wr.end_verse.book }} {{wr.end_verse.chapternum }}</h4>
+        </div>
+    </div>
+{% empty %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>本周读经
+                <small> 暂未更新
+                </small>
+            </h1>
+        </div>
+    </div>
+{% endfor %}
+{% if weekly_recitation %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>本周背经
+                <small> 更新于 {{ weekly_recitation.verse_date }}
+                </small>
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h4>{{ weekly_recitation.start_verse }} <small>到</small> {{ weekly_recitation.end_verse }}</h4>
+        </div>
+    </div>
+    {% for verse in weekly_recitation_verses %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <small>{{ verse.versenum }}</small> {{ verse.verse }}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>本周背经
+                <small> 暂未更新
+                </small>
+            </h1>
+        </div>
+    </div>
+{% endif %}
 {% endblock biblesMainContent %}
