@@ -76,7 +76,7 @@
                     </ul>
                     {% else %}
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">
+                        <li><a href="{% url 'myadmin:user_profile_view' %}">
                             {% if user.first_name or user.last_name %}
                             {{ user.last_name|addstr:user.first_name|truncatechars:9  }}
                             {% else %}

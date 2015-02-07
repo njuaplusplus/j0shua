@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load has_group %}
 <!DOCTYPE html>
 <html lang="zh-cn">
     <head>
@@ -251,7 +252,7 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            <li><a href="{% url 'myadmin:user_profile_view' %}"><i class="fa fa-user fa-fw"></i> 个人信息</a>
                             </li>
                             <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                             </li>
@@ -280,7 +281,10 @@
                                 <!-- /input-group -->
                             </li>
                             <li>
-                                <a href="{% url 'myadmin:index'%}"><i class="fa fa-dashboard fa-fw"></i> 仪表盘 </a>
+                                <a href="{% url 'myadmin:index' %}"><i class="fa fa-dashboard fa-fw"></i> 仪表盘 </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'myadmin:user_profile_view' %}"><i class="fa fa-user fa-fw"></i> 个人信息 </a>
                             </li>
                             <li>
                                 <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
@@ -294,6 +298,7 @@
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
+                            {% if user|has_group:'admins' %}
                             <li>
                                 <a href="{% url 'myadmin:daily_verses_view' %}"><i class="fa fa-table fa-fw"></i> 每日经文管理</a>
                             </li>
@@ -315,6 +320,7 @@
                             <li>
                                 <a href="{% url 'myadmin:write_post_view' %}"><i class="fa fa-edit fa-fw"></i> 撰写博客</a>
                             </li>
+                            {% endif %}
                             <li>
                                 <a href=""><i class="fa fa-edit fa-fw"></i> Forms</a>
                             </li>

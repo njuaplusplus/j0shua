@@ -1,0 +1,54 @@
+{% extends "myadmin/base.html" %}
+
+{% load staticfiles %}
+{% block title %} 个人信息 | 约书亚管理 {% endblock %}
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">个人信息</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <form id="user-profile-form" role="form" method="POST" action="{{ request.path }}">
+        {% csrf_token %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    博客
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    {% for field in profile_form.visible_fields %}
+                    <div id="div_{{ field.html_name }}" 
+                        class="form-group{% if field.errors %} has-error{% endif %}">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        <div class="text-muted pull-right">
+                            <small>{{ field.help_text }}</small>
+                        </div>
+                        <div class="help-block">
+                            {{ field.errors }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% for hidden in profile_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+                <!-- /.panel-footer -->
+            </div>
+            <!-- /.panel -->
+        </form>
+        <!-- /form -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+{% endblock mainContent %}

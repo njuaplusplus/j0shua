@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from hymns.models import Weekly_Hymn, Hymn, Worship_Location
 from bibles.models import Daily_Verse, Weekly_Verse, Bible_Book_Name, Weekly_Reading, Weekly_Recitation
 from blog.models import Article, ArticleForm
+from homepage.models import UserProfileForm
 
 import datetime
 # Create your views here.
@@ -199,6 +200,17 @@ def edit_post_view(request, post_id):
     else:
         article_form = ArticleForm(instance=article)
     return render(request, 'myadmin/write_post.html', {'article_form': article_form, })
+
+@login_required(login_url='/myadmin/accounts/login/')
+def user_profile_view(request):
+    if request.method == 'POST':
+        profile_form = UserProfileForm(request.POST, instance=request.user)
+        if profile_form.is_valid():
+            profile_form.save()
+            return HttpResponseRedirect(reverse('myadmin:user_profile_view'))
+    else:
+        profile_form = UserProfileForm(instance=request.user)
+    return render(request, 'myadmin/user_profile.html', {'profile_form': profile_form, })
 
 def login_view(request):
     if request.user is not None and request.user.is_active:
