@@ -6,12 +6,13 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from hymns.models import Weekly_Hymn, Hymn, Worship_Location
+from hymns.models import Weekly_Hymn, Hymn, Worship_Location, Hymn_Form
 from bibles.models import Daily_Verse, Weekly_Verse, Bible_Book_Name, Weekly_Reading, Weekly_Recitation
 from blog.models import Article, ArticleForm
 from homepage.models import UserProfileForm
 
 import datetime
+import re
 # Create your views here.
 
 @login_required(login_url='/myadmin/accounts/login/')
@@ -211,6 +212,68 @@ def user_profile_view(request):
     else:
         profile_form = UserProfileForm(instance=request.user)
     return render(request, 'myadmin/user_profile.html', {'profile_form': profile_form, })
+
+@login_required(login_url='/myadmin/accounts/login/')
+def upload_hymn_view(request):
+    ''' Upload the hymn
+
+    '''
+    if not request.user.groups.filter(name='uploaders') and not request.user.has_perm(u'hymns.add_hymn') and not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    if request.method == 'POST':
+        form = Hymn_Form(request.POST, request.FILES)
+        if form.is_valid():
+            hymn = form.save(commit=False)
+            if hymn.hymn_audio:
+                tmp = re.findall('zanmeishi.com/song/(\d+)\.html',hymn.hymn_audio)
+                if len(tmp) == 1:
+                    audio_id = tmp[0]
+                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
+                else:
+                    return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
+            hymn.hymn_isCandidate = True
+            hymn.hymn_uploader = request.user
+            hymn.save()
+            form.save_m2m()
+            print 'Hymn saved! %s' % hymn.id
+            return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
+    else:
+        form = Hymn_Form()
+    return render(request, 'myadmin/upload_hymn.html', {'hymn_form': form, })
+
+@login_required(login_url='/myadmin/accounts/login/')
+def edit_hymn_view(request, hymn_id):
+    ''' Edit the existing hymn
+
+    '''
+    if not request.user.has_perm(u'hymns.change_hymn') and not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    hymn = get_object_or_404(Hymn, pk=hymn_id)
+    if request.method == 'POST':
+        form = Hymn_Form(request.POST, request.FILES, instance=hymn)
+        if form.is_valid():
+            hymn = form.save(commit=False)
+            if hymn.hymn_audio and not hymn.hymn_audio.lower().endswith('mp3'):
+                tmp = re.findall('zanmeishi.com/song/(\d+)\.html',hymn.hymn_audio)
+                if len(tmp) == 1:
+                    audio_id = tmp[0]
+                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
+                else:
+                    return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
+            hymn.save()
+            form.save_m2m()
+            print 'Hymn saved! %s' % hymn.id
+            return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
+    else:
+        form = Hymn_Form(instance=hymn)
+    return render(request, 'myadmin/edit_hymn.html', {'hymn_form': form, })
+
+@login_required(login_url='/myadmin/accounts/login/')
+def hymns_view(request):
+    if not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    hymns = Hymn.objects.all()
+    return render(request, 'myadmin/all_hymns.html', {'hymns': hymns})
 
 def login_view(request):
     if request.user is not None and request.user.is_active:

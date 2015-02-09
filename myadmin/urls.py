@@ -18,4 +18,7 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', views.login_view, name='login_view'),
     url(r'^accounts/logout/$', views.logout_view, name='logout_view'),
     url(r'^user-profile/$', views.user_profile_view, name='user_profile_view'),
+    url(r'^upload-hymn/$', views.upload_hymn_view, name='upload_hymn_view'),
+    url(r'^edit-hymn/(?P<hymn_id>\d+)/$', views.edit_hymn_view, name='edit_hymn_view'),
+    url(r'^hymns/$', views.hymns_view, name='hymns_view'),
 )
