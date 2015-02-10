@@ -102,28 +102,30 @@
         </div>
     </div>
 {% endfor %}
-{% if weekly_recitation %}
+{% for wrv in weekly_recitation_verses  %}
+    {% if forloop.first  %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <h1>本周背经
-                <small> 更新于 {{ weekly_recitation.verse_date }}
+                <small> 更新于 {{ wrv.0.verse_date }}
                 </small>
             </h1>
         </div>
     </div>
+    {% endif %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <h4>{{ weekly_recitation.start_verse }} <small>到</small> {{ weekly_recitation.end_verse }}</h4>
+            <h4>{{ wrv.0.start_verse }} <small>到</small> {{ wrv.0.end_verse }}</h4>
         </div>
     </div>
-    {% for verse in weekly_recitation_verses %}
+    {% for verse in wrv.1 %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <small>{{ verse.versenum }}</small> {{ verse.verse }}
         </div>
     </div>
     {% endfor %}
-{% else %}
+{% empty %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <h1>本周背经
@@ -132,5 +134,5 @@
             </h1>
         </div>
     </div>
-{% endif %}
+{% endfor %}
 {% endblock biblesMainContent %}

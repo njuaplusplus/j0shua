@@ -104,6 +104,53 @@
     </div>
 </div>
 {% endif %}
+{% for wr in weekly_readings %}
+    {% if forloop.first %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="thumbnail">
+            <div class="caption">
+                <h2>本周读经
+                    <small> 更新于 {{ wr.verse_date }}
+                    </small>
+                </h2>
+    {% endif %}
+                <h4>{{ wr.start_verse.book }} {{wr.start_verse.chapternum }} <small>到</small> {{ wr.end_verse.book }} {{wr.end_verse.chapternum }}</h4>
+    {% if forloop.last %}
+                <p>
+                <a href="{% url 'bibles:index' %}" class="btn btn-default" role="button">读经首页</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endif %}
+{% endfor %}
+{% for wrv in weekly_recitation_verses  %}
+    {% if forloop.first %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="thumbnail">
+            <div class="caption">
+                <h2>本周背经
+                    <small> 更新于 {{ wrv.0.verse_date }}
+                    </small>
+                </h2>
+    {% endif %}
+                <h4>{{ wrv.0.start_verse }} <small>到</small> {{ wrv.0.end_verse }}</h4>
+                <p>
+                {% for verse in wrv.1 %}
+                    <small>{{ verse.versenum }}</small> {{ verse.verse }}
+                {% endfor %}
+                </p>
+    {% if forloop.last %}
+                <p>
+                <a href="{% url 'bibles:index' %}" class="btn btn-default" role="button">读经首页</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endif %}
+{% endfor %}
 {% for weekly_hymns_by_place in weekly_hymns %}
 {% if forloop.counter0|divisibleby:2 %}
 <div class="row">

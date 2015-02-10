@@ -22,7 +22,7 @@ def index(request):
     daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
     weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
     weekly_readings = Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('pk')
-    weekly_recitation = Weekly_Recitation.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('pk').first()
+    weekly_recitations = Weekly_Recitation.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('-verse_date')
     daily_verses = []
     weekly_verses = []
     weekly_recitation_verses = []
@@ -32,9 +32,9 @@ def index(request):
     if weekly_verse:
         # Get the weekly verses
         weekly_verses = Bible_CHN.objects.filter(pk__range=(weekly_verse.start_verse.id, weekly_verse.end_verse.id)).order_by('pk')
-    if weekly_recitation:
-        weekly_recitation_verses = Bible_CHN.objects.filter(pk__range=(weekly_recitation.start_verse.id,weekly_recitation.end_verse.id)).order_by('pk')
-    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses), 'weekly_readings': weekly_readings, 'weekly_recitation': weekly_recitation, 'weekly_recitation_verses': weekly_recitation_verses,}
+    for wr in weekly_recitations:
+        weekly_recitation_verses.append((wr, Bible_CHN.objects.filter(pk__range=(wr.start_verse.id,wr.end_verse.id)).order_by('pk')))
+    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses), 'weekly_readings': weekly_readings, 'weekly_recitation_verses': weekly_recitation_verses,}
     return render(request, 'bibles/index.html', context)
 
 def bible(request):

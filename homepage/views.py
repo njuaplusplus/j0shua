@@ -18,7 +18,7 @@ import jwt
 import random
 from duoshuo import DuoshuoAPI
 
-from bibles.models import Bible_CHN, Daily_Verse, Weekly_Verse
+from bibles.models import Bible_CHN, Daily_Verse, Weekly_Verse, Weekly_Reading, Weekly_Recitation
 from hymns.models import Weekly_Hymn, Worship_Location
 from homepage.models import User_Profile
 
@@ -26,16 +26,22 @@ def index(request):
     # today = timezone.now().date() # 8 hours earlier
     today = datetime.date.today()
     coming_sunday = today + datetime.timedelta(days=6-today.weekday())
+    past_monday = today - datetime.timedelta(days=today.weekday())
     daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
     weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
+    weekly_readings = Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('pk')
+    weekly_recitations = Weekly_Recitation.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('-verse_date')
     daily_verses = []
     weekly_verses = []
+    weekly_recitation_verses = []
     if daily_verse:
         # Get the daily verses
         daily_verses = Bible_CHN.objects.filter(pk__range=(daily_verse.start_verse.id, daily_verse.end_verse.id)).order_by('pk')
     if weekly_verse:
         # Get the weekly verses
         weekly_verses = Bible_CHN.objects.filter(pk__range=(weekly_verse.start_verse.id, weekly_verse.end_verse.id)).order_by('pk')
+    for wr in weekly_recitations:
+        weekly_recitation_verses.append((wr, Bible_CHN.objects.filter(pk__range=(wr.start_verse.id,wr.end_verse.id)).order_by('pk')))
     # For Weekly Hymns
     weekly_hymns = []
     db_weekly_hymns = Weekly_Hymn.objects.filter(hymn_date=coming_sunday)
@@ -47,7 +53,7 @@ def index(request):
             for h in tmp_hymns:
                 weekly_hymns_by_place.append(h)
             weekly_hymns.append(weekly_hymns_by_place)
-    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses), 'weekly_hymns': weekly_hymns}
+    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses), 'weekly_hymns': weekly_hymns, 'weekly_readings': weekly_readings, 'weekly_recitation_verses': weekly_recitation_verses,}
     response = render(request, 'homepage/index.html', context)
     return set_jwt_and_response(request.user, response)
 
