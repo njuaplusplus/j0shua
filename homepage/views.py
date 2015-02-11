@@ -197,3 +197,10 @@ def sync_sso_duoshuo(access_token, user):
     response = urllib2.urlopen(request)
     result = response.read()
     print result
+
+def page_not_found_view(request):
+    ''' Custom 404 page
+    '''
+    response = render(request, '404.html')
+    response.status_code = 404
+    return response

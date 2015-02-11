@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding=utf-8
 
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, handler404
 
 from homepage import views
 
@@ -12,3 +12,5 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/$', views.logout_view, name='logout_view'),
     url(r'^accounts/register/$', views.register_view, name='register_view'),
 )
+
+handler404 = 'homepage.views.page_not_found_view'
