@@ -17,7 +17,20 @@ import re
 
 @login_required(login_url='/myadmin/accounts/login/')
 def index(request):
-    return render(request, 'myadmin/index.html')
+    if not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    hymns = Hymn.objects.all()
+    num_of_hymn = hymns.filter(hymn_isCandidate=False).count()
+    num_of_candidate_hymn = hymns.filter(hymn_isCandidate=True).count()
+    num_of_user = User.objects.filter(is_superuser=False).count()
+    num_of_article = Article.objects.count()
+    context = {
+        'num_of_hymn' : num_of_hymn,
+        'num_of_candidate_hymn' : num_of_candidate_hymn,
+        'num_of_user' : num_of_user,
+        'num_of_article' : num_of_article,
+    }
+    return render(request, 'myadmin/index.html', context)
 
 @login_required(login_url='/myadmin/accounts/login/')
 def users_view(request):
