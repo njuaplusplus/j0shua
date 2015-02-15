@@ -13,6 +13,7 @@ from homepage.models import UserProfileForm
 
 import datetime
 import re
+import requests
 # Create your views here.
 
 @login_required(login_url='/myadmin/accounts/login/')
@@ -24,11 +25,26 @@ def index(request):
     num_of_candidate_hymn = hymns.filter(hymn_isCandidate=True).count()
     num_of_user = User.objects.filter(is_superuser=False).count()
     num_of_article = Article.objects.count()
+
+    # 获得多说统计的本站的最热门文章
+    top_pages = []
+    params = {
+        'short_name' : 'j0shua',
+        'range' : 'all',
+    }
+    res = requests.get('http://api.duoshuo.com/sites/listTopThreads.json', params=params)
+    if res.status_code == 200:
+        res = res.json()
+        if res['code'] == 0:
+            res = res['response']
+            top_pages = [(x['title'], x['url'], x['comments'], x['likes']) for x in res ]
+
     context = {
         'num_of_hymn' : num_of_hymn,
         'num_of_candidate_hymn' : num_of_candidate_hymn,
         'num_of_user' : num_of_user,
         'num_of_article' : num_of_article,
+        'top_pages' : top_pages,
     }
     return render(request, 'myadmin/index.html', context)
 

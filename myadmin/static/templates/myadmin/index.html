@@ -99,4 +99,43 @@
     </div>
 </div>
 <!-- /.row -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                热门页面 Top 5
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>名 称</th>
+                                <th>评 论</th>
+                                <th>点 赞</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in top_pages %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{{ p.1 }}" target="_blank">{{ p.0 }}</a></td>
+                                <td>{{ p.2 }}</td>
+                                <td>{{ p.3 }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+</div>
+<!-- /.row -->
 {% endblock mainContent %}
