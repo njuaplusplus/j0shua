@@ -16,6 +16,7 @@ urlpatterns = patterns('',
 #    url(r'^tmp-score/(?P<score_type>\w+)/(?P<score_id>\d+)/$', views.tmpScore, name='tmpScore'),
 #    # /musics/weekly-hymns/
     url(r'^weekly-hymns/$', views.weekly_hymns, name='weekly_hymns'),
+    url(r'^weekly-hymns/page/(?P<page_num>[\d]+)/$', views.weekly_hymns_page, name='weekly_hymns_page'),
 #    url(r'^weekly-hymns-json/$', views.weekly_hymns_json, name='weekly_hymns_json'),
 #    url(r'^musics-json/(?P<music_index>\d+)/$', views.musics_json, name='musics_json'),
     url(r'^upload-hymn/$', views.upload_hymn_view, name='upload_hymn_view'),

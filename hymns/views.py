@@ -7,6 +7,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form, Worship_Location, Weekly_Hymn_Form
 
@@ -70,11 +71,9 @@ def hymn(request, hymn_id):
 # 
 
 def weekly_hymns(request):
-    # This order makes the data like:
-    # Sep 21 2014 xianlin 1
-    # Sep 21 2014 shiqu 1
-    # Sep 21 2014 xianlin 2
-    # Sep 21 2014 shiqu 2
+    return weekly_hymns_page(request, 1)
+
+def weekly_hymns_page(request, page_num):
     tmp_dates = Weekly_Hymn.objects.dates('hymn_date', 'day', order='DESC')
     tmp_places = Worship_Location.objects.all()
     weekly_hymn_list = []
@@ -86,6 +85,15 @@ def weekly_hymns(request):
                 hymn_by_place_list.append(tmp_place.weekly_hymn_set.filter(hymn_date=tmp_date).order_by('hymn_order'))
             weekly_hymn_list.append(hymn_by_place_list)
     # print weekly_hymn_list
+    paginator = Paginator(weekly_hymn_list, 3)
+    try:
+        weekly_hymn_list = paginator.page(page_num)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        weekly_hymn_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range(e.g. 999999), deliver last page of results.
+        weekly_hymn_list = paginator.page(paginator.num_pages)
     return render(request, 'hymns/weekly_hymns.html', {'weekly_hymn_list': weekly_hymn_list})
 
 # Use homepage login and register

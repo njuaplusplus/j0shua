@@ -4,7 +4,7 @@
 
 {% block hymnsMainContent %}
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-4 col-md-offset-4">
     {% for hymn_by_place_lists in weekly_hymn_list %}
         {% for hymn_list in hymn_by_place_lists %}
             {% if forloop.first %}
@@ -39,5 +39,19 @@
     {% endfor %}
     </div>
 </div>
+<nav>
+  <ul class="pager">
+    {% if weekly_hymn_list.has_previous %}
+    <li class="previous">
+        <a href="{% url 'hymns:weekly_hymns_page' page_num=weekly_hymn_list.previous_page_number %}"><span aria-hidden="true">&larr;</span> 上一页</a>
+    </li>
+    {% endif %}
+    {% if weekly_hymn_list.has_next %}
+    <li class="next">
+        <a href="{% url 'hymns:weekly_hymns_page' page_num=weekly_hymn_list.next_page_number %}">下一页 <span aria-hidden="true">&rarr;</span></a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
 
 {% endblock %}
