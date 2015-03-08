@@ -5,6 +5,41 @@
 {% block biblesMainContent %}
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
+    {% if version == 'niv' %}
+        <div class="form-inline">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Book</div>
+                    <label class="sr-only" for="id_book_name">Book</label>
+                    <select class="form-control" id="id_book_name" name="book_name">
+                        {% for book in books %}
+                        <option value="{{ book.id }}-{{ book.chapternums }}" 
+                            {% if book.id == cur_book_id %}
+                                selected="selected"
+                            {% endif %}
+                        >{{ book.book_name_en }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon">Chapter</div>
+                    <label class="sr-only" for="id_chapternum">Chapter</label>
+                    <select class="form-control" id="id_chapternum" name="chapternum">
+                        {% for c in chapternums %}
+                        <option value="{{ c }}" 
+                            {% if c == cur_chapternum %}
+                                selected="selected"
+                            {% endif %}
+                        >{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="button" class="btn btn-default" id="getverse">Go</button>
+        </div>
+    {% else %}
         <div class="form-inline">
             <div class="form-group">
                 <div class="input-group">
@@ -38,6 +73,7 @@
             </div>
             <button type="button" class="btn btn-default" id="getverse">跳转</button>
         </div>
+    {% endif %}
     </div>
 </div>
 <div id="id_verses">
@@ -84,7 +120,7 @@ $("#getverse").click(function(){
     book_id = $("#id_book_name").val().split("-")[0];
     chapternum = $("#id_chapternum").val();
     // alert(book_id + " : " + chapternum);
-    url = "/bibles/json/bible/" + book_id + "/" + chapternum + "/";
+    url = "/bibles/json/bible/{{ version }}/" + book_id + "/" + chapternum + "/";
     $.get(url, function(data, status) {
         // alert("Data: " + data + "\nStatus: " + status);
         if (status == "success") {

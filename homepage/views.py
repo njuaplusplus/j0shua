@@ -29,8 +29,12 @@ def index(request):
     past_monday = today - datetime.timedelta(days=today.weekday())
     daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
     weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
-    weekly_readings = Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('pk')
-    weekly_recitations = Weekly_Recitation.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('-verse_date')
+    weekly_readings = list(Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('-verse_date'))
+    weekly_recitations = []
+    if weekly_readings:
+        latest_date = max([w.verse_date for w in weekly_readings])
+        weekly_readings = [w for w in weekly_readings if w.verse_date==latest_date]
+        weekly_recitations = Weekly_Recitation.objects.filter(verse_date=latest_date).order_by('-pk')
     daily_verses = []
     weekly_verses = []
     weekly_recitation_verses = []

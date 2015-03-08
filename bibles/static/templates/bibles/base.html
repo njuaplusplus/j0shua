@@ -5,6 +5,7 @@
     <ul class="nav navbar-nav">
         <li><a href="{% url 'bibles:index' %}">读经</a></li>
         <li><a href="{% url 'bibles:bible' %}">圣经</a></li>
+        <li><a href="{% url 'bibles:bible_version' version='niv' %}">NIV 圣经</a></li>
     </ul>
 {% endblock navbarBlock %}
 

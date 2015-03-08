@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 # from django.utils import timezone
 import datetime
 
-from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse, Weekly_Verse, Weekly_Reading, Weekly_Recitation
+from bibles.models import Bible_CHN, Bible_Book_Name, Daily_Verse, Weekly_Verse, Weekly_Reading, Weekly_Recitation, Bible_NIV2011
 
 import json
 
@@ -21,8 +21,12 @@ def index(request):
     past_monday = today - datetime.timedelta(days=today.weekday())
     daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
     weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
-    weekly_readings = Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('pk')
-    weekly_recitations = Weekly_Recitation.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('-verse_date')
+    weekly_readings = list(Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('-verse_date'))
+    weekly_recitations = []
+    if weekly_readings:
+        latest_date = max([w.verse_date for w in weekly_readings])
+        weekly_readings = [w for w in weekly_readings if w.verse_date==latest_date]
+        weekly_recitations = Weekly_Recitation.objects.filter(verse_date=latest_date).order_by('-pk')
     daily_verses = []
     weekly_verses = []
     weekly_recitation_verses = []
@@ -38,6 +42,9 @@ def index(request):
     return render(request, 'bibles/index.html', context)
 
 def bible(request):
+    return bible_version(request, 'chn')
+
+def bible_version(request, version):
     books = Bible_Book_Name.objects.all()
     # cur_book is used to record the book that the user read last time
     # chapternum is used to record the chapter that the user read last time
@@ -58,12 +65,23 @@ def bible(request):
         if cur_start_verse_id and cur_end_verse_id:
             print cur_start_verse_id, cur_end_verse_id
             highlight_verses.extend(xrange(cur_start_verse_id, cur_end_verse_id+1))
-    verses = cur_book.bible_chn_set.filter(chapternum=cur_chapternum).order_by('versenum')
+    if version == 'niv':
+        verses = cur_book.bible_niv2011_set.filter(chapternum=cur_chapternum).order_by('versenum')
+    else:
+        verses = cur_book.bible_chn_set.filter(chapternum=cur_chapternum).order_by('versenum')
     print highlight_verses
-    context = {'verses': verses, 'books': books, 'cur_book_id': cur_book.id, 'cur_chapternum': cur_chapternum, 'chapternums': xrange(1, cur_book.chapternums+1), 'highlight_verses': highlight_verses}
+    context = {
+        'verses': verses,
+        'books': books,
+        'cur_book_id': cur_book.id,
+        'cur_chapternum': cur_chapternum,
+        'chapternums': xrange(1, cur_book.chapternums+1),
+        'highlight_verses': highlight_verses,
+        'version': version,
+    }
     return render(request, 'bibles/bible.html', context)
 
-def json_bible(request, book_id, chapternum):
+def json_bible(request, version, book_id, chapternum):
     response_json = []
     book = None
     try:
@@ -71,7 +89,10 @@ def json_bible(request, book_id, chapternum):
     except Bible_Book_Name.DoesNotExist:
         return HttpResponse(json.dumps([]), content_type="application/json")
     else:
-        verses = book.bible_chn_set.filter(chapternum=chapternum).order_by('versenum')
+        if version == 'niv':
+            verses = book.bible_niv2011_set.filter(chapternum=chapternum).order_by('versenum')
+        else:
+            verses = book.bible_chn_set.filter(chapternum=chapternum).order_by('versenum')
         response_json = [(v.versenum, v.verse) for v in verses]
         return HttpResponse(json.dumps(response_json), content_type="application/json")
 

@@ -26,7 +26,7 @@ class Hymn(models.Model):
     hymn_lyrics_uploader_name = models.CharField(u'歌词上传者', max_length=100, null=True, blank=True, help_text=u'若修改了歌词文件, 请填写你的名字')
     hymn_pdf_uploader_name = models.CharField(u'PDF 上传者', max_length=100, null=True, blank=True, help_text=u'若修改了 PDF 文件, 请填写你的名字')
     hymn_ppt_uploader_name = models.CharField(u'PPT 上传者', max_length=100, null=True, blank=True, help_text=u'若修改了 PPT 文件, 请填写你的名字')
-    hymn_isCandidate = models.BooleanField(u'是否候选')
+    hymn_isCandidate = models.BooleanField(u'是否候选', default=False)
     def __unicode__(self):
         return self.hymn_name
 

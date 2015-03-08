@@ -28,6 +28,14 @@ class Bible_CHN(models.Model):
     def __unicode__(self):
         return u"%s %s:%s" % (self.book, self.chapternum, self.versenum)
 
+class Bible_NIV2011(models.Model):
+    versenum = models.IntegerField(u'节')
+    chapternum = models.IntegerField(u'章')
+    book = models.ForeignKey(Bible_Book_Name, verbose_name=u'卷')
+    verse = models.TextField(u'经文')
+    def __unicode__(self):
+        return u"%s %s:%s" % (self.book, self.chapternum, self.versenum)
+
 class Daily_Verse(models.Model):
     verse_date = models.DateField(u'日期')
     start_verse = models.ForeignKey(Bible_CHN, verbose_name=u'起始经文', related_name='daily_start_verse_set')

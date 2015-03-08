@@ -87,7 +87,10 @@ class Article(models.Model) :
         verbose_name = _(u'发布日期'),
         help_text = _(u' ')
     )
-    is_approved = models.BooleanField(verbose_name = _(u'通过审核'))
+    is_approved = models.BooleanField(
+        verbose_name = _(u'通过审核'),
+        default = False
+    )
 
     class Meta:
         app_label = _(u'blog')
