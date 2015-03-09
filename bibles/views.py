@@ -18,10 +18,10 @@ import json
 def index(request):
     today = datetime.date.today()
     coming_sunday = today + datetime.timedelta(days=6-today.weekday())
-    past_monday = today - datetime.timedelta(days=today.weekday())
+    last_sunday = today - datetime.timedelta(days=today.weekday()+1)
     daily_verse = Daily_Verse.objects.filter(verse_date=today).first()
     weekly_verse = Weekly_Verse.objects.filter(verse_date=coming_sunday).first()
-    weekly_readings = list(Weekly_Reading.objects.filter(verse_date__range=(past_monday,coming_sunday)).order_by('-verse_date'))
+    weekly_readings = list(Weekly_Reading.objects.filter(verse_date__range=(last_sunday, coming_sunday)).order_by('-verse_date'))
     weekly_recitations = []
     if weekly_readings:
         latest_date = max([w.verse_date for w in weekly_readings])
