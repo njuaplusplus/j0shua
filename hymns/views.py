@@ -12,6 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form, Worship_Location, Weekly_Hymn_Form
 
 import json
+import random
 
 def index(request):
     all_hymns_list = Hymn.objects.filter(hymn_isCandidate=False).order_by('hymn_index')
@@ -19,6 +20,7 @@ def index(request):
     num_of_rows = int(math.ceil(len(all_hymns_list) / 3.0))
     context = {'all_hymns_list': all_hymns_list, 'num_of_rows': num_of_rows, }
     return render(request, 'hymns/index.html', context)
+    # return render(request, 'hymns/foundation/index.html', context)
 
 def hymn_by_key(request):
     key_list = Hymn_Key.objects.all()
@@ -354,6 +356,20 @@ def search(request):
 #     return HttpResponse(result.replace("\n","<br/>"))
 
 def playlist_view(request):
-    all_hymns_list = Hymn.objects.exclude(hymn_audio__isnull=True).exclude(hymn_audio__exact='').order_by('?')
-    context = {'all_hymns_list': all_hymns_list}
+    # For efficiency
+    # all_hymns_list = Hymn.objects.exclude(hymn_audio__isnull=True).exclude(hymn_audio__exact='').order_by('?')
+    hymns = Hymn.objects.exclude(hymn_audio__isnull=True).exclude(hymn_audio__exact='')
+    last = hymns.count() - 1
+    hymn = hymns[random.randint(0, last)]
+    context = {'hymn': hymn,}
     return render(request, 'hymns/hymn_playlist.html', context)
+
+def random_hymn_json(request):
+    response_json = {}
+    hymns = Hymn.objects.exclude(hymn_audio__isnull=True).exclude(hymn_audio__exact='')
+    last = hymns.count() - 1
+    hymn = hymns[random.randint(0, last)]
+    response_json['hymn_name'] = hymn.hymn_name
+    response_json['hymn_audio'] = hymn.hymn_audio
+    response_json['hymn_score'] = hymn.hymn_score.url
+    return HttpResponse(json.dumps(response_json), content_type="application/json")

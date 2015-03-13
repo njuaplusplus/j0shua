@@ -17,7 +17,7 @@
             {% if hymn.hymn_pdf %}
             <a class="btn btn-success" href="{{ hymn.hymn_pdf.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PDF </a>
             {% endif %}
-            <a class="btn btn-primary" href="{% url 'hymns:edit_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-pencil"></span> 编辑 </a>
+            <a class="btn btn-primary" href="{% url 'myadmin:edit_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-pencil"></span> 编辑 </a>
         </div>
     </div>
 </div>

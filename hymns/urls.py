@@ -19,13 +19,17 @@ urlpatterns = patterns('',
     url(r'^weekly-hymns/page/(?P<page_num>[\d]+)/$', views.weekly_hymns_page, name='weekly_hymns_page'),
 #    url(r'^weekly-hymns-json/$', views.weekly_hymns_json, name='weekly_hymns_json'),
 #    url(r'^musics-json/(?P<music_index>\d+)/$', views.musics_json, name='musics_json'),
-    url(r'^upload-hymn/$', views.upload_hymn_view, name='upload_hymn_view'),
-    url(r'^edit-hymn/(?P<hymn_id>\d+)/$', views.edit_hymn_view, name='edit_hymn_view'),
+
+    # Use the myadmin view
+    # url(r'^upload-hymn/$', views.upload_hymn_view, name='upload_hymn_view'),
+    # url(r'^edit-hymn/(?P<hymn_id>\d+)/$', views.edit_hymn_view, name='edit_hymn_view'),
+
     url(r'^edit-weekly-hymn/(?P<weekly_hymn_id>\d+)/$', views.edit_weekly_hymn_view, name='edit_weekly_hymn_view'),
     url(r'^candidates/$', views.candidates_view, name='candidates_view'),
     url(r'^playlist/$', views.playlist_view, name='playlist_view'),
     url(r'^search/$', views.search, name='search'),
     url(r'^(?P<hymn_id>\d+)/saveAudioFile/$', views.save_audio_url, name='saveAudioFile'),
+    url(r'^json/random-hymn/$', views.random_hymn_json, name='random_hymn_json'),
 
     # url(r'^accounts/login/$', views.login_view, name='login_view'),
     # url(r'^accounts/logout/$', views.logout_view, name='logout_view'),
