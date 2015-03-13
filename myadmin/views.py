@@ -202,7 +202,14 @@ def weekly_recitations_view(request):
         return render(request, 'myadmin/weekly_recitations.html', context)
 
 @login_required(login_url='/myadmin/accounts/login/')
-def write_post_view(request):
+def all_articles_view(request):
+    if not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    articles = Article.objects.all()
+    return render(request, 'myadmin/all_articles.html', {'articles': articles})
+
+@login_required(login_url='/myadmin/accounts/login/')
+def write_article_view(request):
     if not request.user.groups.filter(name='admins'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     if request.method == 'POST':
@@ -218,8 +225,8 @@ def write_post_view(request):
     return render(request, 'myadmin/write_post.html', {'article_form': article_form, })
 
 @login_required(login_url='/myadmin/accounts/login/')
-def edit_post_view(request, post_id):
-    article = get_object_or_404(Article, pk=post_id)
+def edit_article_view(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
     if not request.user.groups.filter(name='admins') and request.user != article.author:
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     if request.method == 'POST':

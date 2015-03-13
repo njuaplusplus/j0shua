@@ -1,0 +1,87 @@
+{% extends "myadmin/base.html" %}
+
+{% load staticfiles %}
+{% block title %} 所有文章管理 | 约书亚管理 {% endblock %}
+{% block headBlock %}
+<!-- DataTables CSS -->
+<link href="{% static 'myadmin/css/plugins/dataTables.bootstrap.css' %}" rel="stylesheet">
+<!-- Datepicker CSS -->
+<link href="{% static 'datepicker/css/datepicker3.css' %}" rel="stylesheet">
+<!-- select 2 -->
+<link href="{% static 'select2/css/select2.css' %}" rel="stylesheet">
+<link href="{% static 'select2/css/select2-bootstrap.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block mainContent %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">所有文章<a class="btn btn-primary pull-right" href="{% url 'myadmin:write_article_view' %}">撰写文章</a></h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                所有文章
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                        <thead>
+                            <tr>
+                                <th>标 题</th>
+                                <th>发布日期</th>
+                                <th>作 者</th>
+                                <th>通过审核</th>
+                                <th>操 作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for article in articles %}
+                            <tr>
+                                <td><a href="{% url 'blog:single_post' article.slug %}" target="_blank">{{ article.title }}</a></td>
+                                <td>{{ article.date_publish }}</td>
+                                <td>{{ article.author }}</td>
+                                <td>
+                                    {% if article.is_approved %}
+                                    <span><i class="fa fa-check"></i> 是</span>
+                                    {% else %}
+                                    <span><i class="fa fa-times"></i> 否</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'myadmin:edit_article_view' article.id %}"><i class="fa fa-pencil"></i> 编辑</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+{% endblock mainContent %}
+
+{% block extScriptFile %}
+<!-- DataTables JavaScript -->
+<script src="{% static 'myadmin/js/plugins/dataTables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'myadmin/js/plugins/dataTables/dataTables.bootstrap.js' %}"></script>
+{% endblock extScriptFile %}
+
+{% block extScript %}
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+$('#dataTables-example').dataTable({
+    "order": []
+});
+
+{% endblock extScript %}
