@@ -151,7 +151,7 @@
 </div>
     {% endif %}
 {% endfor %}
-{% for weekly_hymns_by_place in weekly_hymns %}
+{% for weekly_hymns_by_place, hymn_ids in weekly_hymns %}
 {% if forloop.counter0|divisibleby:2 %}
 <div class="row">
 {% endif %}
@@ -167,7 +167,7 @@
                     </h2>
                     <p><ol>
         {% endif %}
-                    <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
+                    <li><a href="{% url 'hymns:hymn_list' hymn_id=hymn.hymn.id hymn_ids=hymn_ids %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
         {% if forloop.last %}
                     </ol></p>
                     <p><a href="{% url 'hymns:weekly_hymns' %}" class="btn btn-primary" role="button">查看</a> <a href="{% url 'hymns:index' %}" class="btn btn-default" role="button">诗歌首页</a></p>

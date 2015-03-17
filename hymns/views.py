@@ -36,9 +36,29 @@ def hymn_by_key(request):
 
 def hymn(request, hymn_id):
     hymn = get_object_or_404(Hymn, pk=hymn_id)
-    print "http://%s%s" % (request.get_host(), request.get_full_path())
-    print request.build_absolute_uri()
+    # print "http://%s%s" % (request.get_host(), request.get_full_path())
+    # print request.build_absolute_uri()
     return render(request, 'hymns/hymn_detail.html', {'hymn': hymn})
+
+def hymn_list_view(request, hymn_id, hymn_ids):
+    ''' Show a hymn among a list of hymns.
+
+    We need to compute the previous and the next hymns.
+    '''
+    hymn = get_object_or_404(Hymn, pk=hymn_id)
+    hymn_id_list = hymn_ids.split('-')
+    context = {'hymn': hymn, }
+    try:
+        index = hymn_id_list.index(hymn_id)
+    except ValueError:
+        return render(request, 'hymns/hymn_detail.html', context)
+    else:
+        context['hymn_ids'] = hymn_ids
+        if index < len(hymn_id_list) - 1:
+            context['next_hymn_id'] = hymn_id_list[index+1]
+        if index > 0:
+            context['previous_hymn_id'] = hymn_id_list[index-1]
+        return render(request, 'hymns/hymn_detail.html', context)
 
 # def weekly_hymns_json(request):
 #     ''' Return the latest Weekly_Hymn
@@ -82,9 +102,14 @@ def weekly_hymns_page(request, page_num):
     if tmp_dates and tmp_places:
         for tmp_date in tmp_dates:
             hymn_by_place_list = []
+            hymn_ids_by_place = []
             hymn_by_place_list.append(tmp_date.strftime('%Y年%m月%d'))
+            tmp_hymn_by_place = []
             for tmp_place in tmp_places:
-                hymn_by_place_list.append(tmp_place.weekly_hymn_set.filter(hymn_date=tmp_date).order_by('hymn_order'))
+                tmp_hymns = list(tmp_place.weekly_hymn_set.filter(hymn_date=tmp_date).order_by('hymn_order'))
+                tmp_hymn_by_place.append(tmp_hymns)
+                hymn_ids_by_place.append('-'.join([str(h.hymn.id) for h in tmp_hymns]))
+            hymn_by_place_list.append(zip(tmp_hymn_by_place,hymn_ids_by_place))
             weekly_hymn_list.append(hymn_by_place_list)
     # print weekly_hymn_list
     paginator = Paginator(weekly_hymn_list, 3)

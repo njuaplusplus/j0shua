@@ -10,28 +10,28 @@
             {% if forloop.first %}
                 <h2>{{ hymn_list }}</h2>
             {% else %}
-                {% for hymn in hymn_list %}
-                    {% if forloop.first %}
-                    <h3>{{ hymn.hymn_place.location_name }}</h3>
-                    <div class="btn-group">
-                        {% if hymn.hymn_ppt %}
-                        <a class="btn btn-success" href="{{ hymn.hymn_ppt.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PPT </a>
-                        {% else %}
-                        <a class="btn btn-primary" href="{% url 'hymns:edit_weekly_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-open"></span> 上传 PPT </a>
+                {% for hymns,hymn_ids in hymn_list %}
+                    {% for hymn in hymns %}
+                        {% if forloop.first %}
+                        <h3>{{ hymn.hymn_place.location_name }}</h3>
+                        <div class="btn-group">
+                            {% if hymn.hymn_ppt %}
+                            <a class="btn btn-success" href="{{ hymn.hymn_ppt.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PPT </a>
+                            {% else %}
+                            <a class="btn btn-primary" href="{% url 'hymns:edit_weekly_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-open"></span> 上传 PPT </a>
+                            {% endif %}
+                            {% if hymn.hymn_pdf %}
+                            <a class="btn btn-success" href="{{ hymn.hymn_pdf.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PDF </a>
+                            {% else %}
+                            <a class="btn btn-primary" href="{% url 'hymns:edit_weekly_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-open"></span> 上传 PDF </a>
+                            {% endif %}
+                        </div>
+                        <ol>
                         {% endif %}
-                        {% if hymn.hymn_pdf %}
-                        <a class="btn btn-success" href="{{ hymn.hymn_pdf.url }}" role="button"><span class="glyphicon glyphicon-save"></span> 下载 PDF </a>
-                        {% else %}
-                        <a class="btn btn-primary" href="{% url 'hymns:edit_weekly_hymn_view' hymn.id %}" role="button"><span class="glyphicon glyphicon-open"></span> 上传 PDF </a>
-                        {% endif %}
-                    </div>
-                    <ol>
-                        <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
-                    {% else %}
-                        <li><a href="{% url 'hymns:hymn' hymn.hymn.id %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
-                    {% endif %}
+                            <li><a href="{% url 'hymns:hymn_list' hymn_id=hymn.hymn.id hymn_ids=hymn_ids %}">{{ hymn.hymn.hymn_index }}.{{ hymn.hymn.hymn_name }}</a></li>
+                    {% endfor %}
+                        </ol>
                 {% endfor %}
-                    </ol>
             {% endif %}
         {% endfor %}
     {% empty %}

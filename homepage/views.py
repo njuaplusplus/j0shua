@@ -48,6 +48,7 @@ def index(request):
         weekly_recitation_verses.append((wr, Bible_CHN.objects.filter(pk__range=(wr.start_verse.id,wr.end_verse.id)).order_by('pk')))
     # For Weekly Hymns
     weekly_hymns = []
+    weekly_hymn_ids = []
     db_weekly_hymns = Weekly_Hymn.objects.filter(hymn_date=coming_sunday)
     if db_weekly_hymns:
         places = Worship_Location.objects.all()
@@ -56,8 +57,15 @@ def index(request):
             tmp_hymns = db_weekly_hymns.filter(hymn_place=place).order_by('hymn_order')
             for h in tmp_hymns:
                 weekly_hymns_by_place.append(h)
+            weekly_hymn_ids.append('-'.join([str(h.hymn.id) for h in weekly_hymns_by_place]))
             weekly_hymns.append(weekly_hymns_by_place)
-    context = {'daily_verses' : list(daily_verses), 'weekly_verses': list(weekly_verses), 'weekly_hymns': weekly_hymns, 'weekly_readings': weekly_readings, 'weekly_recitation_verses': weekly_recitation_verses,}
+    context = {
+        'daily_verses' : list(daily_verses),
+        'weekly_verses': list(weekly_verses),
+        'weekly_hymns': zip(weekly_hymns,weekly_hymn_ids),
+        'weekly_readings': weekly_readings,
+        'weekly_recitation_verses': weekly_recitation_verses,
+    }
     response = render(request, 'homepage/index.html', context)
     return set_jwt_and_response(request.user, response)
 

@@ -13,6 +13,7 @@
             <button class="btn btn-default" id="stop" type="button"><span class="glyphicon glyphicon-stop"></span> 停止</button>
             <button class="btn btn-default" id="repeat" type="button"><span class="glyphicon glyphicon-repeat"></span> 打开循环</button>
             <button class="btn btn-info" id="repeatOff" type="button"><span class="glyphicon glyphicon-repeat"></span> 关闭循环</button>
+            <button class="btn btn-default" id="next-hymn" type="button"><span class="glyphicon glyphicon-fast-forward"></span> 下一首</button>
             <button class="btn btn-default" type="button" style="display: none;">hehe</button>
         </div>
     </div>
@@ -79,5 +80,22 @@
             repeat: "#repeat",
             repeatOff: "#repeatOff"
         },
+    });
+    $("#next-hymn").click(function(){
+        $.get("{% url 'hymns:random_hymn_json'%}", function(data, status){
+            if (status == "success") {
+                //  alert(data.hymn_name);
+                //  alert(data.hymn_audio);
+                //  alert(data.hymn_score);
+                $('#hymn-score').attr({'src': data.hymn_score, 'alt': data.hymn_name});
+                $("#jquery_jplayer_1").jPlayer("setMedia", {
+                    title: data.hymn_name,
+                    mp3: data.hymn_audio,
+                });
+                $("#jquery_jplayer_1").jPlayer("play");
+            } else {
+                alert("服务器错误");
+            }
+        });
     });
 {% endblock %}

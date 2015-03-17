@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^keys/$', views.hymn_by_key, name='hymn_by_key'),
     # ex: /hymns/1/
     url(r'^(?P<hymn_id>\d+)/$', views.hymn, name='hymn'),
+    url(r'^(?P<hymn_id>\d+)/(?P<hymn_ids>(\d+-)*\d+)/$', views.hymn_list_view, name='hymn_list'),
 #    # /musics/score/1/
 #    url(r'^score/(?P<score_id>\d+)/$', views.score, name='score'),
 #    url(r'^tmp-music/(?P<music_id>\d+)/$', views.tmpMusic, name='tmpMusic'),

@@ -75,6 +75,20 @@
     </div>
 </div>
 {% endif %}
+<nav>
+  <ul class="pager">
+    {% if previous_hymn_id %}
+    <li class="previous">
+        <a href="{% url 'hymns:hymn_list' hymn_id=previous_hymn_id hymn_ids=hymn_ids %}"><span aria-hidden="true">&larr;</span> 上一首</a>
+    </li>
+    {% endif %}
+    {% if next_hymn_id %}
+    <li class="next">
+        <a href="{% url 'hymns:hymn_list' hymn_id=next_hymn_id hymn_ids=hymn_ids %}">下一首 <span aria-hidden="true">&rarr;</span></a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         {% my_sso_duoshuo_comments 'hymn-'|addstr:hymn.id '诗歌-'|addstr:hymn.hymn_name request.build_absolute_uri request.path|escape %}
