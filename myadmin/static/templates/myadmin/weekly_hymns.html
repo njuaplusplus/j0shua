@@ -129,7 +129,7 @@ $('#weekly-hymn-datepicker').datepicker({
     autoclose: true
 });
 $("#add-weekly-hymn").click(function(){
-    r = "<tr> <td> <select name=\"hymn-place\"> <option value=\"\" selected=\"selected\">------</option> <option value=\"1\">仙林</option> <option value=\"2\">市区</option> </select> </td> <td><input type=\"number\" min=\"1\" max=\"5\" name=\"hymn-order\" required /></td> <td><select name=\"weekly-hymn\"><option></option>";
+    r = "<tr> <td> <select name=\"hymn-place\"> <option value=\"\" selected=\"selected\">------</option> <option value=\"1\">仙林</option> <option value=\"2\">市区</option> <option value=\"3\">浦口</option> </select> </td> <td><input type=\"number\" min=\"1\" max=\"5\" name=\"hymn-order\" required /></td> <td><select name=\"weekly-hymn\"><option></option>";
     {% for hymn in all_hymns %}
     r = r + "<option value=\"{{ hymn.id }}\">{{ hymn.hymn_name }}</option>";
     {% endfor %}
