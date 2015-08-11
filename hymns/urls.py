@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # coding=utf-8
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from hymns import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     # ex: /hymns/
     url(r'^$', views.index, name='index'),
     url(r'^keys/$', views.hymn_by_key, name='hymn_by_key'),
@@ -38,4 +38,4 @@ urlpatterns = patterns('',
 #    # for form action to save score file
 #    url(r'^saveScoreFile/(?P<upload_type>\w+)/$', views.saveScoreFile, name='saveScoreFile'),
 #    url(r'^syncdb/', views.syncdb),#增加URL路径
-)
+]

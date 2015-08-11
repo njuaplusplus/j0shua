@@ -1,11 +1,11 @@
 #!/usr/local/bin/python
 # coding=utf-8
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from myadmin import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^users/$', views.users_view, name='users_view'),
     url(r'^weekly-hymns/$', views.weekly_hymns_view, name='weekly_hymns_view'),
@@ -24,4 +24,4 @@ urlpatterns = patterns('',
     url(r'^upload-hymn/$', views.upload_hymn_view, name='upload_hymn_view'),
     url(r'^edit-hymn/(?P<hymn_id>\d+)/$', views.edit_hymn_view, name='edit_hymn_view'),
     url(r'^hymns/$', views.hymns_view, name='hymns_view'),
-)
+]
