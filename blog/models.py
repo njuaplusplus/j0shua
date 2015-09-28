@@ -80,7 +80,6 @@ class Article(models.Model) :
         Category,
         verbose_name = _(u'分类'),
         help_text = _(u' '),
-        null = True,
         blank = True
     )
     date_publish = models.DateTimeField(
