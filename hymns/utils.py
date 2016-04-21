@@ -8,6 +8,8 @@ from . import xmltodict
 
 
 def get_real_audio_url(audio_url):
+    if 'mp3' in audio_url.lower():
+        return audio_url
     real_audio_url = ''
     tmp = re.findall('zanmeishi.com/song/(\d+)\.html', audio_url)
     if len(tmp) == 1:
