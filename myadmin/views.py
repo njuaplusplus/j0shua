@@ -10,6 +10,7 @@ from hymns.models import Weekly_Hymn, Hymn, Worship_Location, Hymn_Form
 from bibles.models import Daily_Verse, Weekly_Verse, Bible_Book_Name, Weekly_Reading, Weekly_Recitation
 from blog.models import Article, ArticleForm
 from homepage.models import UserProfileForm
+from hymns.utils import get_real_audio_url
 
 import datetime
 import re
@@ -261,10 +262,9 @@ def upload_hymn_view(request):
         if form.is_valid():
             hymn = form.save(commit=False)
             if hymn.hymn_audio:
-                tmp = re.findall('zanmeishi.com/song/(\d+)\.html',hymn.hymn_audio)
-                if len(tmp) == 1:
-                    audio_id = tmp[0]
-                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
+                audio_url = get_real_audio_url(hymn.hymn_audio)
+                if audio_url:
+                    hymn.hymn_audio = audio_url
                 else:
                     return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
             hymn.hymn_isCandidate = True
@@ -289,11 +289,10 @@ def edit_hymn_view(request, hymn_id):
         form = Hymn_Form(request.POST, request.FILES, instance=hymn)
         if form.is_valid():
             hymn = form.save(commit=False)
-            if hymn.hymn_audio and not hymn.hymn_audio.lower().endswith('mp3'):
-                tmp = re.findall('zanmeishi.com/song/(\d+)\.html',hymn.hymn_audio)
-                if len(tmp) == 1:
-                    audio_id = tmp[0]
-                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
+            if hymn.hymn_audio:
+                audio_url = get_real_audio_url(hymn.hymn_audio)
+                if audio_url:
+                    hymn.hymn_audio = audio_url
                 else:
                     return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
             hymn.save()

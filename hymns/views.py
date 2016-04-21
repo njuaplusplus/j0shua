@@ -10,9 +10,11 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form, Worship_Location, Weekly_Hymn_Form
+from .utils import get_real_audio_url
 
 import json
 import random
+
 
 def index(request):
     all_hymns_list = Hymn.objects.filter(hymn_isCandidate=False).order_by('hymn_index')
@@ -21,6 +23,7 @@ def index(request):
     context = {'all_hymns_list': all_hymns_list, 'num_of_rows': num_of_rows, }
     return render(request, 'hymns/index.html', context)
     # return render(request, 'hymns/foundation/index.html', context)
+
 
 def hymn_by_key(request):
     key_list = Hymn_Key.objects.all()
@@ -34,11 +37,13 @@ def hymn_by_key(request):
     zipdata = zip(hymn_by_key_list, extra_list)
     return render(request, 'hymns/hymn_by_key.html', {'zipdata': zipdata})
 
+
 def hymn(request, hymn_id):
     hymn = get_object_or_404(Hymn, pk=hymn_id)
     # print "http://%s%s" % (request.get_host(), request.get_full_path())
     # print request.build_absolute_uri()
     return render(request, 'hymns/hymn_detail.html', {'hymn': hymn})
+
 
 def hymn_list_view(request, hymn_id, hymn_ids):
     ''' Show a hymn among a list of hymns.
@@ -90,10 +95,12 @@ def hymn_list_view(request, hymn_id, hymn_ids):
 #             response_json['audio_description'] = audios[0].audio_name
 #             response_json['audio_url'] = audios[0].audio_url
 #     return HttpResponse(json.dumps(response_json), content_type="application/json")
-# 
+#
+
 
 def weekly_hymns(request):
     return weekly_hymns_page(request, 1)
+
 
 def weekly_hymns_page(request, page_num):
     tmp_dates = Weekly_Hymn.objects.dates('hymn_date', 'day', order='DESC')
@@ -168,12 +175,8 @@ def save_audio_url(request, hymn_id):
         else:
             hymn = get_object_or_404(Hymn, pk=hymn_id)
             audio_url = request.POST.get('audioUrlInput', '')
-            import re
-            tmp = re.findall('zanmeishi.com/song/(\d+)\.html', audio_url)
-            if len(tmp) == 1:
-                audio_id = tmp[0]
-                audio_url = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
-                print audio_url, request.user.username
+            audio_url = get_real_audio_url(audio_url)
+            if audio_url:
                 hymn.hymn_audio = audio_url
                 hymn.hymn_audio_uploader_name = request.user.username
                 hymn.save()
@@ -195,10 +198,9 @@ def upload_hymn_view(request):
         if form.is_valid():
             hymn = form.save(commit=False)
             if hymn.hymn_audio:
-                tmp = re.findall('zanmeishi.com/song/(\d+)\.html',hymn.hymn_audio)
-                if len(tmp) == 1:
-                    audio_id = tmp[0]
-                    hymn.hymn_audio = "http://api.zanmeishi.com/song/p/%s.mp3" % audio_id
+                audio_url = get_real_audio_url(hymn.hymn_audio)
+                if audio_url:
+                    hymn.hymn_audio = audio_url
                 else:
                     return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
             hymn.hymn_isCandidate = True
