@@ -21,5 +21,5 @@ def get_real_audio_url(audio_url):
         if match and len(match.groups()) > 0:
             # This is an url from xiami.com
             audio_id = match.group(1)
-            real_audio_url = '/hymns/xiami/%s/' % match.group(1)
+            real_audio_url = '/hymns/xiami/mp3/%s/' % match.group(1)
     return real_audio_url
