@@ -62,7 +62,7 @@ def index(request):
     context = {
         'daily_verses' : list(daily_verses),
         'weekly_verses': list(weekly_verses),
-        'weekly_hymns': zip(weekly_hymns,weekly_hymn_ids),
+        'weekly_hymns': list(zip(weekly_hymns,weekly_hymn_ids)),
         'weekly_readings': weekly_readings,
         'weekly_recitation_verses': weekly_recitation_verses,
     }
@@ -100,9 +100,9 @@ def login_view(request):
         if len(code) > 0: # 多说登录
             api = DuoshuoAPI(settings.DUOSHUO_SHORT_NAME, settings.DUOSHUO_SECRET)
             response = api.get_token(code=code)
-            print 'api.get_token %s' % code
-            print response
-            if response.has_key('user_key'): # 这个多说账号已经绑定过本地账户了
+            print(('api.get_token %s' % code))
+            print(response)
+            if 'user_key' in response: # 这个多说账号已经绑定过本地账户了
                 user = User.objects.get(pk=int(response['user_key']))
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth.login(request, user)
@@ -118,9 +118,9 @@ def login_view(request):
                     user.backend = 'django.contrib.auth.backends.ModelBackend'
                     auth.login(request, user)
                 else: # 此多说账号在本站未注册, 添加一个用户
-                    print 'api.users.profile user_id %s' % response['user_id']
+                    print('api.users.profile user_id %s' % response['user_id'])
                     response = api.users.profile(user_id=response['user_id'])['response']
-                    print response
+                    print(response)
                     username = 'duoshuo_%s' % response['user_id']
                     while User.objects.filter(username=username).count():
                         username = username + str(random.randrange(1,9)) #如果多说账号用户名和本站用户名重复，就加上随机数字
@@ -144,11 +144,11 @@ def login_view(request):
         return render(request, 'homepage/login.html', context)
 
 def logout_view(request):
-    print 'logout_view'
+    print('logout_view')
     auth.logout(request)
     response = HttpResponseRedirect(reverse('homepage:login_view'))
     response.delete_cookie('duoshuo_token')
-    print 'return logout_view'
+    print('return logout_view')
     return response
 
 def register_view(request):
@@ -181,8 +181,8 @@ def set_jwt_and_response(user, response):
             response.set_cookie('duoshuo_token', duoshuo_jwt_token)
     return response
 
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 
 def sync_sso_duoshuo(access_token, user):
     '''将SSO本地用户同步到已有多说账户中
@@ -202,13 +202,13 @@ def sync_sso_duoshuo(access_token, user):
         'user[name]': username,
         'user[email]': user.email,
     }
-    print 'sync_sso_duoshuo'
-    print params
-    data = urllib.urlencode(params)
-    request = urllib2.Request(url, data=data)
-    response = urllib2.urlopen(request)
+    print('sync_sso_duoshuo')
+    print(params)
+    data = urllib.parse.urlencode(params)
+    request = urllib.request.Request(url, data=data)
+    response = urllib.request.urlopen(request)
     result = response.read()
-    print result
+    print(result)
 
 def page_not_found_view(request):
     ''' Custom 404 page

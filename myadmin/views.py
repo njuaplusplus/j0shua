@@ -65,12 +65,12 @@ def weekly_hymns_view(request):
         hymn_places = request.POST.getlist('hymn-place', '')
         hymn_orders = request.POST.getlist('hymn-order', '')
         weekly_hymns = request.POST.getlist('weekly-hymn', '')
-        print 'hymn-date: ' , datestr
-        print 'hymn_places: ' , hymn_places
-        print 'hymn_orders: ' , hymn_orders
-        print 'weekly_hymns: ' , weekly_hymns
+        print('hymn-date: ' , datestr)
+        print('hymn_places: ' , hymn_places)
+        print('hymn_orders: ' , hymn_orders)
+        print('weekly_hymns: ' , weekly_hymns)
         hymn_date = datetime.date(int(datestr[0]), int(datestr[1]), int(datestr[2]))
-        for i in xrange(len(hymn_places)):
+        for i in range(len(hymn_places)):
             hymn_place = Worship_Location.objects.get(pk=hymn_places[i])
             hymn = Hymn.objects.get(pk=weekly_hymns[i])
             weekly_hymn = Weekly_Hymn.objects.get_or_create(hymn_date=hymn_date, hymn_order=hymn_orders[i], hymn_place=hymn_place, hymn=hymn)
@@ -255,7 +255,7 @@ def upload_hymn_view(request):
     ''' Upload the hymn
 
     '''
-    if not request.user.groups.filter(name='uploaders') and not request.user.has_perm(u'hymns.add_hymn') and not request.user.groups.filter(name='admins'):
+    if not request.user.groups.filter(name='uploaders') and not request.user.has_perm('hymns.add_hymn') and not request.user.groups.filter(name='admins'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     if request.method == 'POST':
         form = Hymn_Form(request.POST, request.FILES)
@@ -271,7 +271,7 @@ def upload_hymn_view(request):
             hymn.hymn_uploader = request.user
             hymn.save()
             form.save_m2m()
-            print 'Hymn saved! %s' % hymn.id
+            print('Hymn saved! %s' % hymn.id)
             return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
     else:
         form = Hymn_Form()
@@ -282,7 +282,7 @@ def edit_hymn_view(request, hymn_id):
     ''' Edit the existing hymn
 
     '''
-    if not request.user.has_perm(u'hymns.change_hymn') and not request.user.groups.filter(name='admins'):
+    if not request.user.has_perm('hymns.change_hymn') and not request.user.groups.filter(name='admins'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     hymn = get_object_or_404(Hymn, pk=hymn_id)
     if request.method == 'POST':
@@ -297,7 +297,7 @@ def edit_hymn_view(request, hymn_id):
                     return render(request, 'hymns/test_result.html', {'result': '链接地址不对', })
             hymn.save()
             form.save_m2m()
-            print 'Hymn saved! %s' % hymn.id
+            print('Hymn saved! %s' % hymn.id)
             return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
     else:
         form = Hymn_Form(instance=hymn)

@@ -82,7 +82,7 @@ def init_bible_chn():
             lines.append(line.strip().split(' ', 2))
 
     # make empty verse become the verse before it.
-    for i in xrange(len(lines)):
+    for i in range(len(lines)):
         if len(lines[i]) < 3:
             lines[i].append(lines[i-1][2])
             lines[i-1] = lines[i-1][:2]
@@ -102,7 +102,7 @@ def init_bible_chn():
     for book in books:
         book.chapternums = Bible_CHN.objects.filter(book=book).values('chapternum').distinct().count()
         book.save()
-    print 'init_bible_chn Done'
+    print('init_bible_chn Done')
 
 def init_bible_niv2011():
     ''' Initialize the Bible niv2011 table.
@@ -114,7 +114,7 @@ def init_bible_niv2011():
             lines.append(line.strip().split(' ', 2))
 
     # make empty verse become the verse before it.
-    for i in xrange(len(lines)):
+    for i in range(len(lines)):
         if len(lines[i]) < 3:
             lines[i].append(lines[i-1][2])
             lines[i-1] = lines[i-1][:2]
@@ -129,4 +129,4 @@ def init_bible_niv2011():
         book = Bible_Book_Name.objects.get(book_name_en=book_name)
         Bible_NIV2011.objects.get_or_create(versenum=versenum,chapternum=chapternum,book=book,verse=verse)
 
-    print 'init_bible_niv2011 Done'
+    print('init_bible_niv2011 Done')

@@ -10,7 +10,7 @@ def init_hymn_keyDB():
     # for key in origin_key_id.values():
     for key in ('C', 'D', 'E', 'F', 'G', 'A', 'B', 'Am', 'Em', 'Bm', '#Fm', 'Dm', 'Fm', 'bB', 'bE', 'Unknown'):
         Hymn_Key.objects.get_or_create(key_name=key)
-    print 'init_hymn_keyDB Done!'
+    print('init_hymn_keyDB Done!')
 
 def init_hymnsDB():
     ''' Initialize the Hymns table.
@@ -36,7 +36,7 @@ def init_weekly_hymnDB():
             hymn_name = origin_hymn_id[tmpa[-1].strip()]
             hymn = Hymn.objects.get(hymn_name=hymn_name)
             Weekly_Hymn.objects.get_or_create(hymn_date=datetime.date(int(tmpa[1]),int(tmpa[2]),int(tmpa[3])), hymn_order=tmpa[4], hymn_place=Worship_Location.objects.get(pk=1), hymn=hymn)
-    print 'init_weekly_hymnDB Done!'
+    print('init_weekly_hymnDB Done!')
 
 def restore_weekly_hymnDB():
     import datetime
@@ -70,7 +70,7 @@ def restore_weekly_hymnDB():
     for l in data:
         tmpa = l.strip().split(',')
         Weekly_Hymn.objects.create(hymn_date=datetime.date(int(tmpa[0]),int(tmpa[1]), int(tmpa[2])), hymn_order=tmpa[3],  hymn_place=Worship_Location.objects.get(pk=tmpa[4]), hymn=Hymn.objects.get(pk=tmpa[5]))
-    print "restore_weekly_hymnDB Done!"
+    print("restore_weekly_hymnDB Done!")
 
 def add_hymn_score(rootDir=r'/Users/aplusplus/Desktop/MusicScores/'):
     img_extensions = {".jpg", ".png", ".gif"}
@@ -110,4 +110,4 @@ def initAll():
     init_hymn_keyDB()
     init_hymnsDB()
     init_weekly_hymnDB()
-    print 'initAll Done!'
+    print('initAll Done!')

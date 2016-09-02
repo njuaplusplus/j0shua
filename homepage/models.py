@@ -12,7 +12,7 @@ class User_Profile(models.Model):
     token = models.IntegerField(default=0)
     avatar = models.URLField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.username
 
 class UserProfileForm(forms.ModelForm):

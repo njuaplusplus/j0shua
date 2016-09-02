@@ -19,7 +19,7 @@ def contact_us(request):
         email = request.POST.get('email', 'no email')
         phone = request.POST.get('phone', 'no phone')
         message = request.POST.get('message', 'no message')
-        print name, email, phone, message
+        print((name, email, phone, message))
         Contact.objects.create(name=name, email=email,
                                phone=phone, message=message,
                                date_created=timezone.now())

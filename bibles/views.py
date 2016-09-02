@@ -63,19 +63,19 @@ def bible_version(request, version):
     else:
         cur_book = books.get(pk=cur_book_id)
         if cur_start_verse_id and cur_end_verse_id:
-            print cur_start_verse_id, cur_end_verse_id
-            highlight_verses.extend(xrange(cur_start_verse_id, cur_end_verse_id+1))
+            print(cur_start_verse_id, cur_end_verse_id)
+            highlight_verses.extend(range(cur_start_verse_id, cur_end_verse_id+1))
     if version == 'niv':
         verses = cur_book.bible_niv2011_set.filter(chapternum=cur_chapternum).order_by('versenum')
     else:
         verses = cur_book.bible_chn_set.filter(chapternum=cur_chapternum).order_by('versenum')
-    print highlight_verses
+    print(highlight_verses)
     context = {
         'verses': verses,
         'books': books,
         'cur_book_id': cur_book.id,
         'cur_chapternum': cur_chapternum,
-        'chapternums': xrange(1, cur_book.chapternums+1),
+        'chapternums': range(1, cur_book.chapternums+1),
         'highlight_verses': highlight_verses,
         'version': version,
     }

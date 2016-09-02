@@ -14,21 +14,21 @@ from datetimewidget.widgets import DateTimeWidget
 class Category(models.Model) :
     """Category Model"""
     title = models.CharField(
-        verbose_name = _(u'名称'),
-        help_text = _(u' '),
+        verbose_name = _('名称'),
+        help_text = _(' '),
         max_length = 255
     )
     slug = models.SlugField(
-        verbose_name = _(u'Slug'),
-        help_text = _(u'Uri identifier.'),
+        verbose_name = _('Slug'),
+        help_text = _('Uri identifier.'),
         max_length = 255,
         unique = True
     )
 
     class Meta:
-        app_label = _(u'blog')
-        verbose_name = _(u"Category")
-        verbose_name_plural = _(u"Categories")
+        app_label = _('blog')
+        verbose_name = _("Category")
+        verbose_name_plural = _("Categories")
         ordering = ['title',]
 
     def save(self, *args, **kwargs):
@@ -37,64 +37,64 @@ class Category(models.Model) :
             self.slug = uuslug(self.title, instance=self, max_length=32, word_boundary=True)
         super(Category, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s" % (self.title,)
 
 class Article(models.Model) :
     """Article Model"""
     title = models.CharField(
-        verbose_name = _(u'标题'),
-        help_text = _(u' '),
+        verbose_name = _('标题'),
+        help_text = _(' '),
         max_length = 255
     )
     slug = models.SlugField(
-        verbose_name = _(u'固定链接'),
-        help_text = _(u'本文章的短网址(Uri identifier).'),
+        verbose_name = _('固定链接'),
+        help_text = _('本文章的短网址(Uri identifier).'),
         max_length = 255,
         unique = True
     )
     cover = models.ImageField(
-        verbose_name = _(u'封面'),
-        help_text = _(u'若留空, 则使用默认图片'),
+        verbose_name = _('封面'),
+        help_text = _('若留空, 则使用默认图片'),
         upload_to='blogs/images/%Y/%m/%d',
         null = True,
         blank = True
     )
     excerpt = models.TextField(
-        verbose_name = _(u'摘要'),
-        help_text = _(u' '),
+        verbose_name = _('摘要'),
+        help_text = _(' '),
         null = True,
         blank = True
     )
 
-    author = models.ForeignKey(User, verbose_name=_(u'作者'))
+    author = models.ForeignKey(User, verbose_name=_('作者'))
     content_markdown = models.TextField(
-        verbose_name = _(u'内容 (Markdown)'),
-        help_text = _(u' '),
+        verbose_name = _('内容 (Markdown)'),
+        help_text = _(' '),
     )
     content_markup = models.TextField(
-        verbose_name = _(u'内容 (Markup)'),
-        help_text = _(u' '),
+        verbose_name = _('内容 (Markup)'),
+        help_text = _(' '),
     )
     categories = models.ManyToManyField(
         Category,
-        verbose_name = _(u'分类'),
-        help_text = _(u' '),
+        verbose_name = _('分类'),
+        help_text = _(' '),
         blank = True
     )
     date_publish = models.DateTimeField(
-        verbose_name = _(u'发布日期'),
-        help_text = _(u' ')
+        verbose_name = _('发布日期'),
+        help_text = _(' ')
     )
     is_approved = models.BooleanField(
-        verbose_name = _(u'通过审核'),
+        verbose_name = _('通过审核'),
         default = False
     )
 
     class Meta:
-        app_label = _(u'blog')
-        verbose_name = _(u"Article")
-        verbose_name_plural = _(u"Articles")
+        app_label = _('blog')
+        verbose_name = _("Article")
+        verbose_name_plural = _("Articles")
         ordering = ['-date_publish']
 
     def save(self, *args, **kwargs):
@@ -106,7 +106,7 @@ class Article(models.Model) :
         self.content_markup = markdown(self.content_markdown, ['codehilite', 'attr_list'])
         super(Article, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s" % (self.title,)
 
 class ArticleForm(forms.ModelForm):

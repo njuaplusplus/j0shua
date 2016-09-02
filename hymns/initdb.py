@@ -8,12 +8,12 @@ mkeyDict = {}
 def initMusic_KeyDB():
     for key in ('C', 'D', 'E', 'F', 'G', 'A', 'B', 'Am', 'Em', 'Bm', '#Fm', 'Dm', 'Fm', 'bB', 'bE', 'Unknown'):
         Music_Key(key_name=key).save()
-    print 'initMusic_KeyDB Done!\n'
+    print('initMusic_KeyDB Done!\n')
 
 def readMusicNamesFiles(file_name):
 
     if not os.path.exists(file_name):
-        print "%s doesn't exist" % file_name
+        print("%s doesn't exist" % file_name)
         return
     f = file(file_name)
     while True:
@@ -36,7 +36,7 @@ def initMusic_ScoreDB(rootDir, music):
         if os.path.isdir(path):
             (music_index, music_name) = lists.split('.')
             music_index = int(music_index)
-            print '%d--%s' % (music_index, music_name)
+            print('%d--%s' % (music_index, music_name))
             if lists in mkeyDict:
                 music_key = Music_Key.objects.get(key_name=mkeyDict[lists])
             else:
@@ -44,7 +44,7 @@ def initMusic_ScoreDB(rootDir, music):
             music = Music.objects.get_or_create(music_index=music_index, music_name=music_name, music_key=music_key)[0]
             initMusic_ScoreDB(path, music)
         elif not lists[0] == '.':
-            print lists
+            print(lists)
             if not music.score_set.filter(score_name=lists):
                 music.score_set.create(score_name=lists, score_url=lists)
 
@@ -55,7 +55,7 @@ def initAudioDB(rootDir, music):
         if os.path.isdir(path):
             (music_index, music_name) = lists.split('.')
             music_index = int(music_index)
-            print '%d--%s' % (music_index, music_name)
+            print('%d--%s' % (music_index, music_name))
             music = Music.objects.get(music_index=music_index, music_name=music_name)
             initAudioDB(path, music)
         elif not lists[0] == '.':

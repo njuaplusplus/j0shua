@@ -2,12 +2,13 @@
 # coding=utf-8
 # Create your views here.
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
 
 from hymns.models import Hymn_Key, Hymn, Weekly_Hymn, Hymn_Form, Worship_Location, Weekly_Hymn_Form
 from .utils import get_real_audio_url
@@ -34,8 +35,8 @@ def hymn_by_key(request):
         extra = len(hymn_list) % 4
         if extra != 0:
             extra = 4 - extra;
-        extra_list.append(range(0,extra))
-    zipdata = zip(hymn_by_key_list, extra_list)
+        extra_list.append(list(range(0,extra)))
+    zipdata = list(zip(hymn_by_key_list, extra_list))
     return render(request, 'hymns/hymn_by_key.html', {'zipdata': zipdata})
 
 
@@ -117,7 +118,7 @@ def weekly_hymns_page(request, page_num):
                 tmp_hymns = list(tmp_place.weekly_hymn_set.filter(hymn_date=tmp_date).order_by('hymn_order'))
                 tmp_hymn_by_place.append(tmp_hymns)
                 hymn_ids_by_place.append('-'.join([str(h.hymn.id) for h in tmp_hymns]))
-            hymn_by_place_list.append(zip(tmp_hymn_by_place,hymn_ids_by_place))
+            hymn_by_place_list.append(list(zip(tmp_hymn_by_place,hymn_ids_by_place)))
             weekly_hymn_list.append(hymn_by_place_list)
     # print weekly_hymn_list
     paginator = Paginator(weekly_hymn_list, 3)
@@ -171,7 +172,7 @@ def weekly_hymns_page(request, page_num):
 @login_required
 def save_audio_url(request, hymn_id):
     if request.method == 'POST':
-        if not request.user.groups.filter(name='uploaders') and not request.user.has_perm(u'hymns.change_hymn'):
+        if not request.user.groups.filter(name='uploaders') and not request.user.has_perm('hymns.change_hymn'):
             return render(request, 'hymns/test_result.html', {'result': '权限不够', })
         else:
             hymn = get_object_or_404(Hymn, pk=hymn_id)
@@ -192,7 +193,7 @@ def upload_hymn_view(request):
     ''' Upload the hymn
 
     '''
-    if not request.user.groups.filter(name='uploaders') and not request.user.has_perm(u'hymns.add_hymn'):
+    if not request.user.groups.filter(name='uploaders') and not request.user.has_perm('hymns.add_hymn'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     if request.method == 'POST':
         form = Hymn_Form(request.POST, request.FILES)
@@ -208,7 +209,7 @@ def upload_hymn_view(request):
             hymn.hymn_uploader = request.user
             hymn.save()
             form.save_m2m()
-            print 'Hymn saved! %s' % hymn.id
+            print('Hymn saved! %s' % hymn.id)
             return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
     else:
         form = Hymn_Form()
@@ -219,7 +220,7 @@ def edit_hymn_view(request, hymn_id):
     '''Edit the hymn
 
     '''
-    if not request.user.has_perm(u'hymns.change_hymn'):
+    if not request.user.has_perm('hymns.change_hymn'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
 
     hymn = get_object_or_404(Hymn, pk=hymn_id)
@@ -237,7 +238,7 @@ def edit_weekly_hymn_view(request, weekly_hymn_id):
     '''Edit the weekly hymn for ppt and pdf
 
     '''
-    if not request.user.has_perm(u'hymns.change_weekly_hymn'):
+    if not request.user.has_perm('hymns.change_weekly_hymn'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
 
     weekly_hymn = get_object_or_404(Weekly_Hymn, pk=weekly_hymn_id)
@@ -405,18 +406,16 @@ def random_hymn_json(request):
 
 
 def xiami_mp3(request, xiami_id):
-    url = 'http://127.0.0.1:5000/xiami/json/%s.mp3' % xiami_id
-    print(url)
+    url = '%sxiami/json/%s.mp3' % (settings.AUDIO_SITE, xiami_id)
     try:
         r = requests.get(url)
     except:
         return HttpResponse('连接服务器失败')
     if r.status_code == 200:
-        print(r.text)
         result = r.json()
         success = result.get('success', 'False')
         if success == 'True':
-            return HttpResponse(result.get('song_url', '请联系管理员'))
+            return redirect(result.get('song_url', '请联系管理员'))
         else:
             return HttpResponse(result.get('log', '请联系管理员'))
     return HttpResponse('请联系管理员')
