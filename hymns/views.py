@@ -14,6 +14,7 @@ from .utils import get_real_audio_url
 
 import json
 import random
+import requests
 
 
 def index(request):
@@ -391,6 +392,7 @@ def playlist_view(request):
     context = {'hymn': hymn,}
     return render(request, 'hymns/hymn_playlist.html', context)
 
+
 def random_hymn_json(request):
     response_json = {}
     hymns = Hymn.objects.exclude(hymn_audio__isnull=True).exclude(hymn_audio__exact='')
@@ -400,3 +402,21 @@ def random_hymn_json(request):
     response_json['hymn_audio'] = hymn.hymn_audio
     response_json['hymn_score'] = hymn.hymn_score.url
     return HttpResponse(json.dumps(response_json), content_type="application/json")
+
+
+def xiami_mp3(request, xiami_id):
+    url = 'http://127.0.0.1:5000/xiami/json/%s.mp3' % xiami_id
+    print(url)
+    try:
+        r = requests.get(url)
+    except:
+        return HttpResponse('连接服务器失败')
+    if r.status_code == 200:
+        print(r.text)
+        result = r.json()
+        success = result.get('success', 'False')
+        if success == 'True':
+            return HttpResponse(result.get('song_url', '请联系管理员'))
+        else:
+            return HttpResponse(result.get('log', '请联系管理员'))
+    return HttpResponse('请联系管理员')

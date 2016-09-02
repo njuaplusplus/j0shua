@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^search/$', views.search, name='search'),
     url(r'^(?P<hymn_id>\d+)/saveAudioFile/$', views.save_audio_url, name='saveAudioFile'),
     url(r'^json/random-hymn/$', views.random_hymn_json, name='random_hymn_json'),
-
+    url(r'^xiami/(?P<xiami_id>\d+)/$', views.xiami_mp3, name='xiami_mp3'),
     # url(r'^accounts/login/$', views.login_view, name='login_view'),
     # url(r'^accounts/logout/$', views.logout_view, name='logout_view'),
     # url(r'^accounts/register/$', views.register_view, name='register_view'),
