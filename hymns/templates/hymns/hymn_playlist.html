@@ -28,7 +28,10 @@
 <div class="row">
     <div class="col-md-12 text-center">
         {% if hymn.hymn_score %}
-            <img src="{{ hymn.hymn_score.url }}" style="max-width: 100%; height: auto;" alt="{{ hymn.hymn_name }}" id="hymn-score">
+            <a href="{{ hymn.hymn_score.url }}" target="_blank" id="hymn-score">
+                <img src="{{ hymn.hymn_compressed_score.url }}" style="max-width: 100%; height: auto;"
+                     alt="{{ hymn.hymn_name }}" id="hymn-compressed-score" title="点击查看原图">
+            </a>
         {% else %}
             <h2>No scores......</h2>
         {% endif %}
@@ -55,7 +58,8 @@
                         //  alert(data.hymn_name);
                         //  alert(data.hymn_audio);
                         //  alert(data.hymn_score);
-                        $('#hymn-score').attr({'src': data.hymn_score, 'alt': data.hymn_name});
+                        $('#hymn-compressed-score').attr({'src': data.hymn_compressed_score, 'alt': data.hymn_name});
+                        $('#hymn-score').attr({'href': data.hymn_score});
                         $("#jquery_jplayer_1").jPlayer("setMedia", {
                             title: data.hymn_name,
                             mp3: data.hymn_audio,
@@ -87,7 +91,8 @@
                 //  alert(data.hymn_name);
                 //  alert(data.hymn_audio);
                 //  alert(data.hymn_score);
-                $('#hymn-score').attr({'src': data.hymn_score, 'alt': data.hymn_name});
+                $('#hymn-compressed-score').attr({'src': data.hymn_compressed_score, 'alt': data.hymn_name});
+                $('#hymn-score').attr({'href': data.hymn_score});
                 $("#jquery_jplayer_1").jPlayer("setMedia", {
                     title: data.hymn_name,
                     mp3: data.hymn_audio,

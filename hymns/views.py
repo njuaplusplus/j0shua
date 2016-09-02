@@ -402,6 +402,7 @@ def random_hymn_json(request):
     response_json['hymn_name'] = hymn.hymn_name
     response_json['hymn_audio'] = hymn.hymn_audio
     response_json['hymn_score'] = hymn.hymn_score.url
+    response_json['hymn_compressed_score'] = hymn.hymn_compressed_score.url
     return HttpResponse(json.dumps(response_json), content_type="application/json")
 
 

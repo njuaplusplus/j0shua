@@ -24,7 +24,10 @@
 <div class="row">
     <div class="col-md-12 text-center">
         {% if hymn.hymn_score %}
-            <img src="{{ hymn.hymn_score.url }}" style="max-width: 100%; height: auto;" alt="{{ hymn.hymn_name }}">
+            <a href="{{ hymn.hymn_score.url }}" target="_blank">
+                <img src="{{ hymn.hymn_compressed_score.url }}" style="max-width: 100%; height: auto;"
+                     alt="{{ hymn.hymn_name }}" title="点击查看原图">
+            </a>
         {% else %}
             <h2>No scores......</h2>
         {% endif %}
