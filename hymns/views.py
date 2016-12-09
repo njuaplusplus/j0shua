@@ -44,7 +44,14 @@ def hymn(request, hymn_id):
     hymn = get_object_or_404(Hymn, pk=hymn_id)
     # print "http://%s%s" % (request.get_host(), request.get_full_path())
     # print request.build_absolute_uri()
-    return render(request, 'hymns/hymn_detail.html', {'hymn': hymn})
+    return render(
+        request,
+        'hymns/hymn_detail.html',
+        {
+            'hymn':         hymn,
+            'qiniu_domain': 'http://%s/' % settings.QINIU_BUCKET_DOMAIN,
+        }
+    )
 
 
 def hymn_list_view(request, hymn_id, hymn_ids):

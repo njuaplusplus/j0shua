@@ -1,21 +1,32 @@
 #!/usr/local/bin/python
 # coding=utf-8
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http.response import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import auth
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+
 from hymns.models import Weekly_Hymn, Hymn, Worship_Location, Hymn_Form
 from bibles.models import Daily_Verse, Weekly_Verse, Bible_Book_Name, Weekly_Reading, Weekly_Recitation
 from blog.models import Article, ArticleForm
 from homepage.models import UserProfileForm
 from hymns.utils import get_real_audio_url
+from django.conf import settings
 
 import datetime
 import re
 import requests
-# Create your views here.
+import json
+from qiniu import Auth, urlsafe_base64_encode
+
+QINIU_ACCESS_KEY = settings.QINIU_ACCESS_KEY
+QINIU_SECRET_KEY = settings.QINIU_SECRET_KEY
+QINIU_BUCKET_NAME = settings.QINIU_BUCKET_NAME
+QINIU_BUCKET_DOMAIN = settings.QINIU_BUCKET_DOMAIN.rstrip('/')
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def index(request):
@@ -49,12 +60,14 @@ def index(request):
     }
     return render(request, 'myadmin/index.html', context)
 
+
 @login_required(login_url='/myadmin/accounts/login/')
 def users_view(request):
     if not request.user.groups.filter(name='admins'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     users = User.objects.filter(is_superuser=False)
     return render(request, 'myadmin/users.html', {'users': users})
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def weekly_hymns_view(request):
@@ -81,6 +94,7 @@ def weekly_hymns_view(request):
         all_hymns = Hymn.objects.all()
         context = {'weekly_hymns': weekly_hymns, 'all_hymns': all_hymns}
         return render(request, 'myadmin/weekly_hymns.html', context)
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def daily_verses_view(request):
@@ -111,6 +125,7 @@ def daily_verses_view(request):
         today_verse_exists = daily_verses and daily_verses.first().verse_date == datetime.date.today()
         context = {'books': books, 'daily_verses': daily_verses, 'today_verse_exists': today_verse_exists,}
         return render(request, 'myadmin/daily_verses.html', context)
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def weekly_verses_view(request):
@@ -144,6 +159,7 @@ def weekly_verses_view(request):
         context = {'books': books, 'weekly_verses': weekly_verses, 'weekly_verse_exists': weekly_verse_exists,}
         return render(request, 'myadmin/weekly_verses.html', context)
 
+
 @login_required(login_url='/myadmin/accounts/login/')
 def weekly_readings_view(request):
     if not request.user.groups.filter(name='admins'):
@@ -172,6 +188,7 @@ def weekly_readings_view(request):
         books = Bible_Book_Name.objects.all()
         context = {'books': books, 'weekly_readings': weekly_readings,}
         return render(request, 'myadmin/weekly_readings.html', context)
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def weekly_recitations_view(request):
@@ -202,12 +219,14 @@ def weekly_recitations_view(request):
         context = {'books': books, 'weekly_recitations': weekly_recitations,}
         return render(request, 'myadmin/weekly_recitations.html', context)
 
+
 @login_required(login_url='/myadmin/accounts/login/')
 def all_articles_view(request):
     if not request.user.groups.filter(name='admins'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     articles = Article.objects.all()
     return render(request, 'myadmin/all_articles.html', {'articles': articles})
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def write_article_view(request):
@@ -225,6 +244,7 @@ def write_article_view(request):
         article_form = ArticleForm()
     return render(request, 'myadmin/write_post.html', {'article_form': article_form, })
 
+
 @login_required(login_url='/myadmin/accounts/login/')
 def edit_article_view(request, article_id):
     article = get_object_or_404(Article, pk=article_id)
@@ -239,6 +259,7 @@ def edit_article_view(request, article_id):
         article_form = ArticleForm(instance=article)
     return render(request, 'myadmin/write_post.html', {'article_form': article_form, })
 
+
 @login_required(login_url='/myadmin/accounts/login/')
 def user_profile_view(request):
     if request.method == 'POST':
@@ -249,6 +270,63 @@ def user_profile_view(request):
     else:
         profile_form = UserProfileForm(instance=request.user)
     return render(request, 'myadmin/user_profile.html', {'profile_form': profile_form, })
+
+
+@login_required(login_url='/myadmin/accounts/login/')
+def upload_hymn_score_view(request, hymn_id):
+    """
+    Upload hymn's score to qiniu
+
+    """
+    if not request.user.groups.filter(name='uploaders') and not request.user.has_perm('hymns.add_hymn') and not request.user.groups.filter(name='admins'):
+        return render(request, 'hymns/test_result.html', {'result': '权限不够', })
+    if Hymn.objects.filter(pk=hymn_id).first() is None:
+        return render(request, 'hymns/test_result.html', {'result': '没有该诗歌', })
+    return render(
+        request,
+        'myadmin/upload_hymn_score.html',
+        {
+            'domain':     'http://%s/' % QINIU_BUCKET_DOMAIN,
+            'media_root': settings.MEDIA_ROOT,
+            'hymn_id':    hymn_id,
+        }
+    )
+
+
+@csrf_exempt
+def upload_hymn_score_callback(request):
+    print(request.body)
+    data = json.loads(request.body.decode("utf-8"))
+
+    if data['code'] == 0 and data['inputBucket'] == QINIU_BUCKET_NAME:
+        origin_img_key = data['inputKey']
+        file_suffix = origin_img_key.rsplit('.', 1)[-1]
+        match = re.search(r'/(\d+)-.*\.%s' % file_suffix, origin_img_key)
+        if match and len(match.groups()) > 0:
+            hymn_id = int(match.group(1))
+            hymn = Hymn.objects.filter(pk=hymn_id).first()
+            if hymn is None:
+                return HttpResponse('hehe')
+            match = re.search(r'scores/([\w.@+-]+)/.*\.%s' % file_suffix, origin_img_key)
+            if match and len(match.groups()) > 0:
+                username = match.group(1)
+                cache_img_keys = {}
+                for item in data['items']:
+                    if item['code'] == 0:
+                        img_key = item['key']
+                        match = re.search(r'-(\d+)x\.%s' % file_suffix, img_key)
+                        if match and len(match.groups()) > 0:
+                            img_width = match.group(1)
+                            cache_img_keys[img_width] = img_key
+                if len(cache_img_keys) > 0:
+                    hymn.hymn_score_url = origin_img_key
+                    hymn.hymn_score_uploader_name = username
+                    hymn.hymn_compressed_score_url = cache_img_keys['1920']
+                    print('hymn %d saved!' % hymn_id)
+                    hymn.save()
+
+    return HttpResponse('haha')
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def upload_hymn_view(request):
@@ -272,10 +350,11 @@ def upload_hymn_view(request):
             hymn.save()
             form.save_m2m()
             print('Hymn saved! %s' % hymn.id)
-            return HttpResponseRedirect(reverse('hymns:hymn', args=(hymn.id,)))
+            return HttpResponseRedirect(reverse('myadmin:upload_hymn_score_view', args=(hymn.id,)))
     else:
         form = Hymn_Form()
     return render(request, 'myadmin/upload_hymn.html', {'hymn_form': form, })
+
 
 @login_required(login_url='/myadmin/accounts/login/')
 def edit_hymn_view(request, hymn_id):
@@ -303,12 +382,14 @@ def edit_hymn_view(request, hymn_id):
         form = Hymn_Form(instance=hymn)
     return render(request, 'myadmin/edit_hymn.html', {'hymn_form': form, })
 
+
 @login_required(login_url='/myadmin/accounts/login/')
 def hymns_view(request):
     if not request.user.groups.filter(name='admins'):
         return render(request, 'hymns/test_result.html', {'result': '权限不够', })
     hymns = Hymn.objects.all()
     return render(request, 'myadmin/all_hymns.html', {'hymns': hymns})
+
 
 def login_view(request):
     if request.user is not None and request.user.is_active:
@@ -332,6 +413,33 @@ def login_view(request):
         # Show an error page
         return render(request, 'myadmin/login.html', {'next': next_url})
 
+
 def logout_view(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('homepage:login_view'));
+
+
+def upload_score_token(request):
+    fops = (
+        (
+            'imageView2/2/w/1920|saveas/',
+            '/CACHE/hymns/scores/$(x:uploader)/$(x:hymn_id)-$(x:filename)-1920x.$(x:file_suffix)'
+        ),
+    )
+    persistent_ops = ';'.join(
+        (x[0] + urlsafe_base64_encode('%s:%s%s' % (QINIU_BUCKET_NAME, settings.MEDIA_ROOT, x[1])) for x in fops)
+    )
+    policy = {
+        'persistentOps':       persistent_ops,
+        'persistentPipeline':  'mytest',
+        'persistentNotifyUrl': settings.QINIU_CALLBACK_DOMAIN.rstrip('/') + reverse('myadmin:upload_hymn_score_callback'),
+        'mimeLimit':           'image/*',
+
+    }
+    qiniu_auth = Auth(QINIU_ACCESS_KEY, QINIU_SECRET_KEY)
+    upload_token = qiniu_auth.upload_token(QINIU_BUCKET_NAME, policy=policy)
+    return JsonResponse(
+        {
+            'uptoken': upload_token,
+        }
+    )

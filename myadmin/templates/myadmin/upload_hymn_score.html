@@ -1,0 +1,52 @@
+{% extends "myadmin/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    上传歌谱 | 约书亚团契
+{% endblock %}
+
+{% block mainContent %}
+<div class="row">
+<div class="col-lg-12">
+    <h1 class="page-header">上传歌谱</h1>
+</div>
+<div id="wrap">
+    <div class="container">
+        <div class="row">
+            <!-- Blog Entries Column -->
+            <div class="col-md-12">
+                <div id="container">
+                    <button type="button" id="pickfiles" class="btn btn-default btn-lg">
+                        <span class="glyphicon glyphicon-plus"></span> 选择文件
+                    </button>
+                </div>
+            </div>
+            <div style="display:none" id="success" class="col-md-12">
+                <div class="alert alert-success" role="alert">
+                    队列全部文件处理完毕
+                </div>
+            </div>
+            <input type="hidden" id="domain" value="{{ domain }}">
+            <input type="hidden" id="media-root" value="{{ media_root }}">
+            <input type="hidden" id="uptoken_url" value="{% url 'myadmin:upload_score_token' %}">
+            <input type="hidden" id="uploader_username" value="{{ user.username }}">
+            <input type="hidden" id="hymn_id" value="{{ hymn_id }}">
+        </div>
+        <!-- /.row -->
+        <div id="fsUploadProgress"></div>
+    </div>
+    <!-- /.container -->
+</div>
+<!-- /#wrap -->
+{% endblock mainContent %}
+
+{% block extScriptFile %}
+{#    <script src="http://cdn.staticfile.org/plupload/2.1.9/plupload.full.min.js"></script>#}
+    <script src="http://cdn.staticfile.org/plupload/2.1.9/moxie.js"></script>
+    <script src="http://cdn.staticfile.org/plupload/2.1.9/plupload.dev.js"></script>
+    <script src="http://cdn.staticfile.org/plupload/2.1.9/i18n/zh_CN.js"></script>
+    <script src="http://cdn.staticfile.org/qiniu-js-sdk/1.0.14-beta/qiniu.js"></script>
+    <script src="{% static 'myadmin/js/file_progress.js' %}?ver=1.0.0.1"></script>
+    <script src="{% static 'myadmin/js/upload.js' %}?ver=1.0.0.1"></script>
+{% endblock %}
+

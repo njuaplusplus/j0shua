@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django import forms
 from imagekit.models import ProcessedImageField, ImageSpecField
 from pilkit.processors import ResizeToFit
+from django.utils.translation import ugettext as _
 
 # Create your models here.
 
@@ -20,7 +21,7 @@ class Hymn(models.Model):
     hymn_index = models.IntegerField('编号', default=0)
     hymn_name = models.CharField('歌名', max_length=1000)
     hymn_key = models.ForeignKey(Hymn_Key, verbose_name='曲调')
-    hymn_score = models.ImageField('歌谱', upload_to='scores/%Y/%m/%d', help_text='必须上传')
+    hymn_score = models.ImageField('歌谱', upload_to='scores/%Y/%m/%d', help_text='必须上传', null=True, blank=True)
     hymn_audio = models.CharField('音频', max_length=1000, null=True, blank=True, help_text='可不填写')
     hymn_lyrics = models.CharField('歌词', max_length=1000, null=True, blank=True, help_text='可不填写')
     hymn_pdf = models.FileField('PDF 文件', upload_to='pdfs/%Y/%m/%d', null=True, blank=True, help_text='可不填写')
@@ -37,6 +38,18 @@ class Hymn(models.Model):
         processors=[ResizeToFit(1920, 65535, False)],
         format='JPEG',
         options={'quality': 80}
+    )
+    hymn_score_url = models.CharField(
+        verbose_name=_('原图的七牛key'),
+        help_text=_('不超过 255 个字符'),
+        max_length=255,
+        blank=True
+    )
+    hymn_compressed_score_url = models.CharField(
+        verbose_name=_('1920x的七牛key'),
+        help_text=_('不超过 255 个字符'),
+        max_length=255,
+        blank=True
     )
 
     def __str__(self):
@@ -67,13 +80,11 @@ class Weekly_Hymn(models.Model):
 class Hymn_Form(forms.ModelForm):
     class Meta:
         model = Hymn
-        fields = [ 'hymn_index', 'hymn_name', 'hymn_key', 'hymn_score', 'hymn_score_uploader_name', 'hymn_audio', 'hymn_audio_uploader_name', 'hymn_pdf', 'hymn_pdf_uploader_name', 'hymn_ppt', 'hymn_ppt_uploader_name' ]
+        fields = [ 'hymn_index', 'hymn_name', 'hymn_key', 'hymn_audio', 'hymn_audio_uploader_name', 'hymn_pdf', 'hymn_pdf_uploader_name', 'hymn_ppt', 'hymn_ppt_uploader_name' ]
         widgets = {
             'hymn_index' : forms.NumberInput(attrs={'class':'form-control'}),
             'hymn_name' : forms.TextInput(attrs={'class':'form-control'}),
             'hymn_key' : forms.Select(attrs={'class':'form-control'}),
-            'hymn_score' : forms.FileInput(attrs={'class':'form-control'}),
-            'hymn_score_uploader_name' : forms.TextInput(attrs={'class':'form-control'}),
             'hymn_audio' : forms.TextInput(attrs={'class':'form-control'}),
             'hymn_audio_uploader_name' : forms.TextInput(attrs={'class':'form-control'}),
             'hymn_pdf' : forms.FileInput(attrs={'class':'form-control'}),

@@ -22,6 +22,9 @@ urlpatterns = [
     url(r'^accounts/logout/$', views.logout_view, name='logout_view'),
     url(r'^user-profile/$', views.user_profile_view, name='user_profile_view'),
     url(r'^upload-hymn/$', views.upload_hymn_view, name='upload_hymn_view'),
+    url(r'^upload-hymn-score/(?P<hymn_id>\d+)/$', views.upload_hymn_score_view, name='upload_hymn_score_view'),
+    url(r'^upload-hymn-score-callback/$', views.upload_hymn_score_callback, name='upload_hymn_score_callback'),
+    url(r'^upload-score-token/$', views.upload_score_token, name='upload_score_token'),
     url(r'^edit-hymn/(?P<hymn_id>\d+)/$', views.edit_hymn_view, name='edit_hymn_view'),
     url(r'^hymns/$', views.hymns_view, name='hymns_view'),
 ]

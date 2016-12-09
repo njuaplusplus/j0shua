@@ -23,13 +23,16 @@
 </div>
 <div class="row">
     <div class="col-md-12 text-center">
-        {% if hymn.hymn_score %}
-            <a href="{{ hymn.hymn_score.url }}" target="_blank">
-                <img src="{{ hymn.hymn_compressed_score.url }}" style="max-width: 100%; height: auto;"
+        {% if hymn.hymn_score_url and hymn.hymn_compressed_score_url %}
+            <a href="{{ qiniu_domain }}{{ hymn.hymn_score_url }}" target="_blank">
+                <img src="{{ qiniu_domain }}{{ hymn.hymn_compressed_score_url }}" style="max-width: 100%; height: auto;"
                      alt="{{ hymn.hymn_name }}" title="点击查看原图">
             </a>
+        {% elif hymn.hymn_score %}
+            <img src="{{ hymn.hymn_score.url }}" style="max-width: 100%; height: auto;"
+                     alt="{{ hymn.hymn_name }}">
         {% else %}
-            <h2>No scores......</h2>
+            <p>未找到歌谱。若已经上传了歌谱，请等待服务器处理。</p>
         {% endif %}
     </div>
 </div>
