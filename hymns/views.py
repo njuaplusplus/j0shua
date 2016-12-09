@@ -61,7 +61,10 @@ def hymn_list_view(request, hymn_id, hymn_ids):
     '''
     hymn = get_object_or_404(Hymn, pk=hymn_id)
     hymn_id_list = hymn_ids.split('-')
-    context = {'hymn': hymn, }
+    context = {
+        'hymn':         hymn,
+        'qiniu_domain': 'http://%s/' % settings.QINIU_BUCKET_DOMAIN,
+    }
     try:
         index = hymn_id_list.index(hymn_id)
     except ValueError:
