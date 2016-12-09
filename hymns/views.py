@@ -397,8 +397,14 @@ def playlist_view(request):
     hymns = Hymn.objects.exclude(hymn_audio__isnull=True).exclude(hymn_audio__exact='')
     last = hymns.count() - 1
     hymn = hymns[random.randint(0, last)]
-    context = {'hymn': hymn,}
-    return render(request, 'hymns/hymn_playlist.html', context)
+    return render(
+        request,
+        'hymns/hymn_playlist.html',
+        {
+            'hymn':         hymn,
+            'qiniu_domain': 'http://%s/' % settings.QINIU_BUCKET_DOMAIN,
+        }
+    )
 
 
 def random_hymn_json(request):
@@ -408,8 +414,8 @@ def random_hymn_json(request):
     hymn = hymns[random.randint(0, last)]
     response_json['hymn_name'] = hymn.hymn_name
     response_json['hymn_audio'] = hymn.hymn_audio
-    response_json['hymn_score'] = hymn.hymn_score.url
-    response_json['hymn_compressed_score'] = hymn.hymn_compressed_score.url
+    response_json['hymn_score'] = hymn.hymn_score_url
+    response_json['hymn_compressed_score'] = hymn.hymn_compressed_score_url
     return HttpResponse(json.dumps(response_json), content_type="application/json")
 
 
