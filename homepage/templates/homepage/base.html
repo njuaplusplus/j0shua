@@ -71,7 +71,7 @@
                     {% endblock navbarBlock %}
                     {% if not user.is_authenticated %}
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="{% url 'homepage:register_view' %}">注册</a></li>
+{#                        <li><a href="{% url 'homepage:register_view' %}">注册</a></li>#}
                         <li><a href="{% url 'homepage:login_view' %}?next={{ request.path }}">登录</a></li>
                     </ul>
                     {% else %}

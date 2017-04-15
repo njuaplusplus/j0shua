@@ -4,12 +4,20 @@
 {% block title%}登录 | 约书亚团契{% endblock %}
 
 {% block mainContent %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-signin">
+            <h2 class="form-signin-heading" style="text-align: center">第三方登录(推荐)</h2>
+            <div id="wx_login_container"></div>
+        </div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-12">
 <form class="form-signin" role="form" method="POST" action="{% url 'homepage:login_view' %}">
     {% csrf_token %}
-    <h2 class="form-signin-heading">请登录</h2>
+    <h2 class="form-signin-heading" style="text-align: center">或 本站登录</h2>
     <label for="input_username" class="sr-only">用户名</label>
     <input type="text" name="username" class="form-control" placeholder="用户名" id="input_username" required autofocus />
     <label for="input_password" class="sr-only">Password</label>
@@ -24,13 +32,21 @@
 </form>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="form-signin">
-            <h2 class="form-signin-heading">第三方登录</h2>
-            {% my_sso_duoshuo_login next|escape %}
-        </div>
-    </div>
-</div>
 
+
+{% endblock %}
+
+{% block extScriptFile %}
+    <script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+{% endblock %}
+
+{% block extScript %}
+    var obj = new WxLogin({
+        id:     "wx_login_container",
+        appid:  "{{ wechat_appid }}",
+        scope:  "{{ wechat_scope }}",
+        redirect_uri: "{{ wechat_redirect_url }}",
+        state: "{{ wechat_state }}",
+        style: "black"
+    });
 {% endblock %}

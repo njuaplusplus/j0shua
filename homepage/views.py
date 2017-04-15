@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 # coding=utf-8
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 
@@ -12,15 +12,17 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 # from django.utils import timezone
-from django.conf import settings # use settings
+from django.conf import settings  # use settings
 import datetime
-import jwt
 import random
-from duoshuo import DuoshuoAPI
+import urllib.parse
+import hashlib
+import requests
 
 from bibles.models import Bible_CHN, Daily_Verse, Weekly_Verse, Weekly_Reading, Weekly_Recitation
 from hymns.models import Weekly_Hymn, Worship_Location
 from homepage.models import User_Profile
+
 
 def index(request):
     # today = timezone.now().date() # 8 hours earlier
@@ -66,21 +68,22 @@ def index(request):
         'weekly_readings': weekly_readings,
         'weekly_recitation_verses': weekly_recitation_verses,
     }
-    response = render(request, 'homepage/index.html', context)
-    return set_jwt_and_response(request.user, response)
+    return render(request, 'homepage/index.html', context)
+
 
 def about_view(request):
     return render(request, 'homepage/about.html')
+
 
 def decide_next_url(next_url):
     if next_url is None or len(next_url) == 0 or next_url == reverse('homepage:login_view') or next_url == reverse('homepage:register_view'):
         next_url = reverse('homepage:index')
     return next_url
 
+
 def login_view(request):
     if request.user is not None and request.user.is_active:
-        response = HttpResponseRedirect(reverse('homepage:index'))
-        return set_jwt_and_response(request.user, response)
+        return HttpResponseRedirect(reverse('homepage:index'))
     if request.method == 'POST': # 本地用户登录
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
@@ -89,67 +92,30 @@ def login_view(request):
         if user is not None and user.is_active:
             # Correct password, and the user is marked 'active'
             auth.login(request, user)
-            response = HttpResponseRedirect(next_url)
-            return set_jwt_and_response(request.user, response)
+            return HttpResponseRedirect(next_url)
         else:
             # Show an error page
             return render(request, 'homepage/login.html', {'next': next_url})
     else: # GET method
-        code = request.GET.get('code', '')
         next_url = decide_next_url(request.GET.get('next', ''))
-        if len(code) > 0: # 多说登录
-            api = DuoshuoAPI(settings.DUOSHUO_SHORT_NAME, settings.DUOSHUO_SECRET)
-            response = api.get_token(code=code)
-            print(('api.get_token %s' % code))
-            print(response)
-            if 'user_key' in response: # 这个多说账号已经绑定过本地账户了
-                user = User.objects.get(pk=int(response['user_key']))
-                user.backend = 'django.contrib.auth.backends.ModelBackend'
-                auth.login(request, user)
-                user_profile = User_Profile.objects.filter(user=user)
-                if not user_profile: # 手动绑定了多说账号和本地账号, 但是本地没有对应的 user_profile
-                    user_profile = User_Profile(user=user,duoshuo_id=int(response['user_id']), avatar=response['avatar_url'])
-                    user_profile.save()
-            else: # 这个多说账户还没有绑定
-                access_token = response['access_token']
-                user_profile = User_Profile.objects.filter(duoshuo_id=int(response['user_id']))
-                if user_profile: #此多说账号在本站已经注册过了, 但是没有绑定, 则先绑定, 然后直接登录
-                    user = user_profile.first().user
-                    user.backend = 'django.contrib.auth.backends.ModelBackend'
-                    auth.login(request, user)
-                else: # 此多说账号在本站未注册, 添加一个用户
-                    print('api.users.profile user_id %s' % response['user_id'])
-                    response = api.users.profile(user_id=response['user_id'])['response']
-                    print(response)
-                    username = 'duoshuo_%s' % response['user_id']
-                    while User.objects.filter(username=username).count():
-                        username = username + str(random.randrange(1,9)) #如果多说账号用户名和本站用户名重复，就加上随机数字
-                    tmp_password = ''.join([random.choice('abcdefg&#%^*f') for i in range(8)]) #随机长度8字符做密码
-                    new_user = User.objects.create_user(username=username, email='user@example.com', password=tmp_password, first_name=response['name']) #默认密码和邮箱，之后让用户修改
-                    user_profile = User_Profile.objects.get_or_create(user=new_user)[0]
-                    user_profile.duoshuo_id = int(response['user_id']) #把返回的多说ID存到profile
-                    user_profile.avatar = response['avatar_url']
-                    user_profile.save()
+        return render(
+            request,
+            'homepage/login.html',
+            {
+                'next': next_url,
+                'wechat_appid': settings.WECHAT_APP_ID,
+                'wechat_scope': 'snsapi_login',
+                'wechat_redirect_url': calculate_wechat_redirect_url(request),
+                'wechat_state': calculate_wechat_state()
+            }
+        )
 
-                    user = auth.authenticate(username=username, password=tmp_password)
-                    auth.login(request, user)
-                # SSO 同步多说账户
-                sync_sso_duoshuo(access_token, request.user)
-            response = HttpResponseRedirect(next_url)
-            return set_jwt_and_response(request.user, response)
-        # absolute_next_url = request.build_absolute_uri(next_url)
-        sso_login_url = '%s?next=%s' % (request.build_absolute_uri(reverse('homepage:login_view')), next_url)
-        sso_logout_url = request.build_absolute_uri(reverse('homepage:logout_view'))
-        context = {'next': next_url, 'sso_login_url': sso_login_url, 'sso_logout_url': sso_logout_url, }
-        return render(request, 'homepage/login.html', context)
 
 def logout_view(request):
-    print('logout_view')
     auth.logout(request)
     response = HttpResponseRedirect(reverse('homepage:login_view'))
-    response.delete_cookie('duoshuo_token')
-    print('return logout_view')
     return response
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -161,54 +127,6 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'homepage/register.html', { 'form': form, })
 
-def set_jwt_and_response(user, response):
-    # For duoshuo jwt login
-    if user is not None and user.is_authenticated() and user.is_active:
-        user_profile = User_Profile.objects.filter(user=user)
-        if not user_profile: # 本地的没有 多说 User_Profile
-            # 则使用 jwt 来创建一个多说账户
-            # For duoshuo jwt login
-            duoshuo_jwt_token = None
-            username = user.get_full_name()
-            if not username:
-                username = user.username
-            token = {
-                "short_name": settings.DUOSHUO_SHORT_NAME,
-                "user_key": user.id,
-                "name": username
-            }
-            duoshuo_jwt_token = jwt.encode(token, settings.DUOSHUO_SECRET)
-            response.set_cookie('duoshuo_token', duoshuo_jwt_token)
-    return response
-
-import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
-
-def sync_sso_duoshuo(access_token, user):
-    '''将SSO本地用户同步到已有多说账户中
-    '''
-    url = 'http://api.duoshuo.com/sites/join.json'
-    username = user.get_full_name()
-    if not username:
-        username = user.username
-    email = user.email
-    if not email:
-        email = 'user@example.com'
-    params = {
-        'short_name': settings.DUOSHUO_SHORT_NAME,
-        'secret': settings.DUOSHUO_SECRET,
-        'access_token': access_token,
-        'user[user_key]': user.id,
-        'user[name]': username,
-        'user[email]': user.email,
-    }
-    print('sync_sso_duoshuo')
-    print(params)
-    data = urllib.parse.urlencode(params)
-    request = urllib.request.Request(url, data=data)
-    response = urllib.request.urlopen(request)
-    result = response.read()
-    print(result)
 
 def page_not_found_view(request):
     ''' Custom 404 page
@@ -216,3 +134,78 @@ def page_not_found_view(request):
     response = render(request, '404.html')
     response.status_code = 404
     return response
+
+
+def calculate_wechat_state():
+    return hashlib.sha256(
+        (datetime.date.today().ctime() + settings.WECHAT_STATE_SEED).encode('utf-8')).hexdigest()
+
+
+def calculate_wechat_redirect_url(request):
+    redirect_url = request.is_secure() and 'https://' or 'http://'
+    redirect_url += request.get_host() + reverse('homepage:wechat_login_view')
+    redirect_url = urllib.parse.quote(redirect_url, safe='')
+    return redirect_url
+
+
+def wechat_login_view(request):
+    code = request.GET.get('code', '')
+    state = request.GET.get('state', '')
+    calculated_state = calculate_wechat_state()
+    if code:
+        if state != calculated_state:
+            return redirect(reverse('homepage:login_view'))
+        else:
+            # get the user info
+            res = requests.get(
+                'https://api.weixin.qq.com/sns/oauth2/access_token',
+                params={
+                    'appid':      settings.WECHAT_APP_ID,
+                    'secret':     settings.WECHAT_APP_SECRET,
+                    'code':       code,
+                    'grant_type': 'authorization_code'
+                }
+            )
+            if res.status_code == 200:
+                res = res.json()
+                access_token = res['access_token']
+                openid = res['openid']
+                username = 'WX' + openid
+                user = User.objects.filter(username=username).first()
+                if user:
+                    if user.is_active:
+                        user.backend = 'django.contrib.auth.backends.ModelBackend'
+                        auth.login(request, user)
+                        return HttpResponseRedirect(reverse('homepage:index'))
+                else:
+                    res = requests.get(
+                        'https://api.weixin.qq.com/sns/userinfo',
+                        params={
+                            'access_token': access_token,
+                            'openid': openid
+                        }
+                    )
+                    if res.status_code == 200:
+                        res = res.json()
+                        unionid = res['unionid']
+                        avatar = res['headimgurl']
+                        nickname = res['nickname'].encode('latin-1').decode('utf-8')
+                        password = ''.join([random.choice('abcdefghijklmnopqrstuvwxyz!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(12)])
+                        user = User.objects.create_user(username=username, password=password, first_name=nickname)
+                        User_Profile.objects.create(user=user, avatar=avatar, unionid=unionid, openid=openid)
+                        user.backend = 'django.contrib.auth.backends.ModelBackend'
+                        auth.login(request, user)
+                        return HttpResponseRedirect(reverse('homepage:index'))
+    else:
+
+        return redirect(
+            "https://open.weixin.qq.com/connect/qrconnect?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=%s#wechat_redirect" %
+            (settings.WECHAT_APP_ID, calculate_wechat_redirect_url(request), calculated_state))
+
+
+def print_request(request):
+    print(request.GET)
+    print(request.get_full_path())
+    print(request.get_host())
+    print(request.is_secure())
+    return HttpResponse('ok')
