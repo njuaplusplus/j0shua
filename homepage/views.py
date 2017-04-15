@@ -76,7 +76,7 @@ def about_view(request):
 
 
 def decide_next_url(next_url):
-    if next_url is None or len(next_url) == 0 or next_url == reverse('homepage:login_view') or next_url == reverse('homepage:register_view'):
+    if next_url is None or len(next_url) == 0 or next_url == reverse('homepage:login_view'):  # or next_url == reverse('homepage:register_view'):
         next_url = reverse('homepage:index')
     return next_url
 
@@ -106,7 +106,7 @@ def login_view(request):
                 'wechat_appid': settings.WECHAT_APP_ID,
                 'wechat_scope': 'snsapi_login',
                 'wechat_redirect_url': calculate_wechat_redirect_url(request),
-                'wechat_state': calculate_wechat_state()
+                'wechat_state': calculate_wechat_state()+'-'+urllib.parse.quote(next_url, safe='')
             }
         )
 
@@ -129,8 +129,8 @@ def register_view(request):
 
 
 def page_not_found_view(request):
-    ''' Custom 404 page
-    '''
+    """ Custom 404 page
+    """
     response = render(request, '404.html')
     response.status_code = 404
     return response
@@ -150,7 +150,10 @@ def calculate_wechat_redirect_url(request):
 
 def wechat_login_view(request):
     code = request.GET.get('code', '')
-    state = request.GET.get('state', '')
+    state = request.GET.get('state', '').split('-')
+    if len(state) != 2:
+        return redirect(reverse('homepage:login_view'))
+    state, next_url = state[0], urllib.parse.unquote(state[1])
     calculated_state = calculate_wechat_state()
     if code:
         if state != calculated_state:
@@ -176,7 +179,7 @@ def wechat_login_view(request):
                     if user.is_active:
                         user.backend = 'django.contrib.auth.backends.ModelBackend'
                         auth.login(request, user)
-                        return HttpResponseRedirect(reverse('homepage:index'))
+                        return HttpResponseRedirect(next_url)
                 else:
                     res = requests.get(
                         'https://api.weixin.qq.com/sns/userinfo',
@@ -195,7 +198,7 @@ def wechat_login_view(request):
                         User_Profile.objects.create(user=user, avatar=avatar, unionid=unionid, openid=openid)
                         user.backend = 'django.contrib.auth.backends.ModelBackend'
                         auth.login(request, user)
-                        return HttpResponseRedirect(reverse('homepage:index'))
+                        return HttpResponseRedirect(next_url)
     else:
 
         return redirect(
